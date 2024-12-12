@@ -1,14 +1,28 @@
 package com.yohana.echolearn.views
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.Greeting
+import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
+import com.yohana.echolearn.ui.theme.poppins
 
 @Composable
 fun StarterScreenView(){
@@ -16,8 +30,31 @@ fun StarterScreenView(){
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
+        ,
     ){
-
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+            ,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            Image(
+                painter = painterResource(id = R.drawable.app_logo_colorful),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .width(250.dp)
+            )
+            Text(
+                text = "Echo Learn",
+                color = Color(0xFF0068AD),
+                fontFamily = poppins,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 36.sp,
+                modifier = Modifier
+                    .padding(top = 16.dp)
+            )
+        }
     }
 }
 
