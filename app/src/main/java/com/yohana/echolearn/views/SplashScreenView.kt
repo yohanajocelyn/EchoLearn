@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
+import com.yohana.echolearn.ui.theme.poppins
 
 @Composable
 fun SplashScreenView(){
