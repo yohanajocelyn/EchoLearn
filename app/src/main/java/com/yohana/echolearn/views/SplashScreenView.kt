@@ -24,13 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
-
-val poppins = FontFamily(
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_bold, FontWeight.Bold),
-    Font(R.font.poppins_semibold, FontWeight.SemiBold),
-    Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic)
-)
+import com.yohana.echolearn.ui.theme.poppins
 
 @Composable
 fun SplashScreenView(){
