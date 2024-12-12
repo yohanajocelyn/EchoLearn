@@ -1,4 +1,4 @@
-package com.yohana.echolearn.view
+package com.yohana.echolearn.views
 
 import androidx.compose.runtime.Composable
 
