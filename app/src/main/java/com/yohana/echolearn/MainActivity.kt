@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.yohana.echolearn.route.AppRouting
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
+import com.yohana.echolearn.views.ListMusic
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,14 +22,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EchoLearnTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-                    val context = LocalContext.current
-                    AppRouting(context, innerPadding)
-                }
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+////                    Greeting(
+////                        name = "Android",
+////                        modifier = Modifier.padding(innerPadding)
+////                    )
+//                    val context = LocalContext.current
+//                    AppRouting(context, innerPadding)
+//                }
+                ListMusic()
             }
         }
     }
