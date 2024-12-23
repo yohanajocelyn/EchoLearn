@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,9 +26,15 @@ import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
+import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreenView(){
+fun SplashScreenView(onTimeout: () -> Unit){
+    LaunchedEffect(Unit) {
+        delay(3000L) // Show for 3 seconds
+        onTimeout()
+    }
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -58,6 +65,6 @@ fun SplashScreenView(){
 @Composable
 fun SplashScreenViewPreview() {
     EchoLearnTheme {
-        SplashScreenView()
+//        SplashScreenView()
     }
 }
