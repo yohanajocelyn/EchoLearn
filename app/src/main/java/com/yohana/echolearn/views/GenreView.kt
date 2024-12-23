@@ -25,7 +25,7 @@ fun GenreView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(color = Color(0xFFF6F6F6))
     ) {
         // Top bar
         TopBar()
