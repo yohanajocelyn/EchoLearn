@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.yohana.echolearn.route.AppRouting
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.views.ListMusic
+import com.yohana.echolearn.views.RegisterView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
 //                    val context = LocalContext.current
 //                    AppRouting(context, innerPadding)
 //                }
-                ListMusic()
+                RegisterView()
             }
         }
     }
