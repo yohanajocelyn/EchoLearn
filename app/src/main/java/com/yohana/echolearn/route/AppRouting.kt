@@ -32,6 +32,20 @@ fun setFirstTimeLaunch(context: Context) {
     sharedPref.edit().putBoolean("isFirstTimeLaunch", false).apply()
 }
 
+enum class PagesEnum{
+    Splash,
+    Login,
+    Register,
+    Home,
+    SongMenu,
+    SongDetail,
+    Notes,
+    Profile,
+    Listening,
+    Reading,
+    Leaderboards
+}
+
 @Composable
 fun AppRouting(context: Context, innerpadding: PaddingValues){
     val navController = rememberNavController()
@@ -39,19 +53,20 @@ fun AppRouting(context: Context, innerpadding: PaddingValues){
 
     NavHost(
         navController = navController,
-        startDestination = if (isFirstLaunch) "splash" else "home",
+        startDestination = if (isFirstLaunch) PagesEnum.Splash.name else PagesEnum.Home.name,
         modifier = Modifier.padding(innerpadding)
     ){
-        composable(route = "splash"){
+        composable(route = PagesEnum.Splash.name){
             SplashScreenView {
                 // Mark the first launch as completed
                 setFirstTimeLaunch(context)
-                navController.navigate("home") {
-                    popUpTo("splash") { inclusive = true } // Remove splash from backstack
+                navController.navigate(PagesEnum.Home.name) {
+                    popUpTo(PagesEnum.Splash.name) { inclusive = true } // Remove splash from backstack
                 }
             }
         }
 
+        //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
         composable(route = "home"){
             Greeting(name = "Android")
         }
