@@ -27,7 +27,7 @@ import com.yohana.echolearn.ui.theme.EchoLearnTheme
 fun Navbar(modifier: Modifier = Modifier) {
 Column {
     Divider(
-        color = Color.Black,
+        color = Color.LightGray,
         thickness = 2.dp    // Ketebalan garis
     )
     Row(
