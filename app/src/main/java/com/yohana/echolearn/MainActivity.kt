@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
 //                    val context = LocalContext.current
 //                    AppRouting(context, innerPadding)
 //                }
-                RegisterView()
             }
         }
     }
