@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.yohana.echolearn.R
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
 import com.yohana.echolearn.view.PasswordOutlinedTextField
+import com.yohana.echolearn.view.StylishImageDropdown
 
 @Composable
 fun RegisterView(
@@ -100,7 +101,8 @@ fun RegisterView(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-
+            StylishImageDropdown()
+            Spacer(modifier = Modifier.height(12.dp))
             PasswordOutlinedTextField(
                 passwordInput = password,
                 onPasswordInputValueChange = { newPassword -> password = newPassword },
