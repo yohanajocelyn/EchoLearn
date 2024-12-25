@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.yohana.echolearn.R
+import com.yohana.echolearn.ui.theme.poppins
 
 @Composable
 fun AuthenticationOutlinedTextField(
@@ -37,12 +38,14 @@ fun AuthenticationOutlinedTextField(
         singleLine = true,
         label = {
             Text(
-                text = labelText
+                text = labelText,
+                fontFamily = poppins
             )
         },
         placeholder = {
             Text(
-                text = placeholderText
+                text = placeholderText,
+                fontFamily = poppins
             )
         },
         modifier = modifier.fillMaxWidth(),
@@ -77,7 +80,8 @@ fun PasswordOutlinedTextField(
         singleLine = true,
         label = {
             Text(
-                text = labelText
+                text = labelText,
+                fontFamily = poppins
             )
         },
         trailingIcon = {
@@ -92,7 +96,8 @@ fun PasswordOutlinedTextField(
         },
         placeholder = {
             Text(
-                text = placeholderText
+                text = placeholderText,
+                fontFamily = poppins
             )
         },
         visualTransformation = passwordVisibility,
