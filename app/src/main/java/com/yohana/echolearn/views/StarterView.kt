@@ -3,15 +3,24 @@ package com.yohana.echolearn.views
 import android.hardware.camera2.params.ColorSpaceTransform
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -51,55 +60,99 @@ fun StarterView(){
         scaffoldState = scaffoldState,
         sheetContainerColor = Color(0xFF3DB2FF),
         sheetContent = {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                ,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .heightIn(max = 400.dp) // Set a maximum height for the bottom sheet
             ) {
-                TitleText(
-                    text = "Practice English",
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-                TitleText(
-                    text = "for free!",
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                Text(
-                    text = "Practice English interactively through music!",
-                    color = Color.White,
-                    fontFamily = poppins,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(horizontal = 30.dp)
-                    ,
-                    fontSize = 18.sp
-                )
-
-                Row (
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 18.dp)
-                    ,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    Button(
-                        onClick = { TODO() }
-                    ) {
-                        ButtonContent(
-                            text = "Register",
-                            color = Color.White
-                        )
-                    }
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TitleText(
+                        text = "Practice English",
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+                    TitleText(
+                        text = "for free!",
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    Text(
+                        text = "Practice English interactively through music!",
+                        color = Color.White,
+                        fontFamily = poppins,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(horizontal = 30.dp),
+                        fontSize = 18.sp
+                    )
 
-                    Button(
-                        onClick = { TODO() }
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 18.dp,
+                                end = 18.dp,
+                                top = 28.dp,
+                                bottom = 28.dp
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        ButtonContent(
-                            text = "Login",
-                            color = Color.White
-                        )
+                        Button(
+                            onClick = { TODO() },
+                            modifier = Modifier
+                                .border(
+                                    width = 2.dp,
+                                    color = Color(0xFFFFFFFF),
+                                    shape = RoundedCornerShape(size = 40.dp)
+                                )
+                                .width(131.dp)
+                                .height(58.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF3DB2FF),
+                                contentColor = Color.White
+                            ),
+                            contentPadding = PaddingValues(
+                                top = 8.dp,
+                                bottom = 8.dp
+                            ),
+                        ) {
+                            ButtonContent(
+                                text = "Register",
+                                color = Color.White
+                            )
+                        }
+
+                        Button(
+                            onClick = { TODO() },
+                            modifier = Modifier
+                                .border(
+                                    width = 2.dp,
+                                    color = Color(0xFFFFFFFF),
+                                    shape = RoundedCornerShape(size = 40.dp)
+                                )
+                                .width(131.dp)
+                                .height(58.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White,
+                                contentColor = Color(0xFF3DB2FF)
+                            ),
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                top = 8.dp,
+                                end = 16.dp,
+                                bottom = 8.dp
+                            ),
+                        ) {
+                            ButtonContent(
+                                text = "Login",
+                                color = Color(0xFF3DB2FF)
+                            )
+                        }
                     }
                 }
             }
@@ -147,15 +200,17 @@ fun TitleText(text: String, modifier: Modifier = Modifier){
 fun ButtonContent(text: String, color: Color){
     Row (
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ){
         Text(
-            text = text
+            text = text,
+            fontFamily = poppins,
+            fontSize = 18.sp,
         )
         Image(
-            painter = painterResource(id = R.drawable.ic_arrow_right),
+            painter = painterResource(id = R.drawable.arrow_right),
             contentDescription = "Button Img",
-            colorFilter = ColorFilter.tint(color = color)
+            colorFilter = ColorFilter.tint(color = color),
         )
     }
 }
