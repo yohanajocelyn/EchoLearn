@@ -36,7 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
@@ -46,7 +48,8 @@ import javax.security.auth.login.LoginException
 
 @Composable
 fun LoginView(
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel = viewModel(),
+    navController: NavController? = null
 ){
     val loginUIState by viewModel.loginUIState.collectAsState()
 
@@ -155,7 +158,7 @@ fun LoginView(
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFF3DB2FF),
                     modifier = Modifier
-                        .clickable {  }
+                        .clickable { navController?.navigate(PagesEnum.Register.name) }
                 )
             }
         }
