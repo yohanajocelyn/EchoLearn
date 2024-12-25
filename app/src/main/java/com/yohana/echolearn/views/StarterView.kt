@@ -3,7 +3,10 @@ package com.yohana.echolearn.views
 import android.hardware.camera2.params.ColorSpaceTransform
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,20 +58,53 @@ fun StarterView(){
                 ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Practice English for free!",
-                    color = Color.White,
-                    fontFamily = poppins
+                TitleText(
+                    text = "Practice English",
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+                TitleText(
+                    text = "for free!",
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
                 Text(
                     text = "Practice English interactively through music!",
                     color = Color.White,
                     fontFamily = poppins,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 30.dp)
+                    ,
+                    fontSize = 18.sp
                 )
+
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 18.dp)
+                    ,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Button(
+                        onClick = { TODO() }
+                    ) {
+                        ButtonContent(
+                            text = "Register",
+                            color = Color.White
+                        )
+                    }
+
+                    Button(
+                        onClick = { TODO() }
+                    ) {
+                        ButtonContent(
+                            text = "Login",
+                            color = Color.White
+                        )
+                    }
+                }
             }
         },
-        sheetPeekHeight = 0.dp // Adjust this to your needs if a partial view of the sheet should be visible initially
+        sheetPeekHeight = 48.dp // Adjust this to your needs if a partial view of the sheet should be visible initially
     ) {
         Column(
             modifier = Modifier
@@ -91,39 +128,36 @@ fun StarterView(){
             )
         }
     }
+}
 
-//    Column (
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(color = Color.White)
-//            .padding(top = 64.dp)
-//        ,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ){
-//        Image(
-//            painter = painterResource(id = R.drawable.app_logo_colorful),
-//            contentDescription = "App Logo",
-//            modifier = Modifier
-//                .width(250.dp)
-//        )
-//        Text(
-//            text = "Echo Learn",
-//            color = Color(0xFF0068AD),
-//            fontFamily = poppins,
-//            fontWeight = FontWeight.SemiBold,
-//            fontSize = 36.sp,
-//            modifier = Modifier
-//                .padding(top = 16.dp)
-//        )
-//        ModalBottomSheet(
-//            onDismissRequest = {},
-//        ) {
-//            Text(
-//                text = "Lorem Ipsum",
-//                color = Color.Black
-//            )
-//        }
-//    }
+@Composable
+fun TitleText(text: String, modifier: Modifier = Modifier){
+    Text(
+        text = text,
+        color = Color.White,
+        fontFamily = poppins,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 32.sp,
+        textAlign = TextAlign.Center,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ButtonContent(text: String, color: Color){
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        Text(
+            text = text
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_arrow_right),
+            contentDescription = "Button Img",
+            colorFilter = ColorFilter.tint(color = color)
+        )
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
