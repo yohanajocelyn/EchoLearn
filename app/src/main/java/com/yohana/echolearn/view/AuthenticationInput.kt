@@ -22,6 +22,8 @@ import com.yohana.echolearn.R
 
 @Composable
 fun AuthenticationOutlinedTextField(
+    inputValue: String,
+    onInputValueChange: (String) -> Unit,
     labelText: String,
     placeholderText: String,
     leadingIconSrc: Painter,
@@ -29,12 +31,9 @@ fun AuthenticationOutlinedTextField(
     keyboardType: KeyboardOptions,
     onKeyboardNext: KeyboardActions
 ) {
-    // State for managing the text input value
-    val inputValue = remember { mutableStateOf("") }
-
     OutlinedTextField(
-        value = inputValue.value,
-        onValueChange = { inputValue.value = it },
+        value = inputValue,
+        onValueChange = onInputValueChange,
         singleLine = true,
         label = {
             Text(

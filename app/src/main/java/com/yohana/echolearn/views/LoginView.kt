@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,15 +27,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
 import com.yohana.echolearn.view.PasswordOutlinedTextField
+import com.yohana.echolearn.viewmodels.LoginViewModel
 import javax.security.auth.login.LoginException
 
 @Composable
-fun LoginView(){
+fun LoginView(
+    viewModel: LoginViewModel = viewModel()
+){
+    val loginUIState by viewModel.loginUIState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,9 +49,6 @@ fun LoginView(){
             .padding(top = 64.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var password by remember { mutableStateOf("password123") }
-        var confirmPassword by remember { mutableStateOf("password123") }
-        var isPasswordVisible by remember { mutableStateOf(false) }
 
         Image(
             painter = painterResource(id = R.drawable.app_logo_colorful),
@@ -60,6 +64,8 @@ fun LoginView(){
             modifier = Modifier.padding(top = 16.dp)
         )
         AuthenticationOutlinedTextField(
+            inputValue = loginUIState.email,
+            onInputValueChange = { viewModel.onEmailChange(it) },
             labelText = "Email Address",
             placeholderText = "Enter your email",
             leadingIconSrc = painterResource(id = R.drawable.ic_email),
@@ -67,15 +73,15 @@ fun LoginView(){
             onKeyboardNext = KeyboardActions.Default
         )
         PasswordOutlinedTextField(
-            passwordInput = password,
-            onPasswordInputValueChange = { newPassword -> password = newPassword },
+            passwordInput = loginUIState.password,
+            onPasswordInputValueChange = { viewModel.onPasswordChange(it) },
             labelText = "Password",
             placeholderText = "Enter your password",
-            onTrailingIconClick = { isPasswordVisible = !isPasswordVisible },
-            passwordVisibility = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            onTrailingIconClick = { viewModel.setIsPasswordVisible(!loginUIState.isPasswordVisible) },
+            passwordVisibility = if (loginUIState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardImeAction = ImeAction.Done,
             onKeyboardNext = KeyboardActions.Default,
-            passwordVisibilityIcon = painterResource(id = if (isPasswordVisible) R.drawable.ic_eye else R.drawable.ic_eye)
+            passwordVisibilityIcon = painterResource(id = if (loginUIState.isPasswordVisible) R.drawable.ic_eye else R.drawable.ic_eye)
         )
     }
 }

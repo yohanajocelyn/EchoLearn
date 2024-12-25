@@ -37,7 +37,7 @@ fun RegisterView(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 24.dp, end= 24.dp, top=40.dp, bottom = 40.dp)
+            .padding(start = 24.dp, end = 24.dp, top = 40.dp, bottom = 40.dp)
             .background(Color(0xFFF9FAFB)), // Light background
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween // Make sure the elements align at the top
@@ -82,6 +82,8 @@ fun RegisterView(
             modifier = Modifier.fillMaxWidth()
         ) {
             AuthenticationOutlinedTextField(
+                inputValue = email.value,
+                onInputValueChange = { email.value = it },
                 labelText = "Email Address",
                 placeholderText = "Enter your email",
                 leadingIconSrc = painterResource(id = R.drawable.ic_email),
@@ -92,6 +94,8 @@ fun RegisterView(
             Spacer(modifier = Modifier.height(12.dp))
 
             AuthenticationOutlinedTextField(
+                inputValue = username.value,
+                onInputValueChange = { username.value = it },
                 labelText = "Username",
                 placeholderText = "Enter your username",
                 leadingIconSrc = painterResource(id = R.drawable.ic_person),
