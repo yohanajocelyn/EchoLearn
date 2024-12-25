@@ -43,7 +43,7 @@ fun HomeView(
 ){
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(color = Color(0xFF3DB2FF))
             .padding(top = 18.dp)
         ,
@@ -58,7 +58,6 @@ fun Greeting(name: String){
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
             .padding(start = 18.dp)
         ,
         horizontalArrangement = Arrangement.SpaceBetween,
