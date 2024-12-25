@@ -25,7 +25,7 @@ import com.yohana.echolearn.view.PasswordOutlinedTextField
 @Composable
 fun RegisterView(
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit // Callback to handle back button press
+    onBackPressed: () -> Unit = {} // Callback to handle back button press
 ) {
     val context = LocalContext.current
     val email = remember { mutableStateOf("") }

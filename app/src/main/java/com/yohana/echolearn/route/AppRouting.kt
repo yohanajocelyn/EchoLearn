@@ -19,6 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.Greeting
+import com.yohana.echolearn.views.LoginView
+import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SplashScreenView
 import kotlinx.coroutines.delay
 
@@ -53,22 +55,26 @@ fun AppRouting(context: Context, innerpadding: PaddingValues){
 
     NavHost(
         navController = navController,
-        startDestination = if (isFirstLaunch) PagesEnum.Splash.name else PagesEnum.Home.name,
+        startDestination = if (isFirstLaunch) PagesEnum.Splash.name else PagesEnum.Login.name,
         modifier = Modifier.padding(innerpadding)
     ){
         composable(route = PagesEnum.Splash.name){
             SplashScreenView {
                 // Mark the first launch as completed
                 setFirstTimeLaunch(context)
-                navController.navigate(PagesEnum.Home.name) {
+                navController.navigate(PagesEnum.Login.name) {
                     popUpTo(PagesEnum.Splash.name) { inclusive = true } // Remove splash from backstack
                 }
             }
         }
 
         //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
-        composable(route = "home"){
-            Greeting(name = "Android")
+        composable(route = PagesEnum.Login.name){
+            LoginView(navController = navController)
+        }
+
+        composable(route = PagesEnum.Register.name){
+            RegisterView()
         }
     }
 }
