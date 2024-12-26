@@ -83,23 +83,53 @@ fun SpeakingView(modifier: Modifier = Modifier) {
                         Text(
                             "Hello World", fontSize = 16.sp,
 
-                        )
+                            )
                     }
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
                 Text(
                     text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
+                    fontSize = 18.sp,
+                    lineHeight = 25.sp,
+                    fontWeight = FontWeight(400),
+                    color = Color(0xFF000000),
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(onClick = {}) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(id = R.drawable.play),
+                                contentDescription = "image description",
+                                contentScale = ContentScale.None
+                            )
+                            Spacer(modifier = Modifier.width(13.dp))
+                            Text("Play", fontSize = 20.sp)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Your Answer: ",
+
+                        fontSize = 16.sp,
+                        lineHeight = 22.4.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFF000000),
+                    )
+
+                    Text(
+                        text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
                         fontSize = 18.sp,
                         lineHeight = 25.sp,
                         fontWeight = FontWeight(400),
                         color = Color(0xFF000000),
                         textAlign = TextAlign.Center,
-                )
-                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Button(onClick = {}) {
-                   Text("play")
-                    }
+                    )
                 }
             }
         }
