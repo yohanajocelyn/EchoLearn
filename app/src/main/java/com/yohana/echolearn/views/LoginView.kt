@@ -1,5 +1,7 @@
 package com.yohana.echolearn.views
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -37,21 +42,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.models.AuthenticationStatusUIState
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
 import com.yohana.echolearn.view.PasswordOutlinedTextField
+import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.LoginViewModel
 import javax.security.auth.login.LoginException
 
 @Composable
 fun LoginView(
-    viewModel: LoginViewModel = viewModel(),
-    navController: NavController? = null
+    viewModel: AuthenticationViewModel = viewModel(),
+    navController: NavController? = null,
+    context: Context
 ){
-    val loginUIState by viewModel.loginUIState.collectAsState()
+    val loginUIState by viewModel.authenticationUIState.collectAsState()
+
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(viewModel.dataStatus) {
+        val dataStatus = viewModel.dataStatus
+        if (dataStatus is AuthenticationStatusUIState.Failed) {
+            Toast.makeText(context, dataStatus.errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.clearErrorMessage()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -88,8 +107,8 @@ fun LoginView(
                 color = Color(0xFF0068AD)
             )
             AuthenticationOutlinedTextField(
-                inputValue = loginUIState.email,
-                onInputValueChange = { viewModel.onEmailChange(it) },
+                inputValue = viewModel.emailInput,
+                onInputValueChange = { viewModel.setEmail(it) },
                 labelText = "Email Address",
                 placeholderText = "Enter your email",
                 leadingIconSrc = painterResource(id = R.drawable.ic_email),
@@ -106,15 +125,15 @@ fun LoginView(
                     .padding(top = 8.dp)
             )
             PasswordOutlinedTextField(
-                passwordInput = loginUIState.password,
-                onPasswordInputValueChange = { viewModel.onPasswordChange(it) },
+                passwordInput = viewModel.passwordInput,
+                onPasswordInputValueChange = { viewModel.setPassword(it) },
                 labelText = "Password",
                 placeholderText = "Enter your password",
-                onTrailingIconClick = { viewModel.setIsPasswordVisible(!loginUIState.isPasswordVisible) },
-                passwordVisibility = if (loginUIState.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                onTrailingIconClick = { viewModel.setPasswordVisibility() },
+                passwordVisibility = loginUIState.passwordVisibility,
                 keyboardImeAction = ImeAction.Done,
                 onKeyboardNext = KeyboardActions.Default,
-                passwordVisibilityIcon = painterResource(id = if (loginUIState.isPasswordVisible) R.drawable.ic_eye else R.drawable.ic_eye)
+                passwordVisibilityIcon = painterResource(id = loginUIState.passwordVisibilityIcon)
             )
             Button(
                 onClick = {},
@@ -169,6 +188,10 @@ fun LoginView(
 @Composable
 fun LoginViewPreview() {
     EchoLearnTheme {
-        LoginView()
+        LoginView(
+            viewModel = viewModel(),
+            navController = rememberNavController(),
+            context = LocalContext.current
+        )
     }
 }

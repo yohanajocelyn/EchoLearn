@@ -15,10 +15,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.Greeting
+import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SplashScreenView
@@ -49,7 +52,11 @@ enum class PagesEnum{
 }
 
 @Composable
-fun AppRouting(context: Context, innerpadding: PaddingValues){
+fun AppRouting(
+    context: Context,
+    innerpadding: PaddingValues,
+    authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
+){
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
 
@@ -70,7 +77,11 @@ fun AppRouting(context: Context, innerpadding: PaddingValues){
 
         //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
         composable(route = PagesEnum.Login.name){
-            LoginView(navController = navController)
+            LoginView(
+                viewModel = authenticationViewModel,
+                navController = navController,
+                context = context
+            )
         }
 
         composable(route = PagesEnum.Register.name){
