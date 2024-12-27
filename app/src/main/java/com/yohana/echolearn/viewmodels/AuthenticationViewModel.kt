@@ -55,6 +55,9 @@ class AuthenticationViewModel (
     var confirmPasswordInput: String by mutableStateOf("")
         private set
 
+    var profilePictureInput: String by mutableStateOf("")
+        private set
+
     fun setEmail(email: String){
         this.emailInput = email
     }
@@ -69,6 +72,10 @@ class AuthenticationViewModel (
 
     fun setConfirmPassword(confirmPassword: String){
         this.confirmPasswordInput = confirmPassword
+    }
+
+    fun setProfilePicture(profilePicture: String){
+        this.profilePictureInput = profilePicture
     }
 
     fun setPasswordVisibility(){
@@ -149,7 +156,7 @@ class AuthenticationViewModel (
             dataStatus = AuthenticationStatusUIState.Loading
 
             try {
-                val call = authenticationRepository.register(usernameInput, emailInput, passwordInput)
+                val call = authenticationRepository.register(usernameInput, emailInput, passwordInput, profilePictureInput)
                 call.enqueue(object: Callback<UserResponse>{
                     override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
                         if (res.isSuccessful){
