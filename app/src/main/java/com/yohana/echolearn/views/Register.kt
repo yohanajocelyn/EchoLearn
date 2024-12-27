@@ -27,6 +27,7 @@ import com.yohana.echolearn.models.AuthenticationStatusUIState
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
 import com.yohana.echolearn.view.PasswordOutlinedTextField
+import com.yohana.echolearn.view.StylishImageDropdown
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 
 @Composable
@@ -119,7 +120,8 @@ fun RegisterView(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-
+            StylishImageDropdown()
+            Spacer(modifier = Modifier.height(12.dp))
             PasswordOutlinedTextField(
                 passwordInput = viewModel.passwordInput,
                 onPasswordInputValueChange = { viewModel.setPassword(it) },
