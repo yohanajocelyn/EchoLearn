@@ -38,14 +38,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StarterView(){
+fun StarterView(
+    navController: NavController
+){
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -103,7 +108,7 @@ fun StarterView(){
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
-                            onClick = { TODO() },
+                            onClick = { navController.navigate(PagesEnum.Register.name) },
                             modifier = Modifier
                                 .border(
                                     width = 2.dp,
@@ -128,7 +133,7 @@ fun StarterView(){
                         }
 
                         Button(
-                            onClick = { TODO() },
+                            onClick = { navController.navigate(route = PagesEnum.Login.name) },
                             modifier = Modifier
                                 .border(
                                     width = 2.dp,
@@ -219,6 +224,8 @@ fun ButtonContent(text: String, color: Color){
 @Composable
 fun StarterViewPreview() {
     EchoLearnTheme {
-        StarterView()
+        StarterView(
+            navController = rememberNavController()
+        )
     }
 }
