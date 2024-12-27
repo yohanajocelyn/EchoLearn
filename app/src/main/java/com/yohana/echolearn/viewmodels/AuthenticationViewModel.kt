@@ -58,6 +58,24 @@ class AuthenticationViewModel (
     var profilePictureInput: String by mutableStateOf("")
         private set
 
+    var defaultProfilePictures: List<String> by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    init {
+        fetchDefaultProfilePictures()
+    }
+
+    private fun fetchDefaultProfilePictures() {
+        viewModelScope.launch {
+            try {
+                defaultProfilePictures = authenticationRepository.getDefaultProfilePictures()
+            } catch (e: Exception) {
+                // Handle error (e.g., log or show a message)
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun setEmail(email: String){
         this.emailInput = email
     }
