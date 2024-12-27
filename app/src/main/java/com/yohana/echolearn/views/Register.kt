@@ -3,6 +3,7 @@ package com.yohana.echolearn.views
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,21 +19,33 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.models.AuthenticationStatusUIState
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
 import com.yohana.echolearn.view.PasswordOutlinedTextField
+import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 
 @Composable
 fun RegisterView(
+    viewModel: AuthenticationViewModel = viewModel(),
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = {} // Callback to handle back button press
+    navController: NavController,
 ) {
     val context = LocalContext.current
-    val email = remember { mutableStateOf("") }
-    val username = remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("password123") }
-    var confirmPassword by remember { mutableStateOf("password123") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
+
+    val registerUIState by viewModel.authenticationUIState.collectAsState()
+
+    LaunchedEffect(viewModel.dataStatus) {
+        val dataStatus = viewModel.dataStatus
+        if (dataStatus is AuthenticationStatusUIState.Failed) {
+            Toast.makeText(context, dataStatus.errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.clearErrorMessage()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -52,6 +65,8 @@ fun RegisterView(
             Image(
                 painter = painterResource(id = R.drawable.back_button),
                 contentDescription = "",
+                modifier = Modifier
+                    .clickable { navController.navigate(route = PagesEnum.Login.name) }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(
@@ -82,8 +97,8 @@ fun RegisterView(
             modifier = Modifier.fillMaxWidth()
         ) {
             AuthenticationOutlinedTextField(
-                inputValue = email.value,
-                onInputValueChange = { email.value = it },
+                inputValue = viewModel.emailInput,
+                onInputValueChange = { viewModel.setEmail(it) },
                 labelText = "Email Address",
                 placeholderText = "Enter your email",
                 leadingIconSrc = painterResource(id = R.drawable.ic_email),
@@ -94,8 +109,8 @@ fun RegisterView(
             Spacer(modifier = Modifier.height(12.dp))
 
             AuthenticationOutlinedTextField(
-                inputValue = username.value,
-                onInputValueChange = { username.value = it },
+                inputValue = viewModel.usernameInput,
+                onInputValueChange = { viewModel.setUsername(it) },
                 labelText = "Username",
                 placeholderText = "Enter your username",
                 leadingIconSrc = painterResource(id = R.drawable.ic_person),
@@ -106,29 +121,29 @@ fun RegisterView(
             Spacer(modifier = Modifier.height(12.dp))
 
             PasswordOutlinedTextField(
-                passwordInput = password,
-                onPasswordInputValueChange = { newPassword -> password = newPassword },
+                passwordInput = viewModel.passwordInput,
+                onPasswordInputValueChange = { viewModel.setPassword(it) },
                 labelText = "Password",
                 placeholderText = "Enter your password",
-                onTrailingIconClick = { isPasswordVisible = !isPasswordVisible },
-                passwordVisibility = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                onTrailingIconClick = { viewModel.setPasswordVisibility() },
+                passwordVisibility = registerUIState.passwordVisibility,
                 keyboardImeAction = ImeAction.Done,
                 onKeyboardNext = KeyboardActions.Default,
-                passwordVisibilityIcon = painterResource(id = if (isPasswordVisible) R.drawable.ic_eye else R.drawable.ic_eye)
+                passwordVisibilityIcon = painterResource(id = registerUIState.passwordVisibilityIcon)
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             PasswordOutlinedTextField(
-                passwordInput = confirmPassword,
-                onPasswordInputValueChange = { newPassword -> confirmPassword = newPassword },
+                passwordInput = viewModel.confirmPasswordInput,
+                onPasswordInputValueChange = { viewModel.setConfirmPassword(it) },
                 labelText = "Confirm Password",
                 placeholderText = "Re-enter your password",
-                onTrailingIconClick = { isPasswordVisible = !isPasswordVisible },
-                passwordVisibility = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                onTrailingIconClick = { viewModel.setPasswordVisibility() },
+                passwordVisibility = registerUIState.passwordVisibility,
                 keyboardImeAction = ImeAction.Done,
                 onKeyboardNext = KeyboardActions.Default,
-                passwordVisibilityIcon = painterResource(id = if (isPasswordVisible) R.drawable.ic_eye else R.drawable.ic_eye)
+                passwordVisibilityIcon = painterResource(id = registerUIState.passwordVisibilityIcon)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -138,6 +153,7 @@ fun RegisterView(
         Button(
             onClick = {
                 Toast.makeText(context, "Register clicked", Toast.LENGTH_SHORT).show()
+                viewModel.registerUser(navController)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,5 +179,8 @@ fun RegisterView(
 )
 @Composable
 fun RegisterViewPreview() {
-    RegisterView(onBackPressed = { /* Handle back navigation here */ })
+    RegisterView(
+        viewModel = viewModel(),
+        navController = rememberNavController(),
+    )
 }

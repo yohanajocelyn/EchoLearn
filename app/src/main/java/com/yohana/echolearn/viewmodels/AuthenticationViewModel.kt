@@ -22,6 +22,7 @@ import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.LoginUIState
 import com.yohana.echolearn.models.UserResponse
 import com.yohana.echolearn.repositories.AuthenticationRepository
+import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.route.PagesEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +34,8 @@ import retrofit2.Response
 import java.io.IOException
 
 class AuthenticationViewModel (
-    private val authenticationRepository: AuthenticationRepository
+    private val authenticationRepository: AuthenticationRepository,
+    private val userRepository: UserRepository
 ): ViewModel() {
     private val _authenticationUIState = MutableStateFlow<AuthenticationUIState>(AuthenticationUIState())
     val authenticationUIState: StateFlow<AuthenticationUIState> = _authenticationUIState
@@ -87,6 +89,24 @@ class AuthenticationViewModel (
         }
     }
 
+    fun setConfirmPasswordVisibility() {
+        _authenticationUIState.update { currentState ->
+            if (currentState.showConfirmPassword) {
+                currentState.copy(
+                    showConfirmPassword = false,
+                    confirmPasswordVisibility = PasswordVisualTransformation(),
+                    confirmPasswordVisibilityIcon = R.drawable.ic_eye
+                )
+            } else {
+                currentState.copy(
+                    showConfirmPassword = true,
+                    confirmPasswordVisibility = VisualTransformation.None,
+                    confirmPasswordVisibilityIcon = R.drawable.ic_visibility_off
+                )
+            }
+        }
+    }
+
     fun resetViewModel() {
         setEmail("")
         setUsername("")
@@ -110,30 +130,16 @@ class AuthenticationViewModel (
         dataStatus = AuthenticationStatusUIState.Start
     }
 
-    fun setConfirmPasswordVisibility() {
-        _authenticationUIState.update { currentState ->
-            if (currentState.showConfirmPassword) {
-                currentState.copy(
-                    showConfirmPassword = false,
-                    confirmPasswordVisibility = PasswordVisualTransformation(),
-                    confirmPasswordVisibilityIcon = R.drawable.ic_eye
-                )
-            } else {
-                currentState.copy(
-                    showConfirmPassword = true,
-                    confirmPasswordVisibility = VisualTransformation.None,
-                    confirmPasswordVisibilityIcon = R.drawable.ic_visibility_off
-                )
-            }
-        }
-    }
-
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as EchoLearnApplication)
                 val authenticationRepository = application.container.authenticationRepository
-                AuthenticationViewModel(authenticationRepository = authenticationRepository)
+                val userRepository = application.container.userRepository
+                AuthenticationViewModel(
+                    authenticationRepository = authenticationRepository,
+                    userRepository = userRepository
+                )
             }
         }
     }
@@ -154,6 +160,58 @@ class AuthenticationViewModel (
 
                             navController.navigate(PagesEnum.Home.name){
                                 popUpTo(PagesEnum.Register.name){
+                                    inclusive = true
+                                }
+                            }
+                        }else{
+                            //ambil error messagenya
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errors)
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<UserResponse>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                        dataStatus = AuthenticationStatusUIState.Failed(t.localizedMessage)
+                    }
+                })
+
+            } catch (error: IOException) {
+                dataStatus = AuthenticationStatusUIState.Failed(error.localizedMessage)
+                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }
+        }
+    }
+
+    fun saveUsernameToken(username: String, token: String){
+        viewModelScope.launch{
+            userRepository.saveUserToken(token)
+            userRepository.saveUsername(username)
+        }
+    }
+
+    fun loginUser(navController: NavController){
+        viewModelScope.launch {
+            dataStatus = AuthenticationStatusUIState.Loading
+
+            try {
+                val call = authenticationRepository.login(emailInput, passwordInput)
+                call.enqueue(object: Callback<UserResponse>{
+                    override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
+                        if (res.isSuccessful){
+                            saveUsernameToken(res.body()!!.data.token!!, res.body()!!.data.username!!)
+
+                            dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
+
+                            resetViewModel()
+
+                            navController.navigate(PagesEnum.Home.name){
+                                popUpTo(PagesEnum.Login.name){
                                     inclusive = true
                                 }
                             }

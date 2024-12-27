@@ -85,7 +85,10 @@ fun AppRouting(
         }
 
         composable(route = PagesEnum.Register.name){
-            RegisterView()
+            RegisterView(
+                viewModel = authenticationViewModel,
+                navController = navController
+            )
         }
     }
 }
