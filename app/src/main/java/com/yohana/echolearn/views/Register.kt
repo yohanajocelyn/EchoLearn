@@ -120,7 +120,7 @@ fun RegisterView(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-            StylishImageDropdown()
+            StylishImageDropdown(authenticationViewModel = viewModel)
             Spacer(modifier = Modifier.height(12.dp))
             PasswordOutlinedTextField(
                 passwordInput = viewModel.passwordInput,

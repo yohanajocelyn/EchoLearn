@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +23,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.Greeting
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
+import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SplashScreenView
@@ -56,13 +59,19 @@ fun AppRouting(
     context: Context,
     innerpadding: PaddingValues,
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
+    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 ){
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
 
+    val token = homeViewModel.token.collectAsState()
+
     NavHost(
         navController = navController,
-        startDestination = if (isFirstLaunch) PagesEnum.Splash.name else PagesEnum.Login.name,
+        startDestination =
+        if (isFirstLaunch) PagesEnum.Splash.name
+        else if (token.value != "Unknown" && token.value != "") PagesEnum.Login.name
+        else PagesEnum.Login.name,
         modifier = Modifier.padding(innerpadding)
     ){
         composable(route = PagesEnum.Splash.name){
@@ -89,6 +98,10 @@ fun AppRouting(
                 viewModel = authenticationViewModel,
                 navController = navController
             )
+        }
+
+        composable(route = PagesEnum.Home.name){
+            HomeView()
         }
     }
 }

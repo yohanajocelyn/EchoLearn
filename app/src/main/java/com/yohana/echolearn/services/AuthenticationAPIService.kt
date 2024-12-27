@@ -10,5 +10,5 @@ interface AuthenticationAPIService {
     fun register(@Body registerMap: HashMap<String, String>): Call<UserResponse>
 
     @POST("api/user/login")
-    fun login(@Body registerMap: HashMap<String, String>): Call<UserResponse>
+    fun login(@Body loginMap: HashMap<String, String>): Call<UserResponse>
 }

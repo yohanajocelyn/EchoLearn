@@ -57,7 +57,7 @@ import javax.security.auth.login.LoginException
 @Composable
 fun LoginView(
     viewModel: AuthenticationViewModel = viewModel(),
-    navController: NavController? = null,
+    navController: NavController,
     context: Context
 ){
     val loginUIState by viewModel.authenticationUIState.collectAsState()
@@ -136,7 +136,9 @@ fun LoginView(
                 passwordVisibilityIcon = painterResource(id = loginUIState.passwordVisibilityIcon)
             )
             Button(
-                onClick = {},
+                onClick = {
+                    viewModel.loginUser(navController)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp)

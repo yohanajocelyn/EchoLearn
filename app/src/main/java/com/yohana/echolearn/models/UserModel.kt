@@ -1,8 +1,8 @@
 package com.yohana.echolearn.models
 
 data class UserModel(
-    val username: String,
-    val token: String?
+    val token: String?,
+    val username: String
 )
 
 data class UserResponse(

@@ -32,18 +32,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yohana.echolearn.R
+import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 
 
 @Composable
-fun StylishImageDropdown() {
+fun StylishImageDropdown(
+    authenticationViewModel: AuthenticationViewModel
+) {
     val items = listOf(
         ImageDropdownItem(R.drawable.learning_img, "Option 1"),
         ImageDropdownItem(R.drawable.learning_img, "Option 2"),
         ImageDropdownItem(R.drawable.learning_img, "Option 3"),
         ImageDropdownItem(R.drawable.learning_img, "Option 4"),
-
-
     )
     var selectedItem by remember { mutableStateOf<ImageDropdownItem?>(null) }
     var expanded by remember { mutableStateOf(false) }
@@ -98,7 +100,7 @@ fun StylishImageDropdown() {
             modifier = Modifier
                 .background(Color.White, shape = RoundedCornerShape(15.dp))
         ) {
-            items.forEach { item ->
+            items.forEachIndexed { index, item ->
                 DropdownMenuItem(
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -119,6 +121,8 @@ fun StylishImageDropdown() {
                     onClick = {
                         selectedItem = item
                         expanded = false
+
+                        authenticationViewModel.setProfilePicture("profilePicture${index+1}")
                     }
                 )
             }
@@ -135,5 +139,7 @@ data class ImageDropdownItem(
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenViewPreview() {
-    StylishImageDropdown()
+    StylishImageDropdown(
+        authenticationViewModel = viewModel()
+    )
 }

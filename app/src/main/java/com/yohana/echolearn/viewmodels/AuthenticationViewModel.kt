@@ -171,6 +171,8 @@ class AuthenticationViewModel (
                                 }
                             }
                         }else{
+                            Log.e("ErrorBody", res.errorBody()?.string() ?: "No error body")
+
                             //ambil error messagenya
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
