@@ -16,10 +16,9 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.R
-import com.yohana.echolearn.models.AuthenticationStatusUIState
-import com.yohana.echolearn.models.AuthenticationUIState
+import com.yohana.echolearn.uistates.AuthenticationStatusUIState
+import com.yohana.echolearn.uistates.AuthenticationUIState
 import com.yohana.echolearn.models.ErrorModel
-import com.yohana.echolearn.models.LoginUIState
 import com.yohana.echolearn.models.UserResponse
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.UserRepository
@@ -37,7 +36,9 @@ class AuthenticationViewModel (
     private val authenticationRepository: AuthenticationRepository,
     private val userRepository: UserRepository
 ): ViewModel() {
-    private val _authenticationUIState = MutableStateFlow<AuthenticationUIState>(AuthenticationUIState())
+    private val _authenticationUIState = MutableStateFlow<AuthenticationUIState>(
+        AuthenticationUIState()
+    )
     val authenticationUIState: StateFlow<AuthenticationUIState> = _authenticationUIState
 
     var dataStatus: AuthenticationStatusUIState by mutableStateOf(AuthenticationStatusUIState.Start)

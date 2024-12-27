@@ -23,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
-import com.yohana.echolearn.models.AuthenticationStatusUIState
+import com.yohana.echolearn.uistates.AuthenticationStatusUIState
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.AuthenticationOutlinedTextField
 import com.yohana.echolearn.view.PasswordOutlinedTextField
@@ -147,7 +147,7 @@ fun RegisterView(
                 onPasswordInputValueChange = { viewModel.setConfirmPassword(it) },
                 labelText = "Confirm Password",
                 placeholderText = "Re-enter your password",
-                onTrailingIconClick = { viewModel.setPasswordVisibility() },
+                onTrailingIconClick = { viewModel.setConfirmPasswordVisibility() },
                 passwordVisibility = registerUIState.passwordVisibility,
                 keyboardImeAction = ImeAction.Done,
                 onKeyboardNext = KeyboardActions.Default,
@@ -160,7 +160,6 @@ fun RegisterView(
         }
         Button(
             onClick = {
-                Toast.makeText(context, "Register clicked", Toast.LENGTH_SHORT).show()
                 viewModel.registerUser(navController)
             },
             modifier = Modifier
