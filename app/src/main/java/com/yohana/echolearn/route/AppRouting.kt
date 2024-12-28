@@ -11,11 +11,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
+import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.LoginView
@@ -46,7 +50,7 @@ enum class PagesEnum {
     Notes,
     Profile,
     Listening,
-    Reading,
+    Speaking,
     Leaderboards
 }
 
@@ -56,6 +60,7 @@ fun AppRouting(
     innerpadding: PaddingValues,
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
+    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory)
 
     ) {
     val navController = rememberNavController()
@@ -107,8 +112,36 @@ fun AppRouting(
         composable(route = PagesEnum.Home.name) {
             HomeView(navController = navController)
         }
-        composable(route = PagesEnum.SongMenu.name) {
-           ListMusic()
+
+        composable(route = PagesEnum.Listening.name+"/"+PagesEnum.SongMenu.name) {
+            ListMusic(
+                navController = navController
+            )
         }
+
+        composable(route = PagesEnum.Speaking.name+"/"+PagesEnum.SongMenu.name) {
+            ListMusic(
+                navController = navController
+            )
+        }
+
+        composable(route = PagesEnum.Speaking.name+"/"+PagesEnum.SongDetail.name+"/{genre}",
+            arguments = listOf(
+                navArgument(name = "genre"){
+                    type = NavType.StringType
+                }
+            )
+            ) { backStackEntry ->
+            val genre = backStackEntry.arguments?.getString("genre")
+
+            GenreView(
+                genre = genre!!,
+                viewModel = genreViewModel
+            )
+        }
+
+//        composable(route = PagesEnum.SongMenu.name) {
+//           ListMusic()
+//        }
     }
 }

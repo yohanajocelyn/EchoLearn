@@ -32,14 +32,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.GenreCard
 import com.yohana.echolearn.view.MusicCard
 import com.yohana.echolearn.view.Navbar
 import com.yohana.echolearn.view.SearchBar
 
 @Composable
-fun ListMusic(modifier: Modifier = Modifier) {
+fun ListMusic(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,10 +99,11 @@ fun ListMusic(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(10.dp))
 
             }
-            items(3) { index ->
-                MusicCard()
-                Spacer(modifier = Modifier.height(13.dp))
-            }
+            //hilangin dulu men
+//            items(3) { index ->
+//                MusicCard()
+//                Spacer(modifier = Modifier.height(13.dp))
+//            }
             item {
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -124,11 +130,20 @@ fun ListMusic(modifier: Modifier = Modifier) {
                         ) {
                             GenreCard(
                                 title = "Pop",
-                                backgroundColor = Color(0xFF9854B2) // Ungu
+                                backgroundColor = Color(0xFF9854B2),
+                                onClick = {
+                                    val currentNav = navController.currentBackStackEntry?.destination?.route
+                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/Pop")
+                                }// Ungu
                             )
                             GenreCard(
                                 title = "Acoustic/Folk",
-                                backgroundColor = Color(0xFF678026) // Hijau
+                                backgroundColor = Color(0xFF678026),
+                                onClick = {
+                                    val currentNav = navController.currentBackStackEntry?.destination?.route
+                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/Acoustic")
+                                }
+                            // Hijau
                             )
                         }
 
@@ -140,11 +155,19 @@ fun ListMusic(modifier: Modifier = Modifier) {
                         ) {
                             GenreCard(
                                 title = "Country",
-                                backgroundColor = Color(0xFFCF4321) // Oranye
+                                backgroundColor = Color(0xFFCF4321),
+                                onClick = {
+                                    val currentNav = navController.currentBackStackEntry?.destination?.route
+                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/Country")
+                                }// Oranye
                             )
                             GenreCard(
                                 title = "R&B/Soul",
-                                backgroundColor = Color(0xFF3371E4) // Biru
+                                backgroundColor = Color(0xFF3371E4),
+                                onClick = {
+                                    val currentNav = navController.currentBackStackEntry?.destination?.route
+                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/R&B")
+                                }// Biru
                             )
                         }
 
@@ -183,5 +206,5 @@ fun ListMusic(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun Preview() {
-    ListMusic()
+//    ListMusic()
 }

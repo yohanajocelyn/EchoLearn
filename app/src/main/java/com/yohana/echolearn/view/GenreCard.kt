@@ -1,6 +1,7 @@
 package com.yohana.echolearn.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -26,12 +27,14 @@ import com.yohana.echolearn.R
 @Composable
 fun GenreCard(
     title: String,
-    backgroundColor: Color
+    backgroundColor: Color,
+    onClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
             .width(170.dp)
-            .height(130.dp),
+            .height(130.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
         ),

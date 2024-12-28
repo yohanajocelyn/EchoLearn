@@ -54,11 +54,7 @@ fun HomeView(
     ) {
         Greeting(name = name)
         LearningMenu(navController = navController)
-
-
     }
-
-
 }
 
 @Composable
@@ -132,9 +128,8 @@ fun LearningMenu(
                 img = painterResource(id = R.drawable.speaking),
                 onCardClick = {
                     println("Navigating to SongMenu")
-                    navController?.navigate(PagesEnum.SongMenu.name)
+                    navController?.navigate(PagesEnum.Speaking.name+"/"+PagesEnum.SongMenu.name)
                 }
-
             )
             LearningCard(
                 mainColor = Color(0xFFFF8504),
@@ -144,8 +139,9 @@ fun LearningMenu(
                 img = painterResource(id = R.drawable.listening),
                 onCardClick = {
                     println("Navigating to SongMenu")
-                    navController?.navigate(PagesEnum.SongMenu.name)
-                })
+                    navController?.navigate(PagesEnum.Listening.name+"/"+PagesEnum.SongMenu.name)
+                }
+            )
         }
 
         Column(
@@ -168,9 +164,7 @@ fun LearningCard(
 ) {
     Box(
         modifier = Modifier
-            .padding(bottom = 40.dp)
-            .clickable { onCardClick() },
-
+            .padding(bottom = 40.dp),
         ) {
         //Shadow
         Box(
@@ -226,7 +220,7 @@ fun LearningCard(
                 }
             }
             FloatingActionButton(
-                onClick = { /*TODO*/ },
+                onClick = { onCardClick() },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 10.dp, end = 10.dp)

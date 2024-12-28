@@ -19,12 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.yohana.echolearn.Greeting
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 
 @Composable
-fun Navbar(modifier: Modifier = Modifier) {
+fun Navbar(
+    modifier: Modifier = Modifier,
+    navController: NavController? = null
+) {
 Column {
     Divider(
         color = Color.LightGray,

@@ -21,10 +21,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
+import com.yohana.echolearn.models.SongModel
 
 @Composable
-fun MusicCard() {
+fun MusicCard(
+    song: SongModel,
+    index: Int
+) {
     Card(
         modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE4E4E4)
@@ -37,10 +42,10 @@ fun MusicCard() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "1", fontSize = 18.sp, color = Color.Black)
+                Text(text = "$index", fontSize = 18.sp, color = Color.Black)
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
-                    painter = painterResource(id = R.drawable.aset1),
+                    painter = rememberImagePainter(song.image),
                     contentDescription = "search icon",
                     modifier = Modifier
                         .size(42.dp),
@@ -50,8 +55,8 @@ fun MusicCard() {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column {
-                    Text(text = "Easy", fontSize = 18.sp, color = Color.Black)
-                    Text(text = "Troye Sivan", fontSize = 18.sp, color = Color.Black)
+                    Text(text = song.title, fontSize = 18.sp, color = Color.Black)
+                    Text(text = song.artist, fontSize = 18.sp, color = Color.Black)
                 }
             }
             Image(
@@ -70,5 +75,5 @@ fun MusicCard() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewMusicCard() {
-    MusicCard()
+//    MusicCard()
 }

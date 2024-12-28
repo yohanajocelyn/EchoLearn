@@ -4,9 +4,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.NetworkAuthenticationRepository
+import com.yohana.echolearn.repositories.NetworkSongRepository
 import com.yohana.echolearn.repositories.NetworkUserRepository
+import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.services.AuthenticationAPIService
+import com.yohana.echolearn.services.SongAPIService
 import com.yohana.echolearn.services.UserAPIService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 interface AppContainer {
     val authenticationRepository: AuthenticationRepository
     val userRepository: UserRepository
+    val songRepository: SongRepository
 }
 
 class DefaultAppContainer(
@@ -40,11 +44,20 @@ class DefaultAppContainer(
         retrofit.create(UserAPIService::class.java)
     }
 
+    private val songRetrofitService: SongAPIService by lazy {
+        val retrofit = initRetrofit()
+
+        retrofit.create(SongAPIService::class.java)
+    }
+
     override val authenticationRepository: AuthenticationRepository by lazy {
         NetworkAuthenticationRepository(authenticationRetrofitService)
     }
     override val userRepository: UserRepository by lazy {
         NetworkUserRepository(userDataStore, userRetrofitService)
+    }
+    override val songRepository: SongRepository by lazy {
+        NetworkSongRepository(songRetrofitService)
     }
 
     private fun initRetrofit(): Retrofit{
