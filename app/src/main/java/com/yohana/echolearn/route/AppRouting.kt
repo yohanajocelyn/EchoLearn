@@ -1,33 +1,27 @@
 package com.yohana.echolearn.route
 
 import android.content.Context
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.yohana.echolearn.Greeting
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
 import com.yohana.echolearn.views.HomeView
+import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SplashScreenView
+
 import com.yohana.echolearn.views.StarterView
 import kotlinx.coroutines.delay
 
@@ -41,7 +35,7 @@ fun setFirstTimeLaunch(context: Context) {
     sharedPref.edit().putBoolean("isFirstTimeLaunch", false).apply()
 }
 
-enum class PagesEnum{
+enum class PagesEnum {
     Splash,
     Starter,
     Login,
@@ -61,8 +55,9 @@ fun AppRouting(
     context: Context,
     innerpadding: PaddingValues,
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
-    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
-){
+    homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
+
+    ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
 
@@ -75,11 +70,12 @@ fun AppRouting(
         else if (token.value != "Unknown" && token.value != "") PagesEnum.Login.name
         else PagesEnum.Starter.name,
         modifier = Modifier.padding(innerpadding)
-    ){
-        composable(route = PagesEnum.Splash.name){
+    ) {
+        composable(route = PagesEnum.Splash.name) {
             SplashScreenView {
                 // Mark the first launch as completed
                 setFirstTimeLaunch(context)
+
                 navController.navigate(PagesEnum.Starter.name) {
                     popUpTo(PagesEnum.Splash.name) { inclusive = true } // Remove splash from backstack
                 }
@@ -93,7 +89,7 @@ fun AppRouting(
         }
 
         //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
-        composable(route = PagesEnum.Login.name){
+        composable(route = PagesEnum.Login.name) {
             LoginView(
                 viewModel = authenticationViewModel,
                 navController = navController,
@@ -101,15 +97,18 @@ fun AppRouting(
             )
         }
 
-        composable(route = PagesEnum.Register.name){
+        composable(route = PagesEnum.Register.name) {
             RegisterView(
                 viewModel = authenticationViewModel,
                 navController = navController
             )
         }
 
-        composable(route = PagesEnum.Home.name){
-            HomeView()
+        composable(route = PagesEnum.Home.name) {
+            HomeView(navController = navController)
+        }
+        composable(route = PagesEnum.SongMenu.name) {
+           ListMusic()
         }
     }
 }
