@@ -14,3 +14,7 @@ data class SongModel (
 data class SongResponse(
     val data: SongModel
 )
+
+data class SongListResponse(
+    val data: List<SongModel>
+)
