@@ -65,6 +65,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0") //untuk convert json
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") //untuk logging
 
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

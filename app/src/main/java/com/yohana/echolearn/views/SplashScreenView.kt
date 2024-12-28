@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
@@ -30,9 +32,27 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreenView(onTimeout: () -> Unit){
+    val systemUiController = rememberSystemUiController()
+
     LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(
+            color = Color(0xFF3DB2FF), // Your color
+            darkIcons = false // true for dark icons, false for light
+        )
+        systemUiController.setNavigationBarColor(
+            color = Color(0xFF3DB2FF) // Your color
+        )
+
         delay(3000L) // Show for 3 seconds
         onTimeout()
+
+        systemUiController.setStatusBarColor(
+            color = Color.Transparent, // Your color
+            darkIcons = true // true for dark icons, false for light
+        )
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent // Your color
+        )
     }
 
     Column (

@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
 import com.yohana.echolearn.uistates.AuthenticationStatusUIState
 import com.yohana.echolearn.route.PagesEnum
