@@ -140,6 +140,21 @@ fun AppRouting(
             )
         }
 
+        composable(route = PagesEnum.Listening.name+"/"+PagesEnum.SongDetail.name+"/{genre}",
+            arguments = listOf(
+                navArgument(name = "genre"){
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val genre = backStackEntry.arguments?.getString("genre")
+
+            GenreView(
+                genre = genre!!,
+                viewModel = genreViewModel
+            )
+        }
+
 //        composable(route = PagesEnum.SongMenu.name) {
 //           ListMusic()
 //        }
