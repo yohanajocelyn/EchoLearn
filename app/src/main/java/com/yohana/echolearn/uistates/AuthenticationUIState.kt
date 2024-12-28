@@ -1,4 +1,4 @@
-package com.yohana.echolearn.models
+package com.yohana.echolearn.uistates
 
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation

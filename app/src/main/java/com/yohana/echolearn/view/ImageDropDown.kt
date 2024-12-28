@@ -33,20 +33,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 
 
 @Composable
 fun StylishImageDropdown(
-    authenticationViewModel: AuthenticationViewModel
+    authenticationViewModel: AuthenticationViewModel,
+    defaultProfilePictures: List<String>
 ) {
-    val items = listOf(
-        ImageDropdownItem(R.drawable.learning_img, "Option 1"),
-        ImageDropdownItem(R.drawable.learning_img, "Option 2"),
-        ImageDropdownItem(R.drawable.learning_img, "Option 3"),
-        ImageDropdownItem(R.drawable.learning_img, "Option 4"),
-    )
+    val items = defaultProfilePictures.mapIndexed { index, defaultProfilePicture ->
+        ImageDropdownItem(
+            imageUrl = defaultProfilePicture,
+            text = "Option ${index + 1}"
+        )
+    }
+
     var selectedItem by remember { mutableStateOf<ImageDropdownItem?>(null) }
     var expanded by remember { mutableStateOf(false) }
 
@@ -65,7 +68,7 @@ fun StylishImageDropdown(
             leadingIcon = {
                 selectedItem?.let {
                     Image(
-                        painter = painterResource(id = it.imageResId),
+                        painter = rememberImagePainter(data = it.imageUrl),
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
@@ -105,7 +108,7 @@ fun StylishImageDropdown(
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
-                                painter = painterResource(id = item.imageResId),
+                                painter = rememberImagePainter(data = item.imageUrl),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(100.dp)
@@ -132,7 +135,7 @@ fun StylishImageDropdown(
 
 // Data Class for Dropdown Items
 data class ImageDropdownItem(
-    val imageResId: Int,
+    val imageUrl: String,
     val text: String
 )
 
@@ -140,6 +143,7 @@ data class ImageDropdownItem(
 @Composable
 fun SplashScreenViewPreview() {
     StylishImageDropdown(
-        authenticationViewModel = viewModel()
+        authenticationViewModel = viewModel(),
+        defaultProfilePictures = listOf("profilePicture1", "profilePicture2", "profilePicture3")
     )
 }

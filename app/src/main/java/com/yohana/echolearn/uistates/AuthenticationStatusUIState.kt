@@ -1,4 +1,6 @@
-package com.yohana.echolearn.models
+package com.yohana.echolearn.uistates
+
+import com.yohana.echolearn.models.UserModel
 
 // exhaustive (covers all scenario possibilities) interface
 sealed interface AuthenticationStatusUIState {

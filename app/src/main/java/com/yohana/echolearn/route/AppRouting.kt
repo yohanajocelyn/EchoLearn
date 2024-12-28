@@ -22,6 +22,9 @@ import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SplashScreenView
 
+import com.yohana.echolearn.views.StarterView
+import kotlinx.coroutines.delay
+
 fun isFirstTimeLaunch(context: Context): Boolean {
     val sharedPref = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
     return sharedPref.getBoolean("isFirstTimeLaunch", true)
@@ -34,6 +37,7 @@ fun setFirstTimeLaunch(context: Context) {
 
 enum class PagesEnum {
     Splash,
+    Starter,
     Login,
     Register,
     Home,
@@ -64,19 +68,24 @@ fun AppRouting(
         startDestination =
         if (isFirstLaunch) PagesEnum.Splash.name
         else if (token.value != "Unknown" && token.value != "") PagesEnum.Login.name
-        else PagesEnum.Login.name,
+        else PagesEnum.Starter.name,
         modifier = Modifier.padding(innerpadding)
     ) {
         composable(route = PagesEnum.Splash.name) {
             SplashScreenView {
                 // Mark the first launch as completed
                 setFirstTimeLaunch(context)
-                navController.navigate(PagesEnum.Login.name) {
-                    popUpTo(PagesEnum.Splash.name) {
-                        inclusive = true
-                    } // Remove splash from backstack
+
+                navController.navigate(PagesEnum.Starter.name) {
+                    popUpTo(PagesEnum.Splash.name) { inclusive = true } // Remove splash from backstack
                 }
             }
+        }
+
+        composable(route = PagesEnum.Starter.name){
+            StarterView(
+                navController = navController
+            )
         }
 
         //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
