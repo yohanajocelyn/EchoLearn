@@ -94,9 +94,9 @@ fun GenreView(
                             song = song,
                             index = index+1,
                             onCardClick = {if (type == "Listening") {
-                                navController?.navigate(route = PagesEnum.Listening)
+                                navController?.navigate(route = PagesEnum.Listening.name+"/${song.id}")
                             } else {
-                                navController?.navigate(route = PagesEnum.Speaking)
+                                navController?.navigate(route = PagesEnum.Speaking.name+"/${song.id}")
                             }}
                         )
                     }

@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.ListeningViewModel
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.ListMusic
@@ -61,8 +62,8 @@ fun AppRouting(
     innerpadding: PaddingValues,
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
-    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory)
-
+    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
+    listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory)
     ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -125,16 +126,27 @@ fun AppRouting(
             ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type")
 
-            ListMusic(navController = navController, type = type!!)
+            ListMusic(navController = navController, type = type!!, context = context)
         }
 
-        composable(route = PagesEnum.Listening.name ) {
+        composable(route = PagesEnum.Listening.name+"/{id}",
+                arguments = listOf(
+                    navArgument(name = "id"){
+                        type = NavType.IntType
+                    }
+                )
+            ) {
             backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-           ListeningView()
+           ListeningView(
+               viewModel = listeningViewModel,
+               songId = id!!,
+               type = PagesEnum.Listening.name,
+               context = context
+           )
         }
 
-        composable(route = PagesEnum.Speaking.name ) { backStackEntry ->
+        composable(route = PagesEnum.Speaking.name+"/{id}" ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             SpeakingView()
         }
