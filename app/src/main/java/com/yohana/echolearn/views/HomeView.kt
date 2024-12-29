@@ -132,7 +132,7 @@ fun LearningMenu(
                 img = painterResource(id = R.drawable.speaking),
                 onCardClick = {
                     println("Navigating to SongMenu")
-                    navController?.navigate(PagesEnum.SongMenu.name)
+                    navController?.navigate(PagesEnum.SongMenu.name + "/Speaking")
                 }
 
             )
@@ -144,7 +144,7 @@ fun LearningMenu(
                 img = painterResource(id = R.drawable.listening),
                 onCardClick = {
                     println("Navigating to SongMenu")
-                    navController?.navigate(PagesEnum.SongMenu.name)
+                    navController?.navigate(PagesEnum.SongMenu.name + "/Listening")
                 })
         }
 

@@ -21,9 +21,7 @@ import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SplashScreenView
-
 import com.yohana.echolearn.views.StarterView
-import kotlinx.coroutines.delay
 
 fun isFirstTimeLaunch(context: Context): Boolean {
     val sharedPref = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
@@ -46,6 +44,7 @@ enum class PagesEnum {
     Notes,
     Profile,
     Listening,
+    Speaking,
     Reading,
     Leaderboards
 }
@@ -77,12 +76,14 @@ fun AppRouting(
                 setFirstTimeLaunch(context)
 
                 navController.navigate(PagesEnum.Starter.name) {
-                    popUpTo(PagesEnum.Splash.name) { inclusive = true } // Remove splash from backstack
+                    popUpTo(PagesEnum.Splash.name) {
+                        inclusive = true
+                    } // Remove splash from backstack
                 }
             }
         }
 
-        composable(route = PagesEnum.Starter.name){
+        composable(route = PagesEnum.Starter.name) {
             StarterView(
                 navController = navController
             )
@@ -107,8 +108,17 @@ fun AppRouting(
         composable(route = PagesEnum.Home.name) {
             HomeView(navController = navController)
         }
-        composable(route = PagesEnum.SongMenu.name) {
-           ListMusic()
+        composable(route = PagesEnum.SongMenu.name + "/{type}") {
+            backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type")
+            ListMusic(navController = navController, type = type!!)
+        }
+
+        composable(route = PagesEnum.Listening.name + "/{type}" + "/{id}") {
+            backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id")
+            val type = backStackEntry.arguments?.getString("type")
+            ListMusic(navController = navController, type = type!!)
         }
     }
 }
