@@ -116,9 +116,15 @@ fun AppRouting(
             HomeView(navController = navController)
         }
 
-        composable(route = PagesEnum.SongMenu.name + "/{type}") {
-            backStackEntry ->
+        composable(route = PagesEnum.SongMenu.name + "/{type}",
+                arguments = listOf(
+                    navArgument(name = "type"){
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type")
+
             ListMusic(navController = navController, type = type!!)
         }
 
@@ -133,33 +139,44 @@ fun AppRouting(
             SpeakingView()
         }
 
-        composable(route = PagesEnum.Speaking.name+"/"+PagesEnum.SongDetail.name+"/{genre}",
+//        composable(route = PagesEnum.SongDetail.name+"/{type}/{genre}",
+//            arguments = listOf(
+//                navArgument(name = "genre"){
+//                    type = NavType.StringType
+//                },
+//                navArgument(name = "type"){
+//                    type = NavType.StringType
+//                }
+//            )
+//            ) { backStackEntry ->
+//            val genre = backStackEntry.arguments?.getString("genre")
+//            val type = backStackEntry.arguments?.getString("type")
+//
+//            GenreView(
+//                genre = genre!!,
+//                viewModel = genreViewModel,
+//                type = type!!
+//            )
+//        }
+
+        composable(route = "{type}/"+PagesEnum.SongDetail.name+"/{genre}",
             arguments = listOf(
                 navArgument(name = "genre"){
                     type = NavType.StringType
-                }
-            )
-            ) { backStackEntry ->
-            val genre = backStackEntry.arguments?.getString("genre")
-
-            GenreView(
-                genre = genre!!,
-                viewModel = genreViewModel
-            )
-        }
-
-        composable(route = PagesEnum.Listening.name+"/"+PagesEnum.SongDetail.name+"/{genre}",
-            arguments = listOf(
-                navArgument(name = "genre"){
+                },
+                navArgument(name = "type"){
                     type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
             val genre = backStackEntry.arguments?.getString("genre")
+            val type = backStackEntry.arguments?.getString("type")
 
             GenreView(
                 genre = genre!!,
-                viewModel = genreViewModel
+                viewModel = genreViewModel,
+                type = type!!,
+                navController = navController
             )
         }
 
