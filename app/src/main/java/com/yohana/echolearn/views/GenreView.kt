@@ -20,7 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.GenreCard
 import com.yohana.echolearn.view.MusicCard
 import com.yohana.echolearn.view.Navbar
@@ -29,7 +31,9 @@ import com.yohana.echolearn.viewmodels.GenreViewModel
 @Composable
 fun GenreView(
     genre: String,
-    viewModel: GenreViewModel
+    viewModel: GenreViewModel,
+    navController: NavController? = null,
+    type: String
 ) {
     LaunchedEffect(genre) {
         viewModel.setSongs(genre)
@@ -86,7 +90,15 @@ fun GenreView(
 
                 itemsIndexed(songs) { index, song ->
                     Column(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)){
-                        MusicCard(song = song, index = index+1)
+                        MusicCard(
+                            song = song,
+                            index = index+1,
+                            onCardClick = {if (type == "Listening") {
+                                navController?.navigate(route = PagesEnum.Listening)
+                            } else {
+                                navController?.navigate(route = PagesEnum.Speaking)
+                            }}
+                        )
                     }
                 }
             }
@@ -131,6 +143,7 @@ fun TopBar() {
 fun PreviewGenreMusic() {
     GenreView(
         genre = "Pop",
-        viewModel = viewModel()
+        viewModel = viewModel(),
+        type = "Listening"
     )
 }

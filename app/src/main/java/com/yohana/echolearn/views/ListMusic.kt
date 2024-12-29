@@ -43,7 +43,8 @@ import com.yohana.echolearn.view.SearchBar
 @Composable
 fun ListMusic(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    type: String
 ) {
     Column(
         modifier = Modifier
@@ -65,7 +66,7 @@ fun ListMusic(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                "List Music",
+                "List Music + $type",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 15.dp),
@@ -99,9 +100,15 @@ fun ListMusic(
                 Spacer(modifier = Modifier.height(10.dp))
 
             }
-            //hilangin dulu men
+            //hilangin dulu nti dibuka lg pas bisa passing song ke MusicCard
 //            items(3) { index ->
-//                MusicCard()
+//                MusicCard(onCardClick = {
+//                    if (type == "Listening") {
+//                        navController?.navigate(route = PagesEnum.Listening.name)
+//                    } else {
+//                        navController?.navigate(route = PagesEnum.Speaking.name)
+//                    }
+//                })
 //                Spacer(modifier = Modifier.height(13.dp))
 //            }
             item {
@@ -133,7 +140,7 @@ fun ListMusic(
                                 backgroundColor = Color(0xFF9854B2),
                                 onClick = {
                                     val currentNav = navController.currentBackStackEntry?.destination?.route
-                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/Pop")
+                                    navController.navigate(currentNav!!.substringAfterLast("/") + "/${PagesEnum.SongDetail.name}/Pop")
                                 }// Ungu
                             )
                             GenreCard(
@@ -141,7 +148,7 @@ fun ListMusic(
                                 backgroundColor = Color(0xFF678026),
                                 onClick = {
                                     val currentNav = navController.currentBackStackEntry?.destination?.route
-                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/Acoustic")
+                                    navController.navigate(currentNav!!.substringAfterLast("/") + "/${PagesEnum.SongDetail.name}/Acoustic")
                                 }
                             // Hijau
                             )
@@ -158,7 +165,7 @@ fun ListMusic(
                                 backgroundColor = Color(0xFFCF4321),
                                 onClick = {
                                     val currentNav = navController.currentBackStackEntry?.destination?.route
-                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/Country")
+                                    navController.navigate(currentNav!!.substringAfterLast("/") + "/${PagesEnum.SongDetail.name}/Country")
                                 }// Oranye
                             )
                             GenreCard(
@@ -166,7 +173,7 @@ fun ListMusic(
                                 backgroundColor = Color(0xFF3371E4),
                                 onClick = {
                                     val currentNav = navController.currentBackStackEntry?.destination?.route
-                                    navController.navigate(currentNav!!.substringBeforeLast("/") + "/${PagesEnum.SongDetail.name}/R&B")
+                                    navController.navigate(currentNav!!.substringAfterLast("/") + "/${PagesEnum.SongDetail.name}/R&B")
                                 }// Biru
                             )
                         }

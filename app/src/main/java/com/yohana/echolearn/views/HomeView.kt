@@ -128,7 +128,7 @@ fun LearningMenu(
                 img = painterResource(id = R.drawable.speaking),
                 onCardClick = {
                     println("Navigating to SongMenu")
-                    navController?.navigate(PagesEnum.Speaking.name+"/"+PagesEnum.SongMenu.name)
+                    navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Speaking.name)
                 }
             )
             LearningCard(
@@ -139,9 +139,8 @@ fun LearningMenu(
                 img = painterResource(id = R.drawable.listening),
                 onCardClick = {
                     println("Navigating to SongMenu")
-                    navController?.navigate(PagesEnum.Listening.name+"/"+PagesEnum.SongMenu.name)
-                }
-            )
+                    navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Listening.name)
+                })
         }
 
         Column(
@@ -164,7 +163,8 @@ fun LearningCard(
 ) {
     Box(
         modifier = Modifier
-            .padding(bottom = 40.dp),
+            .padding(bottom = 40.dp)
+            .clickable { onCardClick() },
         ) {
         //Shadow
         Box(

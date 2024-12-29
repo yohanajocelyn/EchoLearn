@@ -28,13 +28,15 @@ import com.yohana.echolearn.models.SongModel
 @Composable
 fun MusicCard(
     song: SongModel,
-    index: Int
+    index: Int,
+    onCardClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE4E4E4)
         ),
-        elevation = CardDefaults.cardElevation(3.dp)
+        elevation = CardDefaults.cardElevation(3.dp),
+        onClick = onCardClick
     ) {
         Row(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
