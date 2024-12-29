@@ -15,13 +15,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.GenreCard
 import com.yohana.echolearn.view.MusicCard
 import com.yohana.echolearn.view.Navbar
 
 @Composable
-fun GenreView() {
+fun GenreView(navController: NavController? = null, type: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,8 +69,11 @@ fun GenreView() {
 
             items(20) { index ->
                 Column(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)){
-                    MusicCard()
-
+                    MusicCard(  onCardClick = {if (type == "Listening") {
+                        navController?.navigate(route = PagesEnum.Listening)
+                    } else {
+                        navController?.navigate(route = PagesEnum.Speaking)
+                    }})
                 }
             }
         }
@@ -107,8 +112,4 @@ fun TopBar() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewGenreMusic() {
-    GenreView()
-}
+

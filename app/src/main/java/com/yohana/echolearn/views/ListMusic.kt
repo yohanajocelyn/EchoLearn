@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.view.GenreCard
 import com.yohana.echolearn.view.MusicCard
 import com.yohana.echolearn.view.Navbar
@@ -90,7 +91,13 @@ fun ListMusic(
 
             }
             items(3) { index ->
-                MusicCard()
+                MusicCard(onCardClick = {
+                    if (type == "Listening") {
+                        navController?.navigate(route = PagesEnum.Listening.name)
+                    } else {
+                        navController?.navigate(route = PagesEnum.Speaking.name)
+                    }
+                })
                 Spacer(modifier = Modifier.height(13.dp))
             }
             item {

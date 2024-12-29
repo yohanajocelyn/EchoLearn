@@ -18,8 +18,10 @@ import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
 import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.ListMusic
+import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
+import com.yohana.echolearn.views.SpeakingView
 import com.yohana.echolearn.views.SplashScreenView
 import com.yohana.echolearn.views.StarterView
 
@@ -114,18 +116,16 @@ fun AppRouting(
             ListMusic(navController = navController, type = type!!)
         }
 
-        composable(route = PagesEnum.Listening.name + "/{type}" + "/{id}") {
+        composable(route = PagesEnum.Listening.name ) {
             backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-            val type = backStackEntry.arguments?.getString("type")
-            ListMusic(navController = navController, type = type!!)
+           ListeningView()
         }
 
-        composable(route = PagesEnum.Speaking.name + "/{type}" + "/{id}") {
+        composable(route = PagesEnum.Speaking.name ) {
                 backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-            val type = backStackEntry.arguments?.getString("type")
-            ListMusic(navController = navController, type = type!!)
+         SpeakingView()
         }
     }
 }

@@ -24,12 +24,15 @@ import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
 
 @Composable
-fun MusicCard() {
+fun MusicCard(    onCardClick: () -> Unit
+
+) {
     Card(
         modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE4E4E4)
         ),
-        elevation = CardDefaults.cardElevation(3.dp)
+        elevation = CardDefaults.cardElevation(3.dp),
+        onClick = onCardClick
     ) {
         Row(
             modifier = Modifier.padding(10.dp).fillMaxWidth(),
@@ -67,8 +70,3 @@ fun MusicCard() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMusicCard() {
-    MusicCard()
-}
