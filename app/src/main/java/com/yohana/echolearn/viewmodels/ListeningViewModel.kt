@@ -64,20 +64,6 @@ class ListeningViewModel(
     var audio: MediaPlayer by mutableStateOf(MediaPlayer())
         private set
 
-//    private val _loading = MutableStateFlow(true)
-//    val loading: StateFlow<Boolean> = _loading
-//
-//    fun initialization(songId: Int, type: String, context: Context){
-//        _loading.value = true
-//        try{
-//            setSong(songId)
-//            setVariants(songId, type)
-//            initializeSong(context)
-//        }finally {
-//            _loading.value = false
-//        }
-//    }
-
     fun setSong(songId: Int){
         viewModelScope.launch {
             try {
@@ -89,6 +75,7 @@ class ListeningViewModel(
                     ) {
                         if (res.isSuccessful) {
                             _song.value = res.body()!!.data
+                            initializeAudio()
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -108,7 +95,7 @@ class ListeningViewModel(
         }
     }
 
-    fun setVariants(songId: Int, type: String, context: Context){
+    fun setVariants(songId: Int, type: String){
         viewModelScope.launch {
             try{
                 val call = variantRepository.getVariants(songId, type)
@@ -121,7 +108,7 @@ class ListeningViewModel(
                             val variants: List<VariantModel> = res.body()!!.data
                             val randomVariant = variants.random()
                             _variant.value = randomVariant
-                            initializeSong(context)
+                            initializeData()
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -142,52 +129,43 @@ class ListeningViewModel(
         }
     }
 
-    fun initializeSong(context: Context) {
-        if (_song.value.fileName.isEmpty()) {
-            Log.d("error-data", "ERROR DATA: SONG IS EMPTY")
+    fun initializeAudio(){
+        this.audio = MediaPlayer().apply {
+            setAudioStreamType(AudioManager.STREAM_MUSIC)
+            setDataSource(_song.value.fileName) // Use the actual remote URL
+            setOnErrorListener { mp, what, extra ->
+                Log.e("MediaPlayerError", "Error occurred: $what, Extra: $extra")
+                true
+            }
+            prepareAsync() // Use async preparation for remote URLs
+        }
+    }
+
+    fun initializeData() {
+        // Split the lyrics correctly using "\n"
+        this.lines = _variant.value.emptyLyric.split("\n")
+
+        // Split the answers by commas (assuming format is correct)
+        this.answers = _variant.value.answer.split(", ")
+
+        // Initialize userAnswers list with empty strings
+        this.userAnswers = List(answers.size) { "" }
+
+        var counter = 0
+        val positions: MutableList<Int> = mutableListOf()
+
+        // Identify positions of blanks and store them
+        this.lines.forEach { line ->
+            line.split(" ").forEach { word ->
+                if (word.contains("_")) {
+                    positions.add(counter)
+                }
+                counter++
+            }
         }
 
-        // Ensure the file name is the correct remote URL for songs
-        if (_song.value.fileName.isNotEmpty()) {
-            try {
-                this.audio = MediaPlayer().apply {
-                    setAudioStreamType(AudioManager.STREAM_MUSIC)
-                    setDataSource(_song.value.fileName) // Use the actual remote URL
-                    setOnErrorListener { mp, what, extra ->
-                        Log.e("MediaPlayerError", "Error occurred: $what, Extra: $extra")
-                        true
-                    }
-                    prepareAsync() // Use async preparation for remote URLs
-                }
-            } catch (e: Exception) {
-                this.audio = MediaPlayer.create(context, R.raw.laufeylikethemovies)
-            }
-
-            // Split the lyrics correctly using "\n"
-            this.lines = _variant.value.emptyLyric.split("\n")
-
-            // Split the answers by commas (assuming format is correct)
-            this.answers = _variant.value.answer.split(", ")
-
-            // Initialize userAnswers list with empty strings
-            this.userAnswers = List(answers.size) { "" }
-
-            var counter = 0
-            val positions: MutableList<Int> = mutableListOf()
-
-            // Identify positions of blanks and store them
-            this.lines.forEach { line ->
-                line.split(" ").forEach { word ->
-                    if (word.contains("_")) {
-                        positions.add(counter)
-                    }
-                    counter++
-                }
-            }
-
-            // Set blank positions
-            this.blankPositions = positions
-        }
+        // Set blank positions
+        this.blankPositions = positions
     }
 
     fun processLyrics(): List<LineElement>{

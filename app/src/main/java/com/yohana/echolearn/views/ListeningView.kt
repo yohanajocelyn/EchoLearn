@@ -78,13 +78,12 @@ data class Lyrics(
 fun ListeningView(
     viewModel: ListeningViewModel,
     songId: Int,
-    type: String,
-    context: Context
+    type: String
 ){
 
     LaunchedEffect(songId){
         viewModel.setSong(songId)
-        viewModel.setVariants(songId, type, context)
+        viewModel.setVariants(songId, type)
     }
 
     val song by viewModel.song.collectAsState()
@@ -270,8 +269,7 @@ fun ListeningViewPreview() {
         ListeningView(
             viewModel = viewModel(),
             songId = 1,
-            type = "Listening",
-            context = LocalContext.current
+            type = "Listening"
         )
     }
 }

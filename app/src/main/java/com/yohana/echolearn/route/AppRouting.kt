@@ -141,8 +141,7 @@ fun AppRouting(
            ListeningView(
                viewModel = listeningViewModel,
                songId = id!!,
-               type = PagesEnum.Listening.name,
-               context = context
+               type = PagesEnum.Listening.name
            )
         }
 
