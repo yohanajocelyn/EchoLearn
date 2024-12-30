@@ -7,6 +7,10 @@ data class VariantModel(
     val type: String
 )
 
+data class SpeakingRequest(
+    val answer: String
+)
+
 data class VariantResponse(
     val data: VariantModel
 )
