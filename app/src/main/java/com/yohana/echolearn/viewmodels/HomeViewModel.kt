@@ -23,6 +23,7 @@ class HomeViewModel(
         initialValue = ""
     )
 
+    //buat logout
     fun saveUsernameToken(token: String, username: String) {
         viewModelScope.launch {
             userRepository.saveUserToken(token)

@@ -3,8 +3,10 @@ package com.yohana.echolearn.viewmodels
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.text.Editable.Factory
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,17 +20,21 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.R
 import com.yohana.echolearn.models.ErrorModel
+import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.SongModel
 import com.yohana.echolearn.models.SongResponse
 import com.yohana.echolearn.models.VariantListResponse
 import com.yohana.echolearn.models.VariantModel
+import com.yohana.echolearn.repositories.AttemptRepository
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.VariantRepository
 import com.yohana.echolearn.uistates.ListeningUIState
+import com.yohana.echolearn.uistates.StringDataStatusUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -37,10 +43,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class ListeningViewModel(
     private val songRepository: SongRepository,
-    private val variantRepository: VariantRepository
+    private val variantRepository: VariantRepository,
+    private val attemptRepository: AttemptRepository
 ): ViewModel() {
 
     private val _song = MutableStateFlow<SongModel>(SongModel())
@@ -49,8 +58,11 @@ class ListeningViewModel(
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
 
-    private val _listeningUIState = MutableStateFlow<ListeningUIState>(ListeningUIState())
-    val listeningUIState: StateFlow<ListeningUIState> = _listeningUIState
+    var createStatus: StringDataStatusUIState by mutableStateOf(StringDataStatusUIState.Start)
+        private set
+
+    var showSaveDialog: Boolean by mutableStateOf(false)
+        private set
 
     var isPlaying: Boolean by mutableStateOf(false)
         private set
@@ -69,6 +81,12 @@ class ListeningViewModel(
 
     var audio: MediaPlayer by mutableStateOf(MediaPlayer())
         private set
+
+    data class LineElement(val words: List<TextElement>)
+    sealed class TextElement{
+        data class Blank(val index: Int): TextElement()
+        data class Regular(val text: String): TextElement()
+    }
 
     fun setSong(songId: Int){
         viewModelScope.launch {
@@ -143,18 +161,15 @@ class ListeningViewModel(
                 Log.e("MediaPlayerError", "Error occurred: $what, Extra: $extra")
                 true
             }
-            prepareAsync() // Use async preparation for remote URLs
+            prepareAsync()
         }
     }
 
     fun initializeData() {
-        // Split the lyrics correctly using "\n"
         this.lines = _variant.value.emptyLyric.split("\n")
 
-        // Split the answers by commas (assuming format is correct)
         this.answers = _variant.value.answer.split(", ")
 
-        // Initialize userAnswers list with empty strings
         this.userAnswers = List(answers.size) { "" }
 
         var counter = 0
@@ -170,7 +185,6 @@ class ListeningViewModel(
             }
         }
 
-        // Set blank positions
         this.blankPositions = positions
     }
 
@@ -204,27 +218,79 @@ class ListeningViewModel(
     }
 
     fun setShowDialog(){
-        _listeningUIState.update { currentState ->
-            if(currentState.showSaveDialog) {
-                currentState.copy(
-                    showSaveDialog = false
+        showSaveDialog = !showSaveDialog
+    }
+
+    fun returnWithoutSaving(navController: NavController){
+        resetViewModel()
+        navController.popBackStack()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun saveProgress(token: String, navController: NavController){
+        viewModelScope.launch {
+            createStatus = StringDataStatusUIState.Loading
+
+            Log.d("attempt-creation", "TOKEN: ${token}")
+
+            val attemptedAnswer: String = userAnswers.joinToString(", ")
+            val correctAnswer: String = answers.joinToString(", ")
+            val score = "0"
+            val isComplete = "false"
+            val attemptedAt: String = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+            try{
+                val call = attemptRepository.createAttempt(
+                    token = token,
+                    variantId = _variant.value.id.toString(),
+                    correctAnswer = correctAnswer,
+                    attemptedAnswer = attemptedAnswer,
+                    score = score,
+                    attemptedAt = attemptedAt,
+                    isComplete = isComplete
                 )
-            }else{
-                currentState.copy(
-                    showSaveDialog = true
-                )
+
+                call.enqueue(object: Callback<GeneralResponseModel>{
+                    override fun onResponse(
+                        call: Call<GeneralResponseModel>,
+                        res: Response<GeneralResponseModel>
+                    ) {
+                        if(res.isSuccessful){
+                            Log.d("json", "JSON RESPONSE: ${res.body()!!.data}")
+                            createStatus = StringDataStatusUIState.Success(res.body()!!.data)
+
+                            resetViewModel()
+
+                            navController.popBackStack()
+                        }else{
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+
+                            createStatus = StringDataStatusUIState.Failed(errorMessage.errors)
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
+                        createStatus = StringDataStatusUIState.Failed(t.localizedMessage)
+                    }
+
+                })
+            }catch(error: IOException){
+                createStatus = StringDataStatusUIState.Failed(error.localizedMessage)
             }
         }
     }
 
-    fun saveProgress(){
-
-    }
-
-    data class LineElement(val words: List<TextElement>)
-    sealed class TextElement{
-        data class Blank(val index: Int): TextElement()
-        data class Regular(val text: String): TextElement()
+    fun resetViewModel(){
+        createStatus = StringDataStatusUIState.Start
+        isPlaying = false
+        lines = emptyList()
+        userAnswers = emptyList()
+        blankPositions = emptyList()
+        answers = emptyList()
+        audio = MediaPlayer()
     }
 
     companion object {
@@ -233,7 +299,8 @@ class ListeningViewModel(
                 val application = (this[APPLICATION_KEY] as EchoLearnApplication)
                 val songRepository = application.container.songRepository
                 val variantRepository = application.container.variantRepository
-                ListeningViewModel(songRepository, variantRepository)
+                val attemptRepository = application.container.attemptRepository
+                ListeningViewModel(songRepository, variantRepository, attemptRepository)
             }
         }
     }

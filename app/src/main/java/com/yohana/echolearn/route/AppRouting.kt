@@ -52,7 +52,6 @@ enum class PagesEnum {
     Profile,
     Listening,
     Speaking,
-    Reading,
     Leaderboards
 }
 
@@ -142,7 +141,8 @@ fun AppRouting(
                navController = navController,
                viewModel = listeningViewModel,
                songId = id!!,
-               type = PagesEnum.Listening.name
+               type = PagesEnum.Listening.name,
+               token = token.value
            )
         }
 

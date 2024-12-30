@@ -2,7 +2,9 @@ package com.yohana.echolearn.views
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,13 +72,15 @@ import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import com.yohana.echolearn.viewmodels.ListeningViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ListeningView(
     navController: NavController,
     viewModel: ListeningViewModel,
     songId: Int,
-    type: String
+    type: String,
+    token: String
 ){
 
     LaunchedEffect(songId){
@@ -86,7 +90,6 @@ fun ListeningView(
 
     val song by viewModel.song.collectAsState()
     val lines = viewModel.processLyrics()
-    val listeningUIState by viewModel.listeningUIState.collectAsState()
 
     BackHandler {
         viewModel.setShowDialog()
@@ -228,13 +231,12 @@ fun ListeningView(
         }
     }
 
-    if (listeningUIState.showSaveDialog) {
+    if (viewModel.showSaveDialog) {
         SaveDialog(
             onDismissRequest = {
-                viewModel.setShowDialog()
-                navController.popBackStack()
+                viewModel.returnWithoutSaving(navController)
            },
-            onConfirmation = { viewModel.saveProgress() },
+            onConfirmation = { viewModel.saveProgress(token = token, navController = navController) },
             viewModel = viewModel
         )
     }
@@ -313,6 +315,7 @@ fun SaveDialog(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ListeningViewPreview() {
@@ -321,7 +324,8 @@ fun ListeningViewPreview() {
             navController = rememberNavController(),
             viewModel = viewModel(),
             songId = 1,
-            type = "Listening"
+            type = "Listening",
+            token = ""
         )
     }
 }

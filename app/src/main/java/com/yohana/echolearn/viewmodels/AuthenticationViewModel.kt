@@ -232,7 +232,9 @@ class AuthenticationViewModel (
                 call.enqueue(object: Callback<UserResponse>{
                     override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
                         if (res.isSuccessful){
-                            saveUsernameToken(res.body()!!.data.token!!, res.body()!!.data.username!!)
+                            saveUsernameToken(
+                                token = res.body()!!.data.token!!,
+                                username = res.body()!!.data.username!!)
 
                             dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
 
