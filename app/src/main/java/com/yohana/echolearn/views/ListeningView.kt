@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -65,14 +67,6 @@ import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import com.yohana.echolearn.viewmodels.ListeningViewModel
 
-data class Lyrics(
-    val text: String = "The drought was the very _, ah-ah, ah-ah " +
-            "\nWhen the _ that we'd grown _ died of thirst " +
-            "\nIt was months and months of back and _, ah-ah, ah-ah " +
-            "\nYou're still all over me like a wine-stained dress I can't wear _",
-    val words: ArrayList<String> = arrayListOf("worst", "flowers", "together", "forth", "anymore")
-)
-
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ListeningView(
@@ -88,6 +82,7 @@ fun ListeningView(
 
     val song by viewModel.song.collectAsState()
     val lines = viewModel.processLyrics()
+    val listeningUIState by viewModel.listeningUIState.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -224,6 +219,14 @@ fun ListeningView(
             }
         }
     }
+
+    if (listeningUIState.showSaveDialog) {
+        SaveDialog(
+            onDismissRequest = { viewModel.setShowDialog() },
+            onConfirmation = { viewModel.saveProgress() },
+            viewModel = viewModel
+        )
+    }
 }
 
 @Composable
@@ -260,6 +263,43 @@ fun PlayPauseButton(
             }
         }
     }
+}
+
+@Composable
+fun SaveDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    viewModel: ListeningViewModel
+) {
+    AlertDialog(
+        title = {
+            Text(text = "Confirmation")
+        },
+        text = {
+            Text(text = "Would you like to save your progress?")
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)

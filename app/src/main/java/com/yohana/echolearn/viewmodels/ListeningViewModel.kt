@@ -10,6 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -29,6 +31,7 @@ import com.yohana.echolearn.repositories.VariantRepository
 import com.yohana.echolearn.uistates.ListeningUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -45,6 +48,9 @@ class ListeningViewModel(
 
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
+
+    private val _listeningUIState = MutableStateFlow<ListeningUIState>(ListeningUIState())
+    val listeningUIState: StateFlow<ListeningUIState> = _listeningUIState
 
     var isPlaying: Boolean by mutableStateOf(false)
         private set
@@ -195,6 +201,24 @@ class ListeningViewModel(
 
     fun updateIsPlaying(){
         isPlaying = !isPlaying
+    }
+
+    fun setShowDialog(){
+        _listeningUIState.update { currentState ->
+            if(currentState.showSaveDialog) {
+                currentState.copy(
+                    showSaveDialog = false
+                )
+            }else{
+                currentState.copy(
+                    showSaveDialog = true
+                )
+            }
+        }
+    }
+
+    fun saveProgress(){
+
     }
 
     data class LineElement(val words: List<TextElement>)
