@@ -16,13 +16,13 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.R
-import com.yohana.echolearn.uistates.AuthenticationStatusUIState
-import com.yohana.echolearn.uistates.AuthenticationUIState
 import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.UserResponse
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.route.PagesEnum
+import com.yohana.echolearn.uistates.AuthenticationStatusUIState
+import com.yohana.echolearn.uistates.AuthenticationUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -32,10 +32,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 
-class AuthenticationViewModel (
+class AuthenticationViewModel(
     private val authenticationRepository: AuthenticationRepository,
     private val userRepository: UserRepository
-): ViewModel() {
+) : ViewModel() {
     private val _authenticationUIState = MutableStateFlow<AuthenticationUIState>(
         AuthenticationUIState()
     )
@@ -77,27 +77,27 @@ class AuthenticationViewModel (
         }
     }
 
-    fun setEmail(email: String){
+    fun setEmail(email: String) {
         this.emailInput = email
     }
 
-    fun setUsername(username: String){
+    fun setUsername(username: String) {
         this.usernameInput = username
     }
 
-    fun setPassword(password: String){
+    fun setPassword(password: String) {
         this.passwordInput = password
     }
 
-    fun setConfirmPassword(confirmPassword: String){
+    fun setConfirmPassword(confirmPassword: String) {
         this.confirmPasswordInput = confirmPassword
     }
 
-    fun setProfilePicture(profilePicture: String){
+    fun setProfilePicture(profilePicture: String) {
         this.profilePictureInput = profilePicture
     }
 
-    fun setPasswordVisibility(){
+    fun setPasswordVisibility() {
         _authenticationUIState.update { currentState ->
             if (currentState.showPassword) {
                 currentState.copy(
@@ -170,26 +170,31 @@ class AuthenticationViewModel (
         }
     }
 
-    fun registerUser(navController: NavController){
+    fun registerUser(navController: NavController) {
         viewModelScope.launch {
             dataStatus = AuthenticationStatusUIState.Loading
 
             try {
-                val call = authenticationRepository.register(usernameInput, emailInput, passwordInput, profilePictureInput)
-                call.enqueue(object: Callback<UserResponse>{
+                val call = authenticationRepository.register(
+                    usernameInput,
+                    emailInput,
+                    passwordInput,
+                    profilePictureInput
+                )
+                call.enqueue(object : Callback<UserResponse> {
                     override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
-                        if (res.isSuccessful){
+                        if (res.isSuccessful) {
                             Log.d("response-data", "RESPONSE DATA: ${res.body()}")
                             dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
 
                             resetViewModel()
 
-                            navController.navigate(PagesEnum.Home.name){
-                                popUpTo(PagesEnum.Register.name){
+                            navController.navigate(PagesEnum.Home.name) {
+                                popUpTo(PagesEnum.Register.name) {
                                     inclusive = true
                                 }
                             }
-                        }else{
+                        } else {
                             Log.e("ErrorBody", res.errorBody()?.string() ?: "No error body")
 
                             //ambil error messagenya
@@ -216,34 +221,37 @@ class AuthenticationViewModel (
         }
     }
 
-    fun saveUsernameToken(username: String, token: String){
-        viewModelScope.launch{
+    fun saveUsernameToken(username: String, token: String) {
+        viewModelScope.launch {
             userRepository.saveUserToken(token)
             userRepository.saveUsername(username)
         }
     }
 
-    fun loginUser(navController: NavController){
+    fun loginUser(navController: NavController) {
         viewModelScope.launch {
             dataStatus = AuthenticationStatusUIState.Loading
 
             try {
                 val call = authenticationRepository.login(emailInput, passwordInput)
-                call.enqueue(object: Callback<UserResponse>{
+                call.enqueue(object : Callback<UserResponse> {
                     override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
-                        if (res.isSuccessful){
-                            saveUsernameToken(res.body()!!.data.token!!, res.body()!!.data.username!!)
+                        if (res.isSuccessful) {
+                            saveUsernameToken(
+                                res.body()!!.data.token!!,
+                                res.body()!!.data.username!!
+                            )
 
                             dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
 
                             resetViewModel()
 
-                            navController.navigate(PagesEnum.Home.name){
-                                popUpTo(PagesEnum.Login.name){
+                            navController.navigate(PagesEnum.Home.name) {
+                                popUpTo(PagesEnum.Login.name) {
                                     inclusive = true
                                 }
                             }
-                        }else{
+                        } else {
                             //ambil error messagenya
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
