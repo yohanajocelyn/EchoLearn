@@ -2,6 +2,7 @@ package com.yohana.echolearn.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -46,7 +47,7 @@ fun GenreView(
             .background(color = Color(0xFFF6F6F6))
     ) {
         // Top bar
-        TopBar()
+        TopBar(navController = navController!!)
 
         // Content list
         if (songs.isEmpty()){
@@ -114,7 +115,9 @@ fun GenreView(
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(
+    navController: NavController
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,7 +128,9 @@ fun TopBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.back_button),
-            contentDescription = "Back Button"
+            contentDescription = "Back Button",
+            modifier = Modifier
+                .clickable { navController.popBackStack() }
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(

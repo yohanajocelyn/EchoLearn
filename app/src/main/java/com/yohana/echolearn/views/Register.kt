@@ -68,7 +68,7 @@ fun RegisterView(
                 painter = painterResource(id = R.drawable.back_button),
                 contentDescription = "",
                 modifier = Modifier
-                    .clickable { navController.navigate(route = PagesEnum.Login.name) }
+                    .clickable { navController.popBackStack() }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(

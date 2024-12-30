@@ -139,6 +139,7 @@ fun AppRouting(
             backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
            ListeningView(
+               navController = navController,
                viewModel = listeningViewModel,
                songId = id!!,
                type = PagesEnum.Listening.name

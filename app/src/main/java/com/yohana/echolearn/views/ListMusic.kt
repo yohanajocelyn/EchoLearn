@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,10 @@ fun ListMusic(
             Image(
                 painter = painterResource(id = R.drawable.back_button),
                 contentDescription = "",
+                modifier = Modifier
+                    .clickable {
+                        navController.popBackStack()
+                    }
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(

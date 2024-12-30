@@ -2,6 +2,7 @@ package com.yohana.echolearn.views
 
 import android.content.Context
 import android.media.MediaPlayer
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +62,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
@@ -70,6 +73,7 @@ import com.yohana.echolearn.viewmodels.ListeningViewModel
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ListeningView(
+    navController: NavController,
     viewModel: ListeningViewModel,
     songId: Int,
     type: String
@@ -83,6 +87,10 @@ fun ListeningView(
     val song by viewModel.song.collectAsState()
     val lines = viewModel.processLyrics()
     val listeningUIState by viewModel.listeningUIState.collectAsState()
+
+    BackHandler {
+        viewModel.setShowDialog()
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -222,7 +230,10 @@ fun ListeningView(
 
     if (listeningUIState.showSaveDialog) {
         SaveDialog(
-            onDismissRequest = { viewModel.setShowDialog() },
+            onDismissRequest = {
+                viewModel.setShowDialog()
+                navController.popBackStack()
+           },
             onConfirmation = { viewModel.saveProgress() },
             viewModel = viewModel
         )
@@ -307,6 +318,7 @@ fun SaveDialog(
 fun ListeningViewPreview() {
     EchoLearnTheme {
         ListeningView(
+            navController = rememberNavController(),
             viewModel = viewModel(),
             songId = 1,
             type = "Listening"
