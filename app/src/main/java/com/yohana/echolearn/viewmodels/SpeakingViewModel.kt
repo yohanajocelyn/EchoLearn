@@ -7,13 +7,22 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.yohana.echolearn.EchoLearnApplication
+import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.UserRepository
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import java.util.Locale
-class SpeakingViewModel(  private val userRepository: UserRepository): ViewModel() {
+
+class SpeakingViewModel(
+    private val userRepository: UserRepository,
+    private val songRepository: SongRepository,
+
+) : ViewModel() {
     private val _recognizedText = MutableStateFlow("Speech text should come here")
     val recognizedText: StateFlow<String> get() = _recognizedText
 
@@ -24,7 +33,10 @@ class SpeakingViewModel(  private val userRepository: UserRepository): ViewModel
             Toast.makeText(context, "Speech not Available", Toast.LENGTH_SHORT).show()
         } else {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH
+            )
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US)
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Talk Something")
 
@@ -42,5 +54,16 @@ class SpeakingViewModel(  private val userRepository: UserRepository): ViewModel
     override fun onCleared() {
         super.onCleared()
         speechRecognizer?.destroy()
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as EchoLearnApplication)
+                val userRepository = application.container.userRepository
+                val songRepository = application.container.songRepository
+                HomeViewModel(userRepository)
+            }
+        }
     }
 }

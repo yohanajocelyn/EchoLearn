@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.ListMusic
@@ -61,7 +62,8 @@ fun AppRouting(
     innerpadding: PaddingValues,
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
-    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory)
+    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
+  speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory)
 
     ) {
     val navController = rememberNavController()
