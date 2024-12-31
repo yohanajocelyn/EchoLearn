@@ -13,10 +13,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +48,7 @@ fun MusicCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "$index", fontSize = 18.sp, color = Color.Black)
                 Spacer(modifier = Modifier.width(16.dp))
+
                 Image(
                     painter = rememberImagePainter(song.image),
                     contentDescription = "search icon",
@@ -57,8 +60,8 @@ fun MusicCard(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column {
-                    Text(text = song.title, fontSize = 18.sp, color = Color.Black)
-                    Text(text = song.artist, fontSize = 18.sp, color = Color.Black)
+                    Text(text = song.title, fontSize = 16.sp, color = Color.Black)
+                    Text(text = song.artist, fontSize = 12.sp, color = Color.Black)
                 }
             }
             Image(

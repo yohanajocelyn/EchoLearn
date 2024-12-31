@@ -5,15 +5,15 @@ import androidx.datastore.preferences.core.Preferences
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.NetworkAuthenticationRepository
 import com.yohana.echolearn.repositories.NetworkSongRepository
-import com.yohana.echolearn.repositories.NetworkSpeakingRepository
 import com.yohana.echolearn.repositories.NetworkUserRepository
+import com.yohana.echolearn.repositories.NetworkVariantRepository
 import com.yohana.echolearn.repositories.SongRepository
-import com.yohana.echolearn.repositories.SpeakingRepository
 import com.yohana.echolearn.repositories.UserRepository
+import com.yohana.echolearn.repositories.VariantRepository
 import com.yohana.echolearn.services.AuthenticationAPIService
 import com.yohana.echolearn.services.SongAPIService
-import com.yohana.echolearn.services.SpeakingAPIService
 import com.yohana.echolearn.services.UserAPIService
+import com.yohana.echolearn.services.VariantAPIService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -23,17 +23,17 @@ interface AppContainer {
     val authenticationRepository: AuthenticationRepository
     val userRepository: UserRepository
     val songRepository: SongRepository
-    val speakingRepository: SpeakingRepository
+    val variantRepository: VariantRepository
 }
 
 class DefaultAppContainer(
     private val userDataStore: DataStore<Preferences>
 ): AppContainer {
     //daffa's ip address
-//    private val APIBaseURL = "http://192.168.51.250:3000/"
+    private val APIBaseURL = "http://192.168.51.250:3000/"
 
-    //yohana's ip address
-    private val APIBaseURL = "http://192.168.18.100:3000/"
+//    //yohana's ip address
+//    private val APIBaseURL = "http://192.168.18.100:3000/"
 
 
     private val authenticationRetrofitService: AuthenticationAPIService by lazy {
@@ -54,10 +54,10 @@ class DefaultAppContainer(
         retrofit.create(SongAPIService::class.java)
     }
 
-    private val speakingRetrofitService: SpeakingAPIService by lazy {
+    private val variantRetrofitService: VariantAPIService by lazy {
         val retrofit = initRetrofit()
 
-        retrofit.create(SpeakingAPIService::class.java)
+        retrofit.create(VariantAPIService::class.java)
     }
 
     override val authenticationRepository: AuthenticationRepository by lazy {
@@ -70,8 +70,8 @@ class DefaultAppContainer(
         NetworkSongRepository(songRetrofitService)
     }
 
-    override  val speakingRepository: SpeakingRepository by lazy {
-        NetworkSpeakingRepository(speakingRetrofitService)
+    override  val variantRepository: VariantRepository by lazy {
+        NetworkVariantRepository(variantRetrofitService)
     }
 
     private fun initRetrofit(): Retrofit{

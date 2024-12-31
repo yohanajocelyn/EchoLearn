@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.UserRepository
+import com.yohana.echolearn.repositories.VariantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
@@ -21,7 +22,7 @@ import java.util.Locale
 class SpeakingViewModel(
     private val userRepository: UserRepository,
     private val songRepository: SongRepository,
-
+    private val variantRepository: VariantRepository
 ) : ViewModel() {
     private val _recognizedText = MutableStateFlow("Speech text should come here")
     val recognizedText: StateFlow<String> get() = _recognizedText
@@ -62,7 +63,8 @@ class SpeakingViewModel(
                 val application = (this[APPLICATION_KEY] as EchoLearnApplication)
                 val userRepository = application.container.userRepository
                 val songRepository = application.container.songRepository
-                HomeViewModel(userRepository)
+                val variantRepository = application.container.variantRepository
+                SpeakingViewModel(userRepository, songRepository, variantRepository)
             }
         }
     }

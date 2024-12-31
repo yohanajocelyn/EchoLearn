@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
@@ -63,7 +64,8 @@ fun AppRouting(
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
     genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
-  speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory)
+  speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
+    listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory)
 
     ) {
     val navController = rememberNavController()
@@ -127,7 +129,7 @@ fun AppRouting(
             ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type")
 
-            ListMusic(navController = navController, type = type!!)
+            ListMusic(navController = navController, viewModel = listMusicViewModel, type = type!!)
         }
 
         composable(route = PagesEnum.Listening.name ) {
