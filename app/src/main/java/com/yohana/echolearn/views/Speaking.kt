@@ -2,7 +2,6 @@ package com.yohana.echolearn.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,11 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
-import com.yohana.echolearn.view.Navbar
+import com.yohana.echolearn.components.Navbar
 
 @Composable
-fun SpeakingView(modifier: Modifier = Modifier) {
+fun SpeakingView(modifier: Modifier = Modifier, navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
         Column(
             modifier = Modifier.fillMaxSize()
@@ -166,7 +167,9 @@ fun SpeakingView(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter) // Selalu di bagian bawah
         ) {
-            Navbar() // Tambahkan konten navbar di sini
+            Navbar(
+                navController = navController
+            ) // Tambahkan konten navbar di sini
         }
     }
 }
@@ -174,5 +177,7 @@ fun SpeakingView(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewSpeaking() {
-    SpeakingView()
+    SpeakingView(
+        navController = rememberNavController()
+    )
 }

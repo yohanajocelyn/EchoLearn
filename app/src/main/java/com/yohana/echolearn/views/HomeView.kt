@@ -33,19 +33,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
-import com.yohana.echolearn.view.Navbar
+import com.yohana.echolearn.components.Navbar
 
 
 @Composable
 fun HomeView(
     modifier: Modifier = Modifier,
     navController: NavController? = null,
-    name: String = "Android"
+    name: String = "Android",
+    systemUiController: SystemUiController
 ) {
+    systemUiController.setStatusBarColor(
+        color = Color(0xFF3DB2FF), // Your color
+        darkIcons = false // true for dark icons, false for light
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -147,7 +153,9 @@ fun LearningMenu(
             verticalArrangement = Arrangement.Bottom
 
         ) {
-            Navbar() // Tambahkan konten navbar di sini
+            Navbar(
+                navController = navController
+            ) // Tambahkan konten navbar di sini
         }
     }
 }
@@ -245,6 +253,6 @@ fun LearningCard(
 @Composable
 fun HomeViewPreview() {
     EchoLearnTheme {
-        HomeView()
+//        HomeView()
     }
 }

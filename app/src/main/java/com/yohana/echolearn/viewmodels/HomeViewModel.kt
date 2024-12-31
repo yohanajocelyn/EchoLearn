@@ -23,6 +23,12 @@ class HomeViewModel(
         initialValue = ""
     )
 
+    val username: StateFlow<String> = userRepository.currentUsername.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ""
+    )
+
     //buat logout
     fun saveUsernameToken(token: String, username: String) {
         viewModelScope.launch {

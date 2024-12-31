@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.route.AppRouting
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
+import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView

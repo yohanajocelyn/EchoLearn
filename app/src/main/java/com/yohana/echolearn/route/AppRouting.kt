@@ -1,5 +1,6 @@
 package com.yohana.echolearn.route
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
@@ -55,6 +57,7 @@ enum class PagesEnum {
     Leaderboards
 }
 
+@SuppressLint("NewApi")
 @Composable
 fun AppRouting(
     context: Context,
@@ -66,8 +69,10 @@ fun AppRouting(
     ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
+    val systemUiController = rememberSystemUiController()
 
     val token = homeViewModel.token.collectAsState()
+    val username = homeViewModel.username.collectAsState()
 
     NavHost(
         navController = navController,
@@ -78,16 +83,19 @@ fun AppRouting(
         modifier = Modifier.padding(innerpadding)
     ) {
         composable(route = PagesEnum.Splash.name) {
-            SplashScreenView {
-                // Mark the first launch as completed
-                setFirstTimeLaunch(context)
+            SplashScreenView (
+                systemUiController = systemUiController,
+                onTimeout = {
+                    // Mark the first launch as completed
+                    setFirstTimeLaunch(context)
 
-                navController.navigate(PagesEnum.Starter.name) {
-                    popUpTo(PagesEnum.Splash.name) {
-                        inclusive = true
-                    } // Remove splash from backstack
+                    navController.navigate(PagesEnum.Starter.name) {
+                        popUpTo(PagesEnum.Splash.name) {
+                            inclusive = true
+                        } // Remove splash from backstack
+                    }
                 }
-            }
+            )
         }
 
         composable(route = PagesEnum.Starter.name) {
@@ -96,7 +104,6 @@ fun AppRouting(
             )
         }
 
-        //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
         composable(route = PagesEnum.Login.name) {
             LoginView(
                 viewModel = authenticationViewModel,
@@ -113,7 +120,10 @@ fun AppRouting(
         }
 
         composable(route = PagesEnum.Home.name) {
-            HomeView(navController = navController)
+            HomeView(
+                navController = navController,
+                systemUiController = systemUiController,
+                name = username.value)
         }
 
         composable(route = PagesEnum.SongMenu.name + "/{type}",
@@ -148,7 +158,9 @@ fun AppRouting(
 
         composable(route = PagesEnum.Speaking.name+"/{id}" ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-            SpeakingView()
+            SpeakingView(
+                navController = navController
+            )
         }
 
 //        composable(route = PagesEnum.SongDetail.name+"/{type}/{genre}",

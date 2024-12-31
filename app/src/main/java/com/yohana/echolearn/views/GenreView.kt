@@ -5,8 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,9 +24,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.route.PagesEnum
-import com.yohana.echolearn.view.GenreCard
-import com.yohana.echolearn.view.MusicCard
-import com.yohana.echolearn.view.Navbar
+import com.yohana.echolearn.components.GenreCard
+import com.yohana.echolearn.components.MusicCard
+import com.yohana.echolearn.components.Navbar
+import com.yohana.echolearn.components.TopBarComponent
 import com.yohana.echolearn.viewmodels.GenreViewModel
 
 @Composable
@@ -41,77 +42,88 @@ fun GenreView(
     }
     val songs by viewModel.songs.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFFF6F6F6))
-    ) {
-        // Top bar
-        TopBar(navController = navController!!)
-
-        // Content list
-        if (songs.isEmpty()){
-            Text(
-                text = "No songs found"
+    Scaffold(
+        topBar = {
+            TopBarComponent(
+                pageTitle = genre+" Music",
+                onBackClick = { navController!!.popBackStack() }
             )
-        }else{
-            LazyColumn(
+        },
+        content = {
+            paddingValues ->
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(15.dp) // Jarak antar item
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(color = Color(0xFFF6F6F6))
             ) {
-                // Genre Section
-                item {
-                    Row(
+                // Content list
+                if (songs.isEmpty()){
+                    Text(
+                        text = "No songs found"
+                    )
+                }else{
+                    LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(140.dp)
-                            .background(color = Color(0xFF3DB2FF))
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(15.dp) // Jarak antar item
                     ) {
-                        GenreCard("Pop", backgroundColor = Color.Blue)
-                        Spacer(modifier = Modifier.width(25.dp))
-                        Column {
-                            Text(
-                                text = "Genre",
-                                fontSize = 25.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = Color.White
-                            )
-                            Text(
-                                text = "Pop",
-                                fontSize = 18.sp,
-                                color = Color.White
-                            )
+                        // Genre Section
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(140.dp)
+                                    .background(color = Color(0xFF3DB2FF))
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                GenreCard("Pop", backgroundColor = Color.Blue)
+                                Spacer(modifier = Modifier.width(25.dp))
+                                Column {
+                                    Text(
+                                        text = "Genre",
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "Pop",
+                                        fontSize = 18.sp,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
+
+                        itemsIndexed(songs) { index, song ->
+                            Column(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)){
+                                MusicCard(
+                                    song = song,
+                                    index = index+1,
+                                    onCardClick = {if (type == "Listening") {
+                                        navController?.navigate(route = PagesEnum.Listening.name+"/${song.id}")
+                                    } else {
+                                        navController?.navigate(route = PagesEnum.Speaking.name+"/${song.id}")
+                                    }}
+                                )
+                            }
                         }
                     }
                 }
-
-                itemsIndexed(songs) { index, song ->
-                    Column(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)){
-                        MusicCard(
-                            song = song,
-                            index = index+1,
-                            onCardClick = {if (type == "Listening") {
-                                navController?.navigate(route = PagesEnum.Listening.name+"/${song.id}")
-                            } else {
-                                navController?.navigate(route = PagesEnum.Speaking.name+"/${song.id}")
-                            }}
-                        )
-                    }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color(0xFF3DB2FF))
+                ) {
+                    Navbar(
+                        navController = navController
+                    ) // Tambahkan konten navbar di sini
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color(0xFF3DB2FF))
-        ) {
-            Navbar() // Tambahkan konten navbar di sini
-        }
-    }
+    )
 }
 
 @Composable

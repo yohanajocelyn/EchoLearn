@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
@@ -31,8 +32,10 @@ import com.yohana.echolearn.ui.theme.poppins
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreenView(onTimeout: () -> Unit){
-    val systemUiController = rememberSystemUiController()
+fun SplashScreenView(
+    onTimeout: () -> Unit,
+    systemUiController: SystemUiController
+){
 
     LaunchedEffect(Unit) {
         systemUiController.setStatusBarColor(
