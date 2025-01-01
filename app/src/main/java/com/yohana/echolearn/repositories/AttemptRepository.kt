@@ -1,5 +1,8 @@
 package com.yohana.echolearn.repositories
 
+import com.yohana.echolearn.models.AttemptDetailResponse
+import com.yohana.echolearn.models.AttemptListResponse
+import com.yohana.echolearn.models.AttemptResponse
 import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.services.AttemptAPIService
 import retrofit2.Call
@@ -14,6 +17,9 @@ interface AttemptRepository{
         attemptedAt: String,
         isComplete: String
     ): Call<GeneralResponseModel>
+    fun getAttempt(token: String, attemptId: Int): Call<AttemptResponse>
+    fun getAttempts(token: String): Call<AttemptListResponse>
+    fun getAttemptDetail(token: String): Call<AttemptDetailResponse>
 }
 
 class NetworkAttemptRepository(
@@ -38,5 +44,17 @@ class NetworkAttemptRepository(
         createMap["isComplete"] = isComplete
 
         return attemptAPIService.createAttempt(token, createMap)
+    }
+
+    override fun getAttempt(token: String, attemptId: Int): Call<AttemptResponse> {
+        return attemptAPIService.getAttempt(token = token, attemptId = attemptId)
+    }
+
+    override fun getAttempts(token: String): Call<AttemptListResponse> {
+        return attemptAPIService.getAttempts(token = token)
+    }
+
+    override fun getAttemptDetail(token: String): Call<AttemptDetailResponse> {
+        return attemptAPIService.getAttemptDetail(token = token)
     }
 }

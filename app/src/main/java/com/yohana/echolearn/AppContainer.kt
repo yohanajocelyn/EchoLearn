@@ -2,6 +2,7 @@ package com.yohana.echolearn
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.google.gson.GsonBuilder
 import com.yohana.echolearn.repositories.AttemptRepository
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.NetworkAttemptRepository
@@ -93,9 +94,13 @@ class DefaultAppContainer(
         val client = OkHttpClient.Builder()
         client.addInterceptor(logging)
 
+        val gson = GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            .create()
+
         return Retrofit
             .Builder()
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client.build())
             .baseUrl(APIBaseURL)
             .build()

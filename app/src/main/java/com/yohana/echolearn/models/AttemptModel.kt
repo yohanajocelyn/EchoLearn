@@ -1,6 +1,8 @@
 package com.yohana.echolearn.models
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -8,17 +10,36 @@ import java.util.Date
 import java.util.Locale
 
 @SuppressLint("NewApi")
-data class Attempt (
+data class AttemptModel (
+    val id: Int = 0,
+    val userId: Int = 0,
     val variantId: Int = 0,
     val correctAnswer: String = "",
     val attemptedAnswer: String = "",
     val score: Int = 0,
     val attemptedAt: Date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()),
     val isComplete: Boolean = true,
-){
+)
 
+data class AttemptResponse(
+    val data: AttemptModel
+)
+
+data class AttemptListResponse(
+    val data: List<AttemptModel>
+)
+
+@SuppressLint("NewApi")
+data class AttemptDetail(
+    val id: Int = 0,
+    val score: Int = 0,
+    val attemptedAt: Date,
+    val isComplete: Boolean = true,
+    val variant: AttemptVariantDetail = AttemptVariantDetail(),
+    val song: AttemptSongDetail = AttemptSongDetail()
+){
     fun getDay(): String{
-        val formatter = SimpleDateFormat("EEEE", Locale.getDefault())
+        val formatter = SimpleDateFormat("EEE", Locale.getDefault())
         return formatter.format(attemptedAt)
     }
 
@@ -27,3 +48,7 @@ data class Attempt (
         return formatter.format(attemptedAt)
     }
 }
+
+data class AttemptDetailResponse(
+    val data: List<AttemptDetail>
+)

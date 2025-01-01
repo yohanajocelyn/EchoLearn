@@ -1,15 +1,14 @@
 package com.yohana.echolearn.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
@@ -19,23 +18,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yohana.echolearn.models.Attempt
+import com.yohana.echolearn.models.AttemptDetail
+import com.yohana.echolearn.models.AttemptModel
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
+import java.util.Date
 
 @Composable
 fun AttemptCard(
-    attempt: Attempt = Attempt(),
-    index: Int = 0
+    numbering: Int = 0,
+    onClick: () -> Unit = {},
+    attempt: AttemptDetail
 ){
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clickable {
+                onClick()
+            }
         ,
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(6.dp),
@@ -57,13 +61,14 @@ fun AttemptCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        text = "${index}",
+                        text = "${numbering}",
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                         ,
                         fontFamily = poppins,
-                        color = Color.White,
+                        color = Color(0xFF0068AD),
                         fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Column (
                         modifier = Modifier
@@ -89,26 +94,25 @@ fun AttemptCard(
                     .padding(horizontal = 8.dp, vertical = 8.dp)
             ){
                 Text(
-                    text = "Like the Movies",
+                    text = attempt.song.title,
                     fontFamily = poppins,
                 )
                 Text(
-                    text = "Laufey",
+                    text = attempt.song.artist,
                     fontFamily = poppins,
                 )
                 Text(
-                    text = "Listening Exercise",
+                    text = "${attempt.variant.type} Exercise",
                     fontFamily = poppins,
                 )
                 Text(
-                    text = "Completed",
+                    text = "Score: ${attempt.score} / 100",
+                    fontFamily = poppins,
+                )
+                Text(
+                    text = if (attempt.isComplete) "Complete" else "Not Completed",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0A5C36)
-                )
-                Text(
-                    text = "Not Completed",
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFBC2023)
+                    color = if (attempt.isComplete) Color(0xFF0A5C36) else Color(0xFFBC2023)
                 )
             }
         }
@@ -119,6 +123,10 @@ fun AttemptCard(
 @Composable
 fun AttemptCardPreview() {
     EchoLearnTheme {
-        AttemptCard()
+        AttemptCard(
+            attempt = AttemptDetail(
+                attemptedAt = Date(),
+            )
+        )
     }
 }

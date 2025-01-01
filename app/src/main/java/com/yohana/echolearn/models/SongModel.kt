@@ -18,3 +18,8 @@ data class SongResponse(
 data class SongListResponse(
     val data: List<SongModel>
 )
+
+data class AttemptSongDetail(
+    val title: String = "",
+    val artist: String = "",
+)
