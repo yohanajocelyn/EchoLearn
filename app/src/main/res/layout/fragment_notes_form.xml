@@ -37,14 +37,6 @@
                 android:hint="Input Words..."
                 android:padding="8dp" />
 
-            <EditText
-                android:id="@+id/etMeaning"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="Input Meaning..."
-                android:padding="8dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -71,6 +63,15 @@
             android:padding="8dp">
 
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/etMeaning"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Input Meaning..."
+            android:padding="8dp" />
     </androidx.cardview.widget.CardView>
 
     <Button
