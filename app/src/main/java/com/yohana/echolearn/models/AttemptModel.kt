@@ -8,7 +8,9 @@ import java.util.Date
 import java.util.Locale
 
 @SuppressLint("NewApi")
-data class Attempt (
+data class AttemptModel (
+    val id: Int = 0,
+    val userId: Int = 0,
     val variantId: Int = 0,
     val correctAnswer: String = "",
     val attemptedAnswer: String = "",
@@ -18,7 +20,7 @@ data class Attempt (
 ){
 
     fun getDay(): String{
-        val formatter = SimpleDateFormat("EEEE", Locale.getDefault())
+        val formatter = SimpleDateFormat("EEE", Locale.getDefault())
         return formatter.format(attemptedAt)
     }
 
@@ -27,3 +29,22 @@ data class Attempt (
         return formatter.format(attemptedAt)
     }
 }
+
+data class AttemptResponse(
+    val data: AttemptModel
+)
+
+data class AttemptListResponse(
+    val data: List<AttemptModel>
+)
+
+data class AdditionalAttemptDetail(
+    val songId: Int = 0,
+    val songTitle: String = "",
+    val artist: String = "",
+    val type: String = "",
+)
+
+data class AdditionalAttemptDetailResponse(
+    val data: AdditionalAttemptDetail
+)

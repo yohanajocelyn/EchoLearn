@@ -81,7 +81,8 @@ fun ListeningView(
     viewModel: ListeningViewModel,
     songId: Int,
     type: String,
-    token: String
+    token: String,
+    attemptId: Int = 0
 ){
 
     LaunchedEffect(songId){
