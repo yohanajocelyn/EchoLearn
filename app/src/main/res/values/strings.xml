@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">EchoLearn</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_notes">Notes</string>
+    <string name="title_leaderboard">Leaderboard</string>
+    <string name="fab_notes">Add Notes</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_notes_form">Notes Form</string>
 </resources>

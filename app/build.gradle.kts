@@ -65,7 +65,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0") //untuk convert json
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") //untuk logging
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4") //sync
-    implementation ("com.google.android.material:material:1.9.0")
+
 
 
 
