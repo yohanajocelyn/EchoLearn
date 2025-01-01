@@ -51,15 +51,24 @@ fun SpeakingView(
 ) {
     val variants by viewModel.variants.collectAsState()
     val variant by viewModel.variant.collectAsState()
+    val song by viewModel.song.collectAsState()
     val context = LocalContext.current
     val recognizedText by viewModel.recognizedText.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getVariants(id, "Speaking")
+        viewModel.getSong(id)
     }
+
+    LaunchedEffect(variants) {
+        if (variants.isNotEmpty()) {
+            viewModel.randomizedVariants()
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(color = Color(0xFFF6F6F6))
         ) {
 
 
@@ -105,30 +114,35 @@ fun SpeakingView(
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
                                 Text(
-                                    "Hello World", fontSize = 32.sp,
+                                    "${song.title}", fontSize = 32.sp,
                                     fontWeight = FontWeight(500),
                                     color = Color(0xFF000000)
                                 )
                                 Text(
-                                    "Hello World", fontSize = 16.sp,
+                                    "${song.artist}", fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(30.dp))
                                 Text(
-                                    "Hello World", fontSize = 16.sp,
+                                    "${song.genre}", fontSize = 16.sp,
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.height(15.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Text(
+                                text = "${variant.emptyLyric}",
+                                fontSize = 18.sp,
+                                lineHeight = 25.sp,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
 
-                        Text(
-                            text = "${variant.emptyLyric}",
-                            fontSize = 18.sp,
-                            lineHeight = 25.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF000000),
-                            textAlign = TextAlign.Center,
-                        )
                         Spacer(modifier = Modifier.height(10.dp))
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -155,7 +169,7 @@ fun SpeakingView(
                             )
 
                             Text(
-                                text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
+                                text = "$recognizedText",
                                 fontSize = 18.sp,
                                 lineHeight = 25.sp,
                                 fontWeight = FontWeight(400),

@@ -10,28 +10,28 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
+import com.yohana.echolearn.models.ErrorModel
+import com.yohana.echolearn.models.GeneralResponseModel
+import com.yohana.echolearn.models.SongModel
+import com.yohana.echolearn.models.SongResponse
+import com.yohana.echolearn.models.VariantListResponse
+import com.yohana.echolearn.models.VariantModel
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.repositories.VariantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.util.Locale
-import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.yohana.echolearn.models.ErrorModel
-import com.yohana.echolearn.models.GeneralResponseModel
-import com.yohana.echolearn.models.SongListResponse
-import com.yohana.echolearn.models.SongModel
-import com.yohana.echolearn.models.VariantListResponse
-import com.yohana.echolearn.models.VariantModel
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.util.Locale
 
 class SpeakingViewModel(
     private val userRepository: UserRepository,
@@ -49,6 +49,8 @@ class SpeakingViewModel(
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
 
+    private val _song = MutableStateFlow<SongModel>(SongModel())
+    val song: StateFlow<SongModel> get() = _song
     fun askSpeechInput(context: Context, activity: Activity) {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             Toast.makeText(context, "Speech not Available", Toast.LENGTH_SHORT).show()
@@ -78,7 +80,66 @@ class SpeakingViewModel(
     }
 
 
+    fun getSong(songId: Int) {
+        viewModelScope.launch {
+            try {
+                val call = songRepository.getSongById(songId)
+                call.enqueue(object : Callback<SongResponse> {
+                    override fun onResponse(call: Call<SongResponse>, res: Response<SongResponse>) {
+                        if (res.isSuccessful) {
+                            _song.value = res.body()!!.data
+                        } else {
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                        }
+                    }
 
+                    override fun onFailure(p0: Call<SongResponse>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                    }
+                })
+
+            } catch (error: IOException) {
+                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }
+        }
+    }
+
+    fun checkAnswer(token: String, variantId: Int, answer: String) {
+        viewModelScope.launch {
+            try {
+                val call = variantRepository.checkAnswerSpeaking(token, variantId, recognizedText.toString())
+                call.enqueue(object : Callback<GeneralResponseModel> {
+                    override fun onResponse(
+                        call: Call<GeneralResponseModel>,
+                        res: Response<GeneralResponseModel>
+                    ) {
+                        if (res.isSuccessful) {
+                            Log.d("check-answer", "CHECK ANSWER: ${res.body()}")
+
+                        } else {
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                    }
+                })
+
+            } catch (error: IOException) {
+                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }
+        }
+
+    }
     //get variants
     fun getVariants(songId: Int, type: String) {
         viewModelScope.launch {
@@ -91,6 +152,7 @@ class SpeakingViewModel(
                     ) {
                         if (res.isSuccessful) {
                             _variants.value = res.body()!!.data
+                            randomizedVariants()
                         } else {
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -111,7 +173,7 @@ class SpeakingViewModel(
         }
     }
 
-    fun randomizedVariants():VariantModel {
+    fun randomizedVariants(): VariantModel {
         val randomIndex = (0 until _variants.value.size).random()
         _variant.value = _variants.value[randomIndex]
         return _variant.value
@@ -128,6 +190,7 @@ class SpeakingViewModel(
                     ) {
                         if (res.isSuccessful) {
                             Log.d("check-answer", "CHECK ANSWER: ${res.body()}")
+
                         } else {
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
