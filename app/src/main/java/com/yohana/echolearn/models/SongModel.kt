@@ -1,14 +1,14 @@
 package com.yohana.echolearn.models
 
 data class SongModel (
-    val id: Int,
-    val artist: String,
-    val fileName: String,
-    val genre: String,
-    val image: String,
-    val lyrics: String,
-    val title: String,
-    val variants: List<VariantModel>
+    val id: Int = 0,
+    val artist: String = "",
+    val fileName: String ="",
+    val genre: String = "",
+    val image: String = "",
+    val lyrics: String = "",
+    val title: String = "",
+    val variants: List<VariantModel> = emptyList()
 )
 
 data class SongResponse(

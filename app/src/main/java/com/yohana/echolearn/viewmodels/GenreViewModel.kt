@@ -53,7 +53,7 @@ class GenreViewModel(
                     }
                 })
             }catch(error: IOException){
-                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+                Log.d("get-error", "GET ERROR: ${error.localizedMessage}")
             }
         }
     }

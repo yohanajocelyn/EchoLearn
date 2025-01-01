@@ -1,5 +1,6 @@
 package com.yohana.echolearn.route
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -16,9 +17,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.ListeningViewModel
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.ListMusic
@@ -51,23 +54,25 @@ enum class PagesEnum {
     Profile,
     Listening,
     Speaking,
-    Reading,
     Leaderboards
 }
 
+@SuppressLint("NewApi")
 @Composable
 fun AppRouting(
     context: Context,
     innerpadding: PaddingValues,
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
-    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory)
-
+    genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
+    listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory)
     ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
+    val systemUiController = rememberSystemUiController()
 
     val token = homeViewModel.token.collectAsState()
+    val username = homeViewModel.username.collectAsState()
 
     NavHost(
         navController = navController,
@@ -78,16 +83,19 @@ fun AppRouting(
         modifier = Modifier.padding(innerpadding)
     ) {
         composable(route = PagesEnum.Splash.name) {
-            SplashScreenView {
-                // Mark the first launch as completed
-                setFirstTimeLaunch(context)
+            SplashScreenView (
+                systemUiController = systemUiController,
+                onTimeout = {
+                    // Mark the first launch as completed
+                    setFirstTimeLaunch(context)
 
-                navController.navigate(PagesEnum.Starter.name) {
-                    popUpTo(PagesEnum.Splash.name) {
-                        inclusive = true
-                    } // Remove splash from backstack
+                    navController.navigate(PagesEnum.Starter.name) {
+                        popUpTo(PagesEnum.Splash.name) {
+                            inclusive = true
+                        } // Remove splash from backstack
+                    }
                 }
-            }
+            )
         }
 
         composable(route = PagesEnum.Starter.name) {
@@ -96,7 +104,6 @@ fun AppRouting(
             )
         }
 
-        //Untuk sementara home yg greeting dulu br nanti dipindah ke logreg
         composable(route = PagesEnum.Login.name) {
             LoginView(
                 viewModel = authenticationViewModel,
@@ -113,7 +120,10 @@ fun AppRouting(
         }
 
         composable(route = PagesEnum.Home.name) {
-            HomeView(navController = navController)
+            HomeView(
+                navController = navController,
+                systemUiController = systemUiController,
+                name = username.value)
         }
 
         composable(route = PagesEnum.SongMenu.name + "/{type}",
@@ -125,18 +135,32 @@ fun AppRouting(
             ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type")
 
-            ListMusic(navController = navController, type = type!!)
+            ListMusic(navController = navController, type = type!!, context = context)
         }
 
-        composable(route = PagesEnum.Listening.name ) {
+        composable(route = PagesEnum.Listening.name+"/{id}",
+                arguments = listOf(
+                    navArgument(name = "id"){
+                        type = NavType.IntType
+                    }
+                )
+            ) {
             backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-           ListeningView()
+           ListeningView(
+               navController = navController,
+               viewModel = listeningViewModel,
+               songId = id!!,
+               type = PagesEnum.Listening.name,
+               token = token.value
+           )
         }
 
-        composable(route = PagesEnum.Speaking.name ) { backStackEntry ->
+        composable(route = PagesEnum.Speaking.name+"/{id}" ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-            SpeakingView()
+            SpeakingView(
+                navController = navController
+            )
         }
 
 //        composable(route = PagesEnum.SongDetail.name+"/{type}/{genre}",

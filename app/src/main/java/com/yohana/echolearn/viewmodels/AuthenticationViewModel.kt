@@ -16,13 +16,13 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.R
+import com.yohana.echolearn.uistates.AuthenticationStatusUIState
+import com.yohana.echolearn.uistates.AuthenticationUIState
 import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.UserResponse
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.route.PagesEnum
-import com.yohana.echolearn.uistates.AuthenticationStatusUIState
-import com.yohana.echolearn.uistates.AuthenticationUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -236,11 +236,10 @@ class AuthenticationViewModel(
                 val call = authenticationRepository.login(emailInput, passwordInput)
                 call.enqueue(object : Callback<UserResponse> {
                     override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
-                        if (res.isSuccessful) {
+                        if (res.isSuccessful){
                             saveUsernameToken(
-                                res.body()!!.data.token!!,
-                                res.body()!!.data.username!!
-                            )
+                                token = res.body()!!.data.token!!,
+                                username = res.body()!!.data.username!!)
 
                             dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
 

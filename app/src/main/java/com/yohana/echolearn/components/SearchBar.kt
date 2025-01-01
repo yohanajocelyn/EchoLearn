@@ -1,4 +1,4 @@
-package com.yohana.echolearn.view
+package com.yohana.echolearn.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
