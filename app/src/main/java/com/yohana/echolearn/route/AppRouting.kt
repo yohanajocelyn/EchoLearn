@@ -1,5 +1,6 @@
 package com.yohana.echolearn.route
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -64,7 +65,7 @@ fun AppRouting(
     authenticationViewModel: AuthenticationViewModel = viewModel(factory = AuthenticationViewModel.Factory),
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
     genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
-  speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
+    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
     listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory)
 
     ) {
@@ -138,9 +139,13 @@ fun AppRouting(
            ListeningView()
         }
 
-        composable(route = PagesEnum.Speaking.name ) { backStackEntry ->
+        composable(route = PagesEnum.Speaking.name +"/{id}",  arguments = listOf(
+            navArgument(name = "id"){
+                type = NavType.IntType
+            }
+        )) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-            SpeakingView()
+            SpeakingView(viewModel = speakingViewModel, id = id!!, activity = Activity())
         }
 
 //        composable(route = PagesEnum.SongDetail.name+"/{type}/{genre}",

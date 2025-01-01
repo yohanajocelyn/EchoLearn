@@ -1,8 +1,7 @@
 package com.yohana.echolearn.views
 
+
 import android.app.Activity
-import android.speech.RecognizerIntent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,13 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,25 +32,37 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-
-
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
+import com.yohana.echolearn.view.MusicCard
 import com.yohana.echolearn.view.Navbar
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
 @Composable
-fun SpeakingView(modifier: Modifier = Modifier,  viewModel: SpeakingViewModel = viewModel()) {
+fun SpeakingView(
+    modifier: Modifier = Modifier,
+    viewModel: SpeakingViewModel = viewModel(),
+    id: Int,
+    activity: Activity
 
+) {
+    val variants by viewModel.variants.collectAsState()
+    val variant by viewModel.variant.collectAsState()
+    val context = LocalContext.current
+    val recognizedText by viewModel.recognizedText.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getVariants(id, "Speaking")
+    }
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Konten utama
+
+
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
                 Row(
                     modifier = Modifier
@@ -109,7 +122,7 @@ fun SpeakingView(modifier: Modifier = Modifier,  viewModel: SpeakingViewModel = 
                         Spacer(modifier = Modifier.height(15.dp))
 
                         Text(
-                            text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
+                            text = "${variant.emptyLyric}",
                             fontSize = 18.sp,
                             lineHeight = 25.sp,
                             fontWeight = FontWeight(400),
@@ -141,18 +154,18 @@ fun SpeakingView(modifier: Modifier = Modifier,  viewModel: SpeakingViewModel = 
                                 color = Color(0xFF000000),
                             )
 
-//                            Text(
-//                                text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
-//                                fontSize = 18.sp,
-//                                lineHeight = 25.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFF000000),
-//                                textAlign = TextAlign.Center,
-//                            )
+                            Text(
+                                text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
+                                fontSize = 18.sp,
+                                lineHeight = 25.sp,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Center,
+                            )
                             Spacer(modifier = Modifier.height(100.dp))
 
                             Button(
-                                onClick = {},
+                                onClick = {viewModel.askSpeechInput(context, activity)},
                                 modifier = Modifier
                                     .size(135.dp) // Ukuran lingkaran
                                     .background(Color.Blue, CircleShape),
@@ -182,8 +195,4 @@ fun SpeakingView(modifier: Modifier = Modifier,  viewModel: SpeakingViewModel = 
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewSpeaking() {
-    SpeakingView()
-}
+

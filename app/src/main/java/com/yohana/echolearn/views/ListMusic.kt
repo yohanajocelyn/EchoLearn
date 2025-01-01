@@ -89,7 +89,7 @@ fun ListMusic(
             }
             item {
                 Text(
-                    text = "lIST Musics",
+                    text = "List Musics",
                     style = TextStyle(
                         fontSize = 24.sp,
                         lineHeight = 31.9.sp,
@@ -111,9 +111,10 @@ fun ListMusic(
                         index = index + 1,
                         onCardClick = {
                             if (type == "Listening") {
-                                navController?.navigate(route = PagesEnum.Listening)
+                                navController?.navigate(route = PagesEnum.Listening.name + "/$song.id")
                             } else {
-                                navController?.navigate(route = PagesEnum.Speaking)
+//                                navController?.navigate(route = PagesEnum.Speaking.name + "/$song.id")
+                               navController?.navigate(PagesEnum.Speaking.name + "/${song.id}")
                             }
                         }
                     )

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,19 @@ import com.yohana.echolearn.repositories.VariantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
+import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.yohana.echolearn.models.ErrorModel
+import com.yohana.echolearn.models.GeneralResponseModel
+import com.yohana.echolearn.models.SongListResponse
+import com.yohana.echolearn.models.SongModel
+import com.yohana.echolearn.models.VariantListResponse
+import com.yohana.echolearn.models.VariantModel
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.IOException
 
 class SpeakingViewModel(
     private val userRepository: UserRepository,
@@ -29,7 +43,13 @@ class SpeakingViewModel(
 
     private var speechRecognizer: SpeechRecognizer? = null
 
-    fun askSpeechInput(context: Context) {
+    private val _variants = MutableStateFlow<List<VariantModel>>(emptyList())
+    val variants: StateFlow<List<VariantModel>> = _variants
+
+    private val _variant = MutableStateFlow<VariantModel>(VariantModel())
+    val variant: StateFlow<VariantModel> = _variant
+
+    fun askSpeechInput(context: Context, activity: Activity) {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             Toast.makeText(context, "Speech not Available", Toast.LENGTH_SHORT).show()
         } else {
@@ -55,6 +75,77 @@ class SpeakingViewModel(
     override fun onCleared() {
         super.onCleared()
         speechRecognizer?.destroy()
+    }
+
+
+
+    //get variants
+    fun getVariants(songId: Int, type: String) {
+        viewModelScope.launch {
+            try {
+                val call = variantRepository.getVariants(songId, type)
+                call.enqueue(object : Callback<VariantListResponse> {
+                    override fun onResponse(
+                        call: Call<VariantListResponse>,
+                        res: Response<VariantListResponse>
+                    ) {
+                        if (res.isSuccessful) {
+                            _variants.value = res.body()!!.data
+                        } else {
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<VariantListResponse>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                    }
+                })
+
+            } catch (error: IOException) {
+                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }
+        }
+    }
+
+    fun randomizedVariants():VariantModel {
+        val randomIndex = (0 until _variants.value.size).random()
+        _variant.value = _variants.value[randomIndex]
+        return _variant.value
+    }
+
+    fun checkAnswerSpeaking(token: String, variantId: Int, answer: String) {
+        viewModelScope.launch {
+            try {
+                val call = variantRepository.checkAnswerSpeaking(token, variantId, answer)
+                call.enqueue(object : Callback<GeneralResponseModel> {
+                    override fun onResponse(
+                        call: Call<GeneralResponseModel>,
+                        res: Response<GeneralResponseModel>
+                    ) {
+                        if (res.isSuccessful) {
+                            Log.d("check-answer", "CHECK ANSWER: ${res.body()}")
+                        } else {
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                    }
+                })
+
+            } catch (error: IOException) {
+                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }
+        }
     }
 
     companion object {
