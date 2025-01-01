@@ -65,10 +65,14 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0") //untuk convert json
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") //untuk logging
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4") //sync
+    implementation ("com.google.android.material:material:1.9.0")
+
 
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.appcompat)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
