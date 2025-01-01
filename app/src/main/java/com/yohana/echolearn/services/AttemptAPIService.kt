@@ -1,6 +1,6 @@
 package com.yohana.echolearn.services
 
-import com.yohana.echolearn.models.AdditionalAttemptDetailResponse
+import com.yohana.echolearn.models.AttemptDetailResponse
 import com.yohana.echolearn.models.AttemptListResponse
 import com.yohana.echolearn.models.AttemptResponse
 import com.yohana.echolearn.models.GeneralResponseModel
@@ -29,9 +29,8 @@ interface AttemptAPIService {
         @Header("X-API-TOKEN") token: String
     ): Call<AttemptListResponse>
 
-    @GET("api/attempt/additional-data/{attemptId}")
-    fun getAdditionalAttemptData(
+    @GET("api/attempts-detail")
+    fun getAttemptDetail(
         @Header("X-API-TOKEN") token: String,
-        @Path("attemptId") attemptId: Int
-    ): Call<AdditionalAttemptDetailResponse>
+    ): Call<AttemptDetailResponse>
 }

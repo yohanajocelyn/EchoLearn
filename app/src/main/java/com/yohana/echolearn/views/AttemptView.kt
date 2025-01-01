@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.components.AttemptCard
+import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.components.TopBarComponent
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
@@ -26,11 +27,11 @@ fun AttemptView(
     token: String,
     viewModel: AttemptViewModel
 ){
-    val attempts by viewModel.attempts.collectAsState()
-
     LaunchedEffect(token){
-        viewModel.getAttempts(token)
+        viewModel.getAttemptDetail(token)
     }
+
+    val attempts by viewModel.attempts.collectAsState()
 
     Scaffold (
         topBar = {
@@ -48,10 +49,17 @@ fun AttemptView(
             ){
                 itemsIndexed(attempts){ index, attempt ->
                     AttemptCard(
-                        onClick = { navController.navigate(PagesEnum.Listening.name + "continue-attempt/${attempt.id}") }
+                        onClick = { navController.navigate(PagesEnum.Listening.name + "continue-attempt/${attempt.id}") },
+                        numbering = index + 1,
+                        attempt = attempt
                     )
                 }
             }
+        },
+        bottomBar = {
+            Navbar(
+                navController = navController
+            )
         }
     )
 

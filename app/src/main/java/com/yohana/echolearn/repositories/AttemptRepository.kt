@@ -1,6 +1,6 @@
 package com.yohana.echolearn.repositories
 
-import com.yohana.echolearn.models.AdditionalAttemptDetailResponse
+import com.yohana.echolearn.models.AttemptDetailResponse
 import com.yohana.echolearn.models.AttemptListResponse
 import com.yohana.echolearn.models.AttemptResponse
 import com.yohana.echolearn.models.GeneralResponseModel
@@ -19,7 +19,7 @@ interface AttemptRepository{
     ): Call<GeneralResponseModel>
     fun getAttempt(token: String, attemptId: Int): Call<AttemptResponse>
     fun getAttempts(token: String): Call<AttemptListResponse>
-    fun getAdditionalAttemptData(token: String, attemptId: Int): Call<AdditionalAttemptDetailResponse>
+    fun getAttemptDetail(token: String): Call<AttemptDetailResponse>
 }
 
 class NetworkAttemptRepository(
@@ -54,10 +54,7 @@ class NetworkAttemptRepository(
         return attemptAPIService.getAttempts(token = token)
     }
 
-    override fun getAdditionalAttemptData(
-        token: String,
-        attemptId: Int
-    ): Call<AdditionalAttemptDetailResponse> {
-        return attemptAPIService.getAdditionalAttemptData(token = token, attemptId = attemptId)
+    override fun getAttemptDetail(token: String): Call<AttemptDetailResponse> {
+        return attemptAPIService.getAttemptDetail(token = token)
     }
 }

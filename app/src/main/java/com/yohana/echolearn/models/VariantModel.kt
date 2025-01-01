@@ -14,3 +14,7 @@ data class VariantResponse(
 data class VariantListResponse(
     val data: List<VariantModel>
 )
+
+data class AttemptVariantDetail(
+    val type: String = ""
+)

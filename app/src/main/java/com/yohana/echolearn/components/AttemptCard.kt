@@ -21,15 +21,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yohana.echolearn.models.AttemptDetail
 import com.yohana.echolearn.models.AttemptModel
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
+import java.util.Date
 
 @Composable
 fun AttemptCard(
-    attemptModel: AttemptModel = AttemptModel(),
-    index: Int = 0,
-    onClick: () -> Unit = {}
+    numbering: Int = 0,
+    onClick: () -> Unit = {},
+    attempt: AttemptDetail
 ){
     ElevatedCard(
         modifier = Modifier
@@ -59,26 +61,27 @@ fun AttemptCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        text = "${index}",
+                        text = "${numbering}",
                         modifier = Modifier
                             .padding(bottom = 16.dp)
                         ,
                         fontFamily = poppins,
-                        color = Color.White,
+                        color = Color(0xFF0068AD),
                         fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Column (
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                     ){
                         Text(
-                            text = attemptModel.getDay(),
+                            text = attempt.getDay(),
                             fontFamily = poppins,
                             fontSize = 14.sp,
                             color = Color.White
                         )
                         Text(
-                            text = attemptModel.getDate(),
+                            text = attempt.getDate(),
                             fontFamily = poppins,
                             fontSize = 14.sp,
                             color = Color.White
@@ -91,26 +94,25 @@ fun AttemptCard(
                     .padding(horizontal = 8.dp, vertical = 8.dp)
             ){
                 Text(
-                    text = "Like the Movies",
+                    text = attempt.song.title,
                     fontFamily = poppins,
                 )
                 Text(
-                    text = "Laufey",
+                    text = attempt.song.artist,
                     fontFamily = poppins,
                 )
                 Text(
-                    text = "Listening Exercise",
+                    text = "${attempt.variant.type} Exercise",
                     fontFamily = poppins,
                 )
                 Text(
-                    text = "Completed",
+                    text = "Score: ${attempt.score} / 100",
+                    fontFamily = poppins,
+                )
+                Text(
+                    text = if (attempt.isComplete) "Complete" else "Not Completed",
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0A5C36)
-                )
-                Text(
-                    text = "Not Completed",
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFBC2023)
+                    color = if (attempt.isComplete) Color(0xFF0A5C36) else Color(0xFFBC2023)
                 )
             }
         }
@@ -121,6 +123,10 @@ fun AttemptCard(
 @Composable
 fun AttemptCardPreview() {
     EchoLearnTheme {
-        AttemptCard()
+        AttemptCard(
+            attempt = AttemptDetail(
+                attemptedAt = Date(),
+            )
+        )
     }
 }
