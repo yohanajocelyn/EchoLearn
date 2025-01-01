@@ -234,7 +234,8 @@ class AuthenticationViewModel (
                         if (res.isSuccessful){
                             saveUsernameToken(
                                 token = res.body()!!.data.token!!,
-                                username = res.body()!!.data.username!!)
+                                username = res.body()!!.data.username!!
+                            )
 
                             dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
 
