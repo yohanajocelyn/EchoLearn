@@ -31,6 +31,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -84,7 +85,7 @@ fun ListeningView(
 ){
 
     LaunchedEffect(songId){
-        viewModel.setSong(songId)
+        viewModel.setSong(songId, token, navController)
         viewModel.setVariants(songId, type)
     }
 
@@ -158,11 +159,6 @@ fun ListeningView(
                     PlayPauseButton(
                         isPlaying = viewModel.isPlaying,
                         onToggle = {
-                            if (viewModel.isPlaying) {
-                                viewModel.audio.pause()
-                            } else {
-                                viewModel.audio.start()
-                            }
                             viewModel.updateIsPlaying()
                         }
                     )
@@ -174,59 +170,84 @@ fun ListeningView(
                 modifier = Modifier
                     .padding(top = 16.dp)
             ) {
-            lines.forEach { line ->
-                FlowRow(
-                    modifier = Modifier.padding(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    line.words.forEach { word ->
-                        when (word) {
-                            is ListeningViewModel.TextElement.Blank -> {
-                                BasicTextField(
-                                    value = viewModel.userAnswers[word.index],
-                                    onValueChange = { viewModel.updateUserAnswer(word.index, it) },
-                                    singleLine = true,
-                                    textStyle = TextStyle(
-                                        fontSize = 16.sp,
-                                        textAlign = TextAlign.Center
-                                    ),
-                                    modifier = Modifier
-                                        .width(120.dp)
-                                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                                        .border(
-                                            width = 1.dp,
-                                            color = MaterialTheme.colorScheme.outline,
-                                            shape = RoundedCornerShape(4.dp)
-                                        )
-                                        .then(Modifier.padding(vertical = 1.dp))
-                                ) { innerTextField ->
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        if (viewModel.userAnswers[word.index].isEmpty()) {
-                                            Text(
-                                                "Type",
-                                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                                fontSize = 16.sp
+                lines.forEach { line ->
+                    FlowRow(
+                        modifier = Modifier.padding(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        line.words.forEach { word ->
+                            when (word) {
+                                is ListeningViewModel.TextElement.Blank -> {
+                                    BasicTextField(
+                                        value = viewModel.userAnswers[word.index],
+                                        onValueChange = { viewModel.updateUserAnswer(word.index, it) },
+                                        singleLine = true,
+                                        textStyle = TextStyle(
+                                            fontSize = 16.sp,
+                                            textAlign = TextAlign.Center
+                                        ),
+                                        modifier = Modifier
+                                            .width(120.dp)
+                                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                                            .border(
+                                                width = 1.dp,
+                                                color = MaterialTheme.colorScheme.outline,
+                                                shape = RoundedCornerShape(4.dp)
                                             )
+                                            .then(Modifier.padding(vertical = 1.dp))
+                                    ) { innerTextField ->
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            if (viewModel.userAnswers[word.index].isEmpty()) {
+                                                Text(
+                                                    "Type",
+                                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                                                    fontSize = 16.sp
+                                                )
+                                            }
+                                            innerTextField()
                                         }
-                                        innerTextField()
                                     }
                                 }
-                            }
 
-                            is ListeningViewModel.TextElement.Regular -> {
-                                Text(
-                                    text = word.text,
-                                    modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 10.dp),
-                                    fontSize = 16.sp
-                                )
+                                is ListeningViewModel.TextElement.Regular -> {
+                                    Text(
+                                        text = word.text,
+                                        modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 10.dp),
+                                        fontSize = 16.sp
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
+                Button(
+                    onClick = {
+                        viewModel.saveProgress(
+                            token = token,
+                            navController = navController,
+                            isCompleted = true
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
+                    ,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF3DB2FF),
+                    )
+                ) {
+                    Text(
+                        text = "Submit Answer",
+                        fontFamily = poppins,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                        ,
+                        fontSize = 18.sp
+                    )
+                }
             }
         }
     }
@@ -236,7 +257,7 @@ fun ListeningView(
             onDismissRequest = {
                 viewModel.returnWithoutSaving(navController)
            },
-            onConfirmation = { viewModel.saveProgress(token = token, navController = navController) },
+            onConfirmation = { viewModel.saveProgress(token = token, navController = navController, isCompleted = false) },
             viewModel = viewModel
         )
     }

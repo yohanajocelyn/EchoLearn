@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -52,15 +53,27 @@ fun HomeView(
         color = Color(0xFF3DB2FF), // Your color
         darkIcons = false // true for dark icons, false for light
     )
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color(0xFF3DB2FF))
-            .padding(top = 18.dp),
-    ) {
-        Greeting(name = name)
-        LearningMenu(navController = navController)
-    }
+    Scaffold(
+        content = {
+            paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(0xFF3DB2FF))
+                    .padding(paddingValues)
+                ,
+            ) {
+                Greeting(name = name)
+                LearningMenu(navController = navController)
+            }
+        }
+        ,
+        bottomBar = {
+            Navbar(
+                navController = navController
+            )
+        }
+    )
 }
 
 @Composable
@@ -133,7 +146,6 @@ fun LearningMenu(
                 content = "Listen and shadow select lyrics to perfect your pronunciation!",
                 img = painterResource(id = R.drawable.speaking),
                 onCardClick = {
-                    println("Navigating to SongMenu")
                     navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Speaking.name)
                 }
             )
@@ -144,18 +156,8 @@ fun LearningMenu(
                 content = "Catch the missing words in the lyrics as you listen!",
                 img = painterResource(id = R.drawable.listening),
                 onCardClick = {
-                    println("Navigating to SongMenu")
                     navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Listening.name)
                 })
-        }
-
-        Column(
-            verticalArrangement = Arrangement.Bottom
-
-        ) {
-            Navbar(
-                navController = navController
-            ) // Tambahkan konten navbar di sini
         }
     }
 }

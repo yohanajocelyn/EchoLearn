@@ -112,16 +112,12 @@ fun GenreView(
                         }
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color(0xFF3DB2FF))
-                ) {
-                    Navbar(
-                        navController = navController
-                    ) // Tambahkan konten navbar di sini
-                }
             }
+        },
+        bottomBar = {
+            Navbar(
+                navController = navController
+            )
         }
     )
 }

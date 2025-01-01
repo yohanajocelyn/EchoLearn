@@ -1,5 +1,6 @@
 package com.yohana.echolearn.viewmodels
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -33,6 +34,7 @@ import com.yohana.echolearn.models.VariantModel
 import com.yohana.echolearn.repositories.AttemptRepository
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.VariantRepository
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.uistates.ListeningUIState
 import com.yohana.echolearn.uistates.StringDataStatusUIState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -88,7 +90,7 @@ class ListeningViewModel(
         data class Regular(val text: String): TextElement()
     }
 
-    fun setSong(songId: Int){
+    fun setSong(songId: Int, token: String, navController: NavController){
         viewModelScope.launch {
             try {
                 val call = songRepository.getSongById(songId)
@@ -99,7 +101,7 @@ class ListeningViewModel(
                     ) {
                         if (res.isSuccessful) {
                             _song.value = res.body()!!.data
-                            initializeAudio()
+                            initializeAudio(token, navController)
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -153,7 +155,8 @@ class ListeningViewModel(
         }
     }
 
-    fun initializeAudio(){
+    @SuppressLint("NewApi")
+    fun initializeAudio(token: String, navController: NavController){
         this.audio = MediaPlayer().apply {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
             setDataSource(_song.value.fileName) // Use the actual remote URL
@@ -162,6 +165,13 @@ class ListeningViewModel(
                 true
             }
             prepareAsync()
+            setOnCompletionListener {
+                saveProgress(
+                    token = token,
+                    navController = navController,
+                    isCompleted = true
+                )
+            }
         }
     }
 
@@ -184,7 +194,6 @@ class ListeningViewModel(
                 counter++
             }
         }
-
         this.blankPositions = positions
     }
 
@@ -214,6 +223,11 @@ class ListeningViewModel(
     }
 
     fun updateIsPlaying(){
+        if(isPlaying){
+            this.audio.pause()
+        }else{
+            this.audio.start()
+        }
         isPlaying = !isPlaying
     }
 
@@ -222,21 +236,39 @@ class ListeningViewModel(
     }
 
     fun returnWithoutSaving(navController: NavController){
-        resetViewModel()
         navController.popBackStack()
+        resetViewModel()
+    }
+
+    private fun calculateScore(): Int{
+        var counter = 0
+
+        answers.forEachIndexed { index, answer ->
+            if(userAnswers[index].equals(answer, ignoreCase = true)){
+                counter++
+            }
+        }
+
+        return (counter * (100/answers.size))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun saveProgress(token: String, navController: NavController){
+    fun saveProgress(token: String, navController: NavController, isCompleted: Boolean){
         viewModelScope.launch {
             createStatus = StringDataStatusUIState.Loading
 
             Log.d("attempt-creation", "TOKEN: ${token}")
-
+            var score: String
+            val isComplete: String
             val attemptedAnswer: String = userAnswers.joinToString(", ")
-            val correctAnswer: String = answers.joinToString(", ")
-            val score = "0"
-            val isComplete = "false"
+            var correctAnswer: String = answers.joinToString(", ")
+            if(isCompleted){
+                score = calculateScore().toString()
+                isComplete = "true"
+            }else{
+                score = "0"
+                isComplete = "false"
+            }
             val attemptedAt: String = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
             try{
@@ -259,9 +291,13 @@ class ListeningViewModel(
                             Log.d("json", "JSON RESPONSE: ${res.body()!!.data}")
                             createStatus = StringDataStatusUIState.Success(res.body()!!.data)
 
-                            resetViewModel()
+                            if(isCompleted){
+                                navController.navigate(PagesEnum.Home.name)
+                            }else{
+                                navController.popBackStack()
+                            }
 
-                            navController.popBackStack()
+                            resetViewModel()
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),

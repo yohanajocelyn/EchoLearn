@@ -68,7 +68,6 @@ fun ListMusic(
                     item {
                         SearchBar()
                         Spacer(modifier = Modifier.height(15.dp))
-
                     }
                     item {
                         Text(
@@ -84,17 +83,7 @@ fun ListMusic(
                         Spacer(modifier = Modifier.height(10.dp))
 
                     }
-                    //hilangin dulu nti dibuka lg pas bisa passing song ke MusicCard
-//            items(3) { index ->
-//                MusicCard(onCardClick = {
-//                    if (type == "Listening") {
-//                        navController?.navigate(route = PagesEnum.Listening.name)
-//                    } else {
-//                        navController?.navigate(route = PagesEnum.Speaking.name)
-//                    }
-//                })
-//                Spacer(modifier = Modifier.height(13.dp))
-//            }
+
                     item {
                         Spacer(modifier = Modifier.height(10.dp))
 
@@ -177,16 +166,12 @@ fun ListMusic(
                         }
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color(0xFF3DB2FF))
-                ) {
-                    Navbar(
-                        navController = navController
-                    )
-                }
             }
+        },
+        bottomBar = {
+            Navbar(
+                navController = navController
+            )
         }
     )
 }
