@@ -6,9 +6,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
 @Composable
-fun SimpleAlertDialog() {
+fun SimpleAlertDialog(navHostController: NavHostController, score: Int) {
 
     AlertDialog(
         onDismissRequest = {  },
@@ -16,11 +19,11 @@ fun SimpleAlertDialog() {
             Text(text = "It's Done")
         },
         text = {
-            Text("Your Score : ")
+            Text("Your Score : " )
         },
         confirmButton = {
             TextButton(onClick = {
-
+                navHostController.navigate("home")
             }) {
                 Text("Exit")
             }

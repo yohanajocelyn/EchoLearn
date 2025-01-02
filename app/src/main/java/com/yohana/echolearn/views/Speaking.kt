@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.components.SimpleAlertDialog
@@ -48,7 +49,8 @@ fun SpeakingView(
     viewModel: SpeakingViewModel = viewModel(),
     id: Int,
     token:String,
-    activity: Activity
+    activity: Activity,
+    navController: NavHostController
 
 ) {
     val variants by viewModel.variants.collectAsState()
@@ -57,7 +59,7 @@ fun SpeakingView(
     val context = LocalContext.current
     val recognizedText by viewModel.recognizedText.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
-
+   val answerResponse by viewModel.answerResponse.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.getVariants(id, "Speaking")
         viewModel.getSong(id)
@@ -72,21 +74,22 @@ fun SpeakingView(
 
     LaunchedEffect(recognizedText) {
         if (recognizedText.isNotEmpty()) {
-            viewModel.checkAnswer(token, variant.id, recognizedText)
+            viewModel.checkAnswerSpeaking(token, variant.id, recognizedText)
             showDialog = true
         }
     }
-    if (showDialog) {
-        SimpleAlertDialog(
 
-        )
+    if (showDialog) {
+
+
     }
 
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
+
         Column(
             modifier = Modifier.fillMaxSize().background(color = Color(0xFFF6F6F6))
         ) {
-
+            Text("${variant.id}")
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
                 Row(
                     modifier = Modifier

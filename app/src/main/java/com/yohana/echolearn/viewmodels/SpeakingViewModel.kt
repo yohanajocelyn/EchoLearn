@@ -15,6 +15,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
+import com.yohana.echolearn.models.Attempt
+import com.yohana.echolearn.models.AttemptResponse
 import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.SongModel
@@ -48,6 +50,9 @@ class SpeakingViewModel(
 
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
+    private val _answerResponse = MutableStateFlow<GeneralResponseModel?>(null)
+    val answerResponse: StateFlow<GeneralResponseModel?> get() = _answerResponse
+
 
     private val _song = MutableStateFlow<SongModel>(SongModel())
     val song: StateFlow<SongModel> get() = _song
@@ -107,19 +112,21 @@ class SpeakingViewModel(
             }
         }
     }
-
-    fun checkAnswer(token: String, variantId: Int, answer: String) {
+fun checkAnswerSpeaking(token: String, id: Int, answer: String) {
         viewModelScope.launch {
             try {
-                val call = variantRepository.checkAnswerSpeaking(token, variantId, recognizedText.toString())
-                call.enqueue(object : Callback<GeneralResponseModel> {
+                val call = variantRepository.checkAnswerSpeaking(
+                    token = token,
+                    variantId = id,
+                    answer = answer
+                )
+                call.enqueue(object : Callback<AttemptResponse > {
                     override fun onResponse(
-                        call: Call<GeneralResponseModel>,
-                        res: Response<GeneralResponseModel>
+                        call: Call<AttemptResponse>,
+                        res: Response<AttemptResponse>
                     ) {
                         if (res.isSuccessful) {
-                            Log.d("check-answer", "CHECK ANSWER: ${res.body()}")
-
+                            Log.d("answer-response", "ANSWER RESPONSE: ${res.body()}")
                         } else {
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -129,7 +136,7 @@ class SpeakingViewModel(
                         }
                     }
 
-                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
+                    override fun onFailure(p0: Call<AttemptResponse>, t: Throwable) {
                         Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
                     }
                 })
@@ -138,8 +145,7 @@ class SpeakingViewModel(
                 Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
             }
         }
-
-    }
+}
     //get variants
     fun getVariants(songId: Int, type: String) {
         viewModelScope.launch {
@@ -179,37 +185,7 @@ class SpeakingViewModel(
         return _variant.value
     }
 
-    fun checkAnswerSpeaking(token: String, variantId: Int, answer: String) {
-        viewModelScope.launch {
-            try {
-                val call = variantRepository.checkAnswerSpeaking(token, variantId, answer)
-                call.enqueue(object : Callback<GeneralResponseModel> {
-                    override fun onResponse(
-                        call: Call<GeneralResponseModel>,
-                        res: Response<GeneralResponseModel>
-                    ) {
-                        if (res.isSuccessful) {
-                            Log.d("check-answer", "CHECK ANSWER: ${res.body()}")
 
-                        } else {
-                            val errorMessage = Gson().fromJson(
-                                res.errorBody()!!.charStream(),
-                                ErrorModel::class.java
-                            )
-                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
-                        }
-                    }
-
-                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
-                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
-                    }
-                })
-
-            } catch (error: IOException) {
-                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
-            }
-        }
-    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

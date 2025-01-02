@@ -12,7 +12,9 @@ data class VariantListResponse(
 
 
 data class SpeakingRequest(
-    val answer: String
+
+    val answer: String,
+    val id : Int,
 )
 
 data class VariantResponse(

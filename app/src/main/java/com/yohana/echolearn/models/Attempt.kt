@@ -12,3 +12,13 @@ data class Attempt (
     val attemptedAt: Date,
     val isComplete: Boolean,
 )
+
+data class AttemptResponse (
+    val userId: Int,
+    val variantId: Int,
+    val correctAnswer: String,
+    val attemptedAnswer: String,
+    val score: Int,
+    val attemptedAt: Date,
+    val isComplete: Boolean,
+)
