@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.models.AttemptResponse
@@ -26,6 +27,7 @@ import com.yohana.echolearn.models.VariantModel
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.repositories.VariantRepository
+import com.yohana.echolearn.route.PagesEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -38,7 +40,7 @@ import java.util.Locale
 class SpeakingViewModel(
     private val userRepository: UserRepository,
     private val songRepository: SongRepository,
-    private val variantRepository: VariantRepository
+    private val variantRepository: VariantRepository,
 ) : ViewModel() {
     private val _recognizedText = MutableStateFlow("")
     val recognizedText: StateFlow<String> get() = _recognizedText
@@ -153,7 +155,7 @@ class SpeakingViewModel(
         }
     }
     //get variants
-    fun getVariants(songId: Int, type: String) {
+    fun getVariants(songId: Int, type: String, navController: NavController) {
         viewModelScope.launch {
             try {
                 val call = variantRepository.getVariants(songId, type)
@@ -164,7 +166,12 @@ class SpeakingViewModel(
                     ) {
                         if (res.isSuccessful) {
                             _variants.value = res.body()!!.data
-                            randomizedVariants()
+                            if(_variants.value.isNotEmpty()) {
+                                randomizedVariants()
+                            }else {
+                                resetViewModel()
+                                navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Speaking.name)
+                            }
                         } else {
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -200,8 +207,18 @@ class SpeakingViewModel(
                 val userRepository = application.container.userRepository
                 val songRepository = application.container.songRepository
                 val variantRepository = application.container.variantRepository
+
                 SpeakingViewModel(userRepository, songRepository, variantRepository)
             }
         }
+    }
+
+    fun resetViewModel() {
+        _recognizedText.value = ""
+        _variants.value = emptyList()
+        _variant.value = VariantModel()
+        _answerResponse.value = AttemptSpeakingResponse()
+        _isAnswerProcessed.value = false
+        _song.value = SongModel()
     }
 }
