@@ -22,6 +22,7 @@ import com.yohana.echolearn.viewmodels.AttemptViewModel
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.GenreView
@@ -69,8 +70,9 @@ fun AppRouting(
     homeViewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
     genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
     listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory),
-    attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory)
-    ) {
+    attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory),
+    listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory)
+) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
     val systemUiController = rememberSystemUiController()
@@ -87,7 +89,7 @@ fun AppRouting(
         modifier = Modifier.padding(innerpadding)
     ) {
         composable(route = PagesEnum.Splash.name) {
-            SplashScreenView (
+            SplashScreenView(
                 systemUiController = systemUiController,
                 onTimeout = {
                     // Mark the first launch as completed
@@ -127,47 +129,50 @@ fun AppRouting(
             HomeView(
                 navController = navController,
                 systemUiController = systemUiController,
-                name = username.value)
+                name = username.value
+            )
         }
 
         composable(route = PagesEnum.SongMenu.name + "/{type}",
-                arguments = listOf(
-                    navArgument(name = "type"){
-                        type = NavType.StringType
-                    }
-                )
-            ) { backStackEntry ->
+            arguments = listOf(
+                navArgument(name = "type") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type")
-
-            ListMusic(navController = navController, type = type!!, context = context)
+            ListMusic(
+                navController = navController,
+                viewModel = listMusicViewModel,
+                type = type!!,
+                token = token.value
+            )
         }
 
-        composable(route = PagesEnum.Listening.name+"/{id}",
-                arguments = listOf(
-                    navArgument(name = "id"){
-                        type = NavType.IntType
-                    }
-                )
-            ) {
-            backStackEntry ->
+        composable(route = PagesEnum.Listening.name + "/{id}",
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-           ListeningView(
-               navController = navController,
-               viewModel = listeningViewModel,
-               songId = id!!,
-               type = PagesEnum.Listening.name,
-               token = token.value
-           )
+            ListeningView(
+                navController = navController,
+                viewModel = listeningViewModel,
+                songId = id!!,
+                type = PagesEnum.Listening.name,
+                token = token.value
+            )
         }
 
-        composable(route = PagesEnum.Listening.name+"continue-attempt/{attemptId}",
-                arguments = listOf(
-                    navArgument(name = "attemptId"){
-                        type = NavType.IntType
-                    }
-                )
-            ){
-            backStackEntry ->
+        composable(route = PagesEnum.Listening.name + "continue-attempt/{attemptId}",
+            arguments = listOf(
+                navArgument(name = "attemptId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
             val attemptId = backStackEntry.arguments?.getInt("attemptId")
             ListeningView(
                 navController = navController,
@@ -179,19 +184,19 @@ fun AppRouting(
             )
         }
 
-        composable(route = PagesEnum.Speaking.name+"/{id}" ) { backStackEntry ->
+        composable(route = PagesEnum.Speaking.name + "/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             SpeakingView(
                 navController = navController
             )
         }
 
-        composable(route = "{type}/"+PagesEnum.SongDetail.name+"/{genre}",
+        composable(route = "{type}/" + PagesEnum.SongDetail.name + "/{genre}",
             arguments = listOf(
-                navArgument(name = "genre"){
+                navArgument(name = "genre") {
                     type = NavType.StringType
                 },
-                navArgument(name = "type"){
+                navArgument(name = "type") {
                     type = NavType.StringType
                 }
             )

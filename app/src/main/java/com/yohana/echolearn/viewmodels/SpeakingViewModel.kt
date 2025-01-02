@@ -15,7 +15,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
-import com.yohana.echolearn.models.Attempt
 import com.yohana.echolearn.models.AttemptResponse
 import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.GeneralResponseModel
