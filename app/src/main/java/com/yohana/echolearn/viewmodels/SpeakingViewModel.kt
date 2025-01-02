@@ -38,7 +38,7 @@ class SpeakingViewModel(
     private val songRepository: SongRepository,
     private val variantRepository: VariantRepository
 ) : ViewModel() {
-    private val _recognizedText = MutableStateFlow("Speech text should come here")
+    private val _recognizedText = MutableStateFlow("")
     val recognizedText: StateFlow<String> get() = _recognizedText
 
     private var speechRecognizer: SpeechRecognizer? = null

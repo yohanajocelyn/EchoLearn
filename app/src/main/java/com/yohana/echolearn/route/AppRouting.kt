@@ -130,7 +130,6 @@ fun AppRouting(
                 )
             ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type")
-
             ListMusic(navController = navController, viewModel = listMusicViewModel, type = type!!)
         }
 
@@ -146,7 +145,7 @@ fun AppRouting(
             }
         )) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
-            SpeakingView(viewModel = speakingViewModel, id = id!!, activity = Activity())
+            SpeakingView(viewModel = speakingViewModel, id = id!!, token = token.value, activity = Activity())
         }
 
 //        composable(route = PagesEnum.SongDetail.name+"/{type}/{genre}",

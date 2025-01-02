@@ -23,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
+import com.yohana.echolearn.components.SimpleAlertDialog
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
 @Composable
@@ -43,6 +47,7 @@ fun SpeakingView(
     modifier: Modifier = Modifier,
     viewModel: SpeakingViewModel = viewModel(),
     id: Int,
+    token:String,
     activity: Activity
 
 ) {
@@ -51,6 +56,7 @@ fun SpeakingView(
     val song by viewModel.song.collectAsState()
     val context = LocalContext.current
     val recognizedText by viewModel.recognizedText.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.getVariants(id, "Speaking")
@@ -60,14 +66,26 @@ fun SpeakingView(
     LaunchedEffect(variants) {
         if (variants.isNotEmpty()) {
             viewModel.randomizedVariants()
+
         }
+    }
+
+    LaunchedEffect(recognizedText) {
+        if (recognizedText.isNotEmpty()) {
+            viewModel.checkAnswer(token, variant.id, recognizedText)
+            showDialog = true
+        }
+    }
+    if (showDialog) {
+        SimpleAlertDialog(
+
+        )
     }
 
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
         Column(
             modifier = Modifier.fillMaxSize().background(color = Color(0xFFF6F6F6))
         ) {
-
 
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
                 Row(
