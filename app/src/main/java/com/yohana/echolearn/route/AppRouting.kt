@@ -1,6 +1,7 @@
 package com.yohana.echolearn.route
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,7 @@ import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
+import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
@@ -71,7 +73,8 @@ fun AppRouting(
     genreViewModel: GenreViewModel = viewModel(factory = GenreViewModel.Factory),
     listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory),
     attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory),
-    listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory)
+    listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory),
+    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -184,9 +187,17 @@ fun AppRouting(
             )
         }
 
-        composable(route = PagesEnum.Speaking.name + "/{id}") { backStackEntry ->
+        composable(route = PagesEnum.Speaking.name + "/{id}", arguments = listOf(
+            navArgument(name = "id") {
+                type = NavType.IntType
+            }
+        )) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             SpeakingView(
+                viewModel = speakingViewModel,
+                id = id!!,
+                token = token.value,
+                activity = Activity(),
                 navController = navController
             )
         }
