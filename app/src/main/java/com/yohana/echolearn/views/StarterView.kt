@@ -68,7 +68,7 @@ fun StarterView(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 400.dp) // Set a maximum height for the bottom sheet
+                    .heightIn(max = 350.dp) // Set a maximum height for the bottom sheet
             ) {
                 Column(
                     modifier = Modifier
@@ -103,7 +103,7 @@ fun StarterView(
                                 start = 18.dp,
                                 end = 18.dp,
                                 top = 28.dp,
-                                bottom = 28.dp
+                                bottom = 10.dp
                             ),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {

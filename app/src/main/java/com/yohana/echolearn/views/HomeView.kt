@@ -51,7 +51,11 @@ fun HomeView(
 ) {
     systemUiController.setStatusBarColor(
         color = Color(0xFF3DB2FF), // Your color
-        darkIcons = false // true for dark icons, false for light
+        darkIcons = true // true for dark icons, false for light
+    )
+
+    systemUiController.setNavigationBarColor(
+        color = Color.White, // Your color
     )
     Scaffold(
         content = {
