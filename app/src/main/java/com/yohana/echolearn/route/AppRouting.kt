@@ -118,7 +118,8 @@ fun AppRouting(
         }
 
         composable(route = PagesEnum.Home.name) {
-            HomeView(navController = navController)
+            HomeView(navController = navController, token = token.value,
+                viewModel = homeViewModel)
         }
 
         composable(route = PagesEnum.SongMenu.name + "/{type}",

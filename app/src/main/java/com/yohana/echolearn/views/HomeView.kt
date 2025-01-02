@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,21 +40,26 @@ import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
 import com.yohana.echolearn.view.Navbar
+import com.yohana.echolearn.viewmodels.HomeViewModel
 
 
 @Composable
 fun HomeView(
     modifier: Modifier = Modifier,
     navController: NavController? = null,
-    name: String = "Android"
+    token: String ,
+    viewModel: HomeViewModel
 ) {
+
+    val username by viewModel.username.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Color(0xFF3DB2FF))
             .padding(top = 18.dp),
     ) {
-        Greeting(name = name)
+        Greeting(name = username)
         LearningMenu(navController = navController)
     }
 }
@@ -72,7 +79,7 @@ fun Greeting(name: String) {
                 .fillMaxWidth(),
         ) {
             Text(
-                text = "Hi, $name!",
+                text = "Hi, $name",
                 color = Color.White,
                 fontFamily = poppins,
                 fontWeight = FontWeight.SemiBold,
@@ -241,10 +248,10 @@ fun LearningCard(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun HomeViewPreview() {
-    EchoLearnTheme {
-        HomeView()
-    }
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun HomeViewPreview() {
+//    EchoLearnTheme {
+//        HomeView()
+//    }
+//}

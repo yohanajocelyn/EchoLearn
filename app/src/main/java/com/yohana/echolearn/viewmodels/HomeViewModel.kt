@@ -16,12 +16,17 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val userRepository: UserRepository,
 ): ViewModel() {
-
+    val username: StateFlow<String> = userRepository.currentUsername.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = ""
+    )
     val token: StateFlow<String> = userRepository.currentUserToken.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = ""
     )
+
 
     fun saveUsernameToken(token: String, username: String) {
         viewModelScope.launch {
