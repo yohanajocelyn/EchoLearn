@@ -18,3 +18,9 @@ data class VariantListResponse(
 data class AttemptVariantDetail(
     val type: String = ""
 )
+
+data class SpeakingRequest(
+
+    val answer: String,
+    val id : Int,
+)

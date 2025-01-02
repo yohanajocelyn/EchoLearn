@@ -1,5 +1,7 @@
 package com.yohana.echolearn.views
 
+
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,28 +20,75 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
+import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
 @Composable
-fun SpeakingView(modifier: Modifier = Modifier, navController: NavController) {
+fun SpeakingView(
+    modifier: Modifier = Modifier,
+    viewModel: SpeakingViewModel = viewModel(),
+    id: Int,
+    token:String,
+    activity: Activity,
+    navController: NavHostController
+
+) {
+    val variants by viewModel.variants.collectAsState()
+    val variant by viewModel.variant.collectAsState()
+    val song by viewModel.song.collectAsState()
+    val context = LocalContext.current
+    val recognizedText by viewModel.recognizedText.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    val answerResponse by viewModel.answerResponse.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.getVariants(id, "Speaking")
+        viewModel.getSong(id)
+    }
+
+    LaunchedEffect(variants) {
+        if (variants.isNotEmpty()) {
+            viewModel.randomizedVariants()
+
+        }
+    }
+
+    LaunchedEffect(recognizedText) {
+        if (recognizedText.isNotEmpty()) {
+            viewModel.checkAnswerSpeaking(token, variant.id, recognizedText)
+            showDialog = true
+        }
+    }
+
+    if (showDialog) {
+
+
+    }
+
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
+
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(color = Color(0xFFF6F6F6))
         ) {
-            // Konten utama
+            Text("${variant.id}")
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
                 Row(
                     modifier = Modifier
@@ -82,30 +131,35 @@ fun SpeakingView(modifier: Modifier = Modifier, navController: NavController) {
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
                                 Text(
-                                    "Hello World", fontSize = 32.sp,
+                                    "${song.title}", fontSize = 32.sp,
                                     fontWeight = FontWeight(500),
                                     color = Color(0xFF000000)
                                 )
                                 Text(
-                                    "Hello World", fontSize = 16.sp,
+                                    "${song.artist}", fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(30.dp))
                                 Text(
-                                    "Hello World", fontSize = 16.sp,
+                                    "${song.genre}", fontSize = 16.sp,
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.height(15.dp))
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Text(
+                                text = "${variant.emptyLyric}",
+                                fontSize = 18.sp,
+                                lineHeight = 25.sp,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
 
-                        Text(
-                            text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
-                            fontSize = 18.sp,
-                            lineHeight = 25.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF000000),
-                            textAlign = TextAlign.Center,
-                        )
                         Spacer(modifier = Modifier.height(10.dp))
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -131,18 +185,18 @@ fun SpeakingView(modifier: Modifier = Modifier, navController: NavController) {
                                 color = Color(0xFF000000),
                             )
 
-//                            Text(
-//                                text = "died of thirst It was months and months of back and forth, ah-ah, ah-ah  ",
-//                                fontSize = 18.sp,
-//                                lineHeight = 25.sp,
-//                                fontWeight = FontWeight(400),
-//                                color = Color(0xFF000000),
-//                                textAlign = TextAlign.Center,
-//                            )
+                            Text(
+                                text = "$recognizedText",
+                                fontSize = 18.sp,
+                                lineHeight = 25.sp,
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF000000),
+                                textAlign = TextAlign.Center,
+                            )
                             Spacer(modifier = Modifier.height(100.dp))
 
                             Button(
-                                onClick = {},
+                                onClick = {viewModel.askSpeechInput(context, activity)},
                                 modifier = Modifier
                                     .size(135.dp) // Ukuran lingkaran
                                     .background(Color.Blue, CircleShape),
@@ -167,17 +221,9 @@ fun SpeakingView(modifier: Modifier = Modifier, navController: NavController) {
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter) // Selalu di bagian bawah
         ) {
-            Navbar(
-                navController = navController
-            ) // Tambahkan konten navbar di sini
+            Navbar(navController = navController)
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewSpeaking() {
-    SpeakingView(
-        navController = rememberNavController()
-    )
-}
+
