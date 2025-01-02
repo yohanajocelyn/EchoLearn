@@ -7,6 +7,7 @@ import retrofit2.Call
 interface AuthenticationRepository{
     fun register(username: String, email: String, password: String, profilePicture: String): Call<UserResponse>
     fun login(email: String, password: String): Call<UserResponse>
+    
     suspend fun getDefaultProfilePictures(): List<String>
 }
 
