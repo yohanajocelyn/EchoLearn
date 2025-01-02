@@ -1,6 +1,7 @@
 package com.yohana.echolearn.services
 
 import com.yohana.echolearn.models.AttemptResponse
+import com.yohana.echolearn.models.AttemptSpeakingResponse
 import com.yohana.echolearn.models.SpeakingRequest
 import com.yohana.echolearn.models.VariantListResponse
 import retrofit2.Call
@@ -16,7 +17,7 @@ interface VariantAPIService {
         @Header("X-API-TOKEN") token: String,
         @Path("variantId") variantId: Int,
         @Body speakingRequest: SpeakingRequest
-    ): Call<AttemptResponse>
+    ): Call<AttemptSpeakingResponse>
 
 
     @GET("api/variants/{songId}/{type}")

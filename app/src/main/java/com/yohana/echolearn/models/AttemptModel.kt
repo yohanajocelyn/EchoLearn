@@ -28,7 +28,16 @@ data class AttemptResponse(
 data class AttemptListResponse(
     val data: List<AttemptModel>
 )
-
+@SuppressLint("NewApi")
+data class AttemptSpeakingResponse (
+    val userId: Int = 0,
+    val variantId: Int = 0,
+    val correctAnswer: String = "",
+    val attemptedAnswer: String = "",
+    val score: Int = 0,
+    val attemptedAt: Date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()),
+    val isComplete: Boolean = true,
+)
 @SuppressLint("NewApi")
 data class AttemptDetail(
     val id: Int = 0,

@@ -40,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
+import com.yohana.echolearn.components.SimpleAlertDialog
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
 @Composable
@@ -47,7 +48,7 @@ fun SpeakingView(
     modifier: Modifier = Modifier,
     viewModel: SpeakingViewModel = viewModel(),
     id: Int,
-    token:String,
+    token: String,
     activity: Activity,
     navController: NavHostController
 
@@ -59,6 +60,8 @@ fun SpeakingView(
     val recognizedText by viewModel.recognizedText.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     val answerResponse by viewModel.answerResponse.collectAsState()
+    val isAnswerProcessed by viewModel.isAnswerProcessed.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.getVariants(id, "Speaking")
         viewModel.getSong(id)
@@ -71,22 +74,30 @@ fun SpeakingView(
         }
     }
 
-    LaunchedEffect(recognizedText) {
+    LaunchedEffect(isAnswerProcessed,recognizedText) {
         if (recognizedText.isNotEmpty()) {
             viewModel.checkAnswerSpeaking(token, variant.id, recognizedText)
             showDialog = true
         }
     }
 
-    if (showDialog) {
+    LaunchedEffect(isAnswerProcessed) {
+        if (isAnswerProcessed) {
+            showDialog = true
+            viewModel.resetAnswerProcessed() // Atur ulang status jika perlu
+        }
+    }
 
-
+    if(showDialog) {
+        SimpleAlertDialog(navController, answerResponse.score)
     }
 
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
 
         Column(
-            modifier = Modifier.fillMaxSize().background(color = Color(0xFFF6F6F6))
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(0xFFF6F6F6))
         ) {
             Text("${variant.id}")
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
@@ -149,7 +160,7 @@ fun SpeakingView(
                         Column(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
-                        ){
+                        ) {
                             Text(
                                 text = "${variant.emptyLyric}",
                                 fontSize = 18.sp,
@@ -196,7 +207,7 @@ fun SpeakingView(
                             Spacer(modifier = Modifier.height(100.dp))
 
                             Button(
-                                onClick = {viewModel.askSpeechInput(context, activity)},
+                                onClick = { viewModel.askSpeechInput(context, activity) },
                                 modifier = Modifier
                                     .size(135.dp) // Ukuran lingkaran
                                     .background(Color.Blue, CircleShape),
