@@ -96,18 +96,22 @@ fun AttemptCard(
                 Text(
                     text = attempt.song.title,
                     fontFamily = poppins,
+                    color = Color.Black,
                 )
                 Text(
                     text = attempt.song.artist,
                     fontFamily = poppins,
+                    color = Color.Black,
                 )
                 Text(
                     text = "${attempt.variant.type} Exercise",
                     fontFamily = poppins,
+                    color = Color.Black,
                 )
                 Text(
                     text = "Score: ${attempt.score} / 100",
                     fontFamily = poppins,
+                    color = Color.Black,
                 )
                 Text(
                     text = if (attempt.isComplete) "Complete" else "Not Completed",

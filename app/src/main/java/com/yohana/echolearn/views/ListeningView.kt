@@ -99,6 +99,7 @@ fun ListeningView(
 
     LazyColumn(
         modifier = Modifier
+            .background(color = Color.White)
             .padding(horizontal = 24.dp)
     ) {
         item {
@@ -205,7 +206,7 @@ fun ListeningView(
                                                 Text(
                                                     "Type",
                                                     color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                                    fontSize = 16.sp
+                                                    fontSize = 16.sp,
                                                 )
                                             }
                                             innerTextField()
@@ -217,7 +218,8 @@ fun ListeningView(
                                     Text(
                                         text = word.text,
                                         modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 10.dp),
-                                        fontSize = 16.sp
+                                        fontSize = 16.sp,
+                                        color = Color.Black
                                     )
                                 }
                             }

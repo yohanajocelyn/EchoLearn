@@ -1,5 +1,6 @@
 package com.yohana.echolearn.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -9,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,6 +46,7 @@ fun AttemptView(
             innerPadding ->
             LazyColumn(
                 modifier = Modifier
+                    .background(color = Color.White)
                     .padding(innerPadding)
                     .then(Modifier.padding(top = 16.dp))
             ){

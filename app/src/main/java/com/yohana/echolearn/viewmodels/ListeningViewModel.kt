@@ -320,13 +320,13 @@ class ListeningViewModel(
     }
 
     fun resetViewModel(){
+        audio.reset()
         createStatus = StringDataStatusUIState.Start
         isPlaying = false
         lines = emptyList()
         userAnswers = emptyList()
         blankPositions = emptyList()
         answers = emptyList()
-        audio = MediaPlayer()
     }
 
     companion object {

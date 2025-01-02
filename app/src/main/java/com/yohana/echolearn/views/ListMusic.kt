@@ -97,7 +97,8 @@ fun ListMusic(
                                 text = "Genre",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                modifier = Modifier.padding(bottom = 16.dp),
+                                color = Color.Black,
                             )
 
                             // Genre Grid
