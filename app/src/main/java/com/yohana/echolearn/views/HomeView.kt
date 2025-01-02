@@ -31,15 +31,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.route.PagesEnum
-import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
-import com.yohana.echolearn.view.Navbar
+import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.viewmodels.HomeViewModel
 
 
