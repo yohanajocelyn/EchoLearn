@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.models.AttemptResponse
+import com.yohana.echolearn.models.AttemptSpeakingResponse
 import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.SongModel
@@ -49,9 +50,11 @@ class SpeakingViewModel(
 
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
-    private val _answerResponse = MutableStateFlow<GeneralResponseModel?>(null)
-    val answerResponse: StateFlow<GeneralResponseModel?> get() = _answerResponse
+    private val _answerResponse = MutableStateFlow<AttemptSpeakingResponse>(AttemptSpeakingResponse())
+    val answerResponse: StateFlow<AttemptSpeakingResponse> get() = _answerResponse
 
+    private val _isAnswerProcessed = MutableStateFlow(false)
+    val isAnswerProcessed: StateFlow<Boolean> = _isAnswerProcessed
 
     private val _song = MutableStateFlow<SongModel>(SongModel())
     val song: StateFlow<SongModel> get() = _song
@@ -111,6 +114,9 @@ class SpeakingViewModel(
             }
         }
     }
+    fun resetAnswerProcessed() {
+        _isAnswerProcessed.value = false
+    }
     fun checkAnswerSpeaking(token: String, id: Int, answer: String) {
         viewModelScope.launch {
             try {
@@ -119,10 +125,11 @@ class SpeakingViewModel(
                     variantId = id,
                     answer = answer
                 )
-                call.enqueue(object : Callback<AttemptResponse > {
+                _isAnswerProcessed.value = true
+                call.enqueue(object : Callback<AttemptSpeakingResponse > {
                     override fun onResponse(
-                        call: Call<AttemptResponse>,
-                        res: Response<AttemptResponse>
+                        call: Call<AttemptSpeakingResponse>,
+                        res: Response<AttemptSpeakingResponse>
                     ) {
                         if (res.isSuccessful) {
                             Log.d("answer-response", "ANSWER RESPONSE: ${res.body()}")
@@ -135,7 +142,7 @@ class SpeakingViewModel(
                         }
                     }
 
-                    override fun onFailure(p0: Call<AttemptResponse>, t: Throwable) {
+                    override fun onFailure(p0: Call<AttemptSpeakingResponse>, t: Throwable) {
                         Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
                     }
                 })
