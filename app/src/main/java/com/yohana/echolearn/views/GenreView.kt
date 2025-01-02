@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +22,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.route.PagesEnum
-import com.yohana.echolearn.view.GenreCard
-import com.yohana.echolearn.view.MusicCard
-import com.yohana.echolearn.view.Navbar
+import com.yohana.echolearn.components.GenreCard
+import com.yohana.echolearn.components.MusicCard
+import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.viewmodels.GenreViewModel
 
 @Composable

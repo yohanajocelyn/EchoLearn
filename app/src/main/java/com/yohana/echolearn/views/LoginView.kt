@@ -41,8 +41,8 @@ import com.yohana.echolearn.uistates.AuthenticationStatusUIState
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
 import com.yohana.echolearn.ui.theme.poppins
-import com.yohana.echolearn.view.AuthenticationOutlinedTextField
-import com.yohana.echolearn.view.PasswordOutlinedTextField
+import com.yohana.echolearn.components.AuthenticationOutlinedTextField
+import com.yohana.echolearn.components.PasswordOutlinedTextField
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 
 @Composable
