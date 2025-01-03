@@ -204,7 +204,7 @@ class AuthenticationViewModel(
                             )
 
                             Log.d("error-data", "ERROR DATA: ${errorMessage}")
-                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errors)
+                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 
@@ -259,7 +259,7 @@ class AuthenticationViewModel(
                             )
 
                             Log.d("error-data", "ERROR DATA: ${errorMessage}")
-                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errors)
+                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 

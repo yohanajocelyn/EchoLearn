@@ -1,5 +1,5 @@
 package com.yohana.echolearn.models
 
 data class ErrorModel (
-    val errors: String
+    val errorMessage: String
 )

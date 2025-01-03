@@ -304,7 +304,7 @@ class ListeningViewModel(
                                 ErrorModel::class.java
                             )
 
-                            createStatus = StringDataStatusUIState.Failed(errorMessage.errors)
+                            createStatus = StringDataStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 

@@ -79,7 +79,7 @@ class AttemptViewModel(
                             )
 
                             Log.d("error-data", "ERROR DATA: ${errorMessage}")
-                            dataStatus = AttemptDataStatusUIState.Failed(errorMessage.errors)
+                            dataStatus = AttemptDataStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 
