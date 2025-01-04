@@ -1,5 +1,6 @@
 package com.yohana.echolearn
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,15 +13,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.route.AppRouting
 import com.yohana.echolearn.ui.theme.EchoLearnTheme
+import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.RegisterView
 
 class MainActivity : ComponentActivity() {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 102) {
+            val viewModel: SpeakingViewModel = ViewModelProvider(this).get(SpeakingViewModel::class.java)
+            viewModel.handleActivityResult(requestCode, resultCode, data)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

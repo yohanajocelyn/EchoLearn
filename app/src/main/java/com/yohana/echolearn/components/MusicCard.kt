@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,8 +58,8 @@ fun MusicCard(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column {
-                    Text(text = song.title, fontSize = 18.sp, color = Color.Black)
-                    Text(text = song.artist, fontSize = 18.sp, color = Color.Black)
+                    Text(text = song.title, fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text(text = song.artist, fontSize = 12.sp, color = Color.Black, fontWeight = FontWeight.Light)
                 }
             }
             Image(
