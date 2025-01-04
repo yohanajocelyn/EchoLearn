@@ -63,7 +63,7 @@ fun SpeakingView(
     val isAnswerProcessed by viewModel.isAnswerProcessed.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getVariants(id, "Speaking", navController)
+        viewModel.getVariants(token, id, "Speaking", navController)
         viewModel.getSong(id)
     }
 

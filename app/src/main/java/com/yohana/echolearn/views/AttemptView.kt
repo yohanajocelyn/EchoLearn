@@ -52,7 +52,11 @@ fun AttemptView(
             ){
                 itemsIndexed(attempts){ index, attempt ->
                     AttemptCard(
-                        onClick = { navController.navigate(PagesEnum.Listening.name + "continue-attempt/${attempt.id}") },
+                        onClick = {
+                            if(!attempt.isComplete && attempt.variant.type == "Listening"){
+                                navController.navigate(PagesEnum.Listening.name + "continue-attempt/${attempt.id}")
+                            }
+                        },
                         numbering = index + 1,
                         attempt = attempt
                     )

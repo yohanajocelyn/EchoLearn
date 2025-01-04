@@ -230,5 +230,24 @@ fun AppRouting(
                 viewModel = attemptViewModel
             )
         }
+
+        composable(route = PagesEnum.Listening.name + "continue-attempt/{attemptId}",
+            arguments = listOf(
+                navArgument(name = "attemptId") {
+                    type = NavType.IntType
+                }
+            )
+        ){ backStackEntry ->
+            val attemptId = backStackEntry.arguments?.getInt("attemptId")
+            ListeningView(
+                navController = navController,
+                viewModel = listeningViewModel,
+                songId = 0,
+                type = PagesEnum.Listening.name,
+                token = token.value,
+                attemptId = attemptId!!,
+                isContinue = true
+            )
+        }
     }
 }

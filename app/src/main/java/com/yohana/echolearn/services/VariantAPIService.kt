@@ -4,6 +4,7 @@ import com.yohana.echolearn.models.AttemptResponse
 import com.yohana.echolearn.models.AttemptSpeakingResponse
 import com.yohana.echolearn.models.SpeakingRequest
 import com.yohana.echolearn.models.VariantListResponse
+import com.yohana.echolearn.models.VariantResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,7 +23,14 @@ interface VariantAPIService {
 
     @GET("api/variants/{songId}/{type}")
     fun getVariants(
+        @Header("X-API-TOKEN") token: String,
         @Path("songId") songId: Int,
         @Path("type") type: String
     ): Call<VariantListResponse>
+
+    @GET("api/variants/attempt/{variantId}")
+    fun getVariantById(
+        @Header("X-API-TOKEN") token: String,
+        @Path("variantId") variantId: Int
+    ): Call<VariantResponse>
 }

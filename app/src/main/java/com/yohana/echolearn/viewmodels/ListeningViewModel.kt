@@ -25,16 +25,23 @@ import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.R
+import com.yohana.echolearn.models.AttemptDetail
+import com.yohana.echolearn.models.AttemptModel
+import com.yohana.echolearn.models.AttemptResponse
+import com.yohana.echolearn.models.AttemptSongDetail
+import com.yohana.echolearn.models.AttemptVariantDetail
 import com.yohana.echolearn.models.ErrorModel
 import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.SongModel
 import com.yohana.echolearn.models.SongResponse
 import com.yohana.echolearn.models.VariantListResponse
 import com.yohana.echolearn.models.VariantModel
+import com.yohana.echolearn.models.VariantResponse
 import com.yohana.echolearn.repositories.AttemptRepository
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.VariantRepository
 import com.yohana.echolearn.route.PagesEnum
+import com.yohana.echolearn.uistates.AttemptDataStatusUIState
 import com.yohana.echolearn.uistates.ListeningUIState
 import com.yohana.echolearn.uistates.StringDataStatusUIState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,13 +67,25 @@ class ListeningViewModel(
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
 
+    private val _attempt = MutableStateFlow<AttemptModel>(AttemptModel())
+    val attempt: StateFlow<AttemptModel> = _attempt
+
     var createStatus: StringDataStatusUIState by mutableStateOf(StringDataStatusUIState.Start)
+        private set
+
+    var attemptDataStatus: AttemptDataStatusUIState by mutableStateOf(AttemptDataStatusUIState.Start)
         private set
 
     var showSaveDialog: Boolean by mutableStateOf(false)
         private set
 
+    var isContinue: Boolean by mutableStateOf(false)
+        private set
+
     var isPlaying: Boolean by mutableStateOf(false)
+        private set
+
+    var isLoading: Boolean by mutableStateOf(true)
         private set
 
     var lines: List<String> by mutableStateOf(emptyList())
@@ -88,6 +107,31 @@ class ListeningViewModel(
     sealed class TextElement{
         data class Blank(val index: Int): TextElement()
         data class Regular(val text: String): TextElement()
+    }
+
+    fun initializeViewModel(
+        songId: Int,
+        token: String,
+        navController: NavController,
+        type: String,
+        attemptId: Int,
+        isContinue: Boolean
+    ){
+        this.isContinue = isContinue
+        viewModelScope.launch {
+            try {
+                if(isContinue) {
+                    setAttempt(token, attemptId, navController)
+                } else {
+                    setSong(songId, token, navController)
+                    setVariants(token, songId, type)
+                }
+            } catch(e: Exception) {
+                Log.e("ViewModel", "Error loading data", e)
+            } finally {
+                isLoading = false
+            }
+        }
     }
 
     fun setSong(songId: Int, token: String, navController: NavController){
@@ -121,36 +165,113 @@ class ListeningViewModel(
         }
     }
 
-    fun setVariants(songId: Int, type: String){
+    fun setVariants(token: String, songId: Int, type: String, variantId: Int = 0){
         viewModelScope.launch {
             try{
-                val call = variantRepository.getVariants(songId, type)
-                call.enqueue(object: Callback<VariantListResponse>{
-                    override fun onResponse(
-                        call: Call<VariantListResponse>,
-                        res: Response<VariantListResponse>
-                    ) {
+                if(variantId != 0){
+                    val call = variantRepository.getVariantById(token = token, variantId = _attempt.value.variantId)
+                    call.enqueue(object: Callback<VariantResponse>{
+                        override fun onResponse(
+                            call: Call<VariantResponse>,
+                            res: Response<VariantResponse>
+                        ) {
+                            if(res.isSuccessful){
+                                _variant.value = res.body()!!.data
+                                initializeData()
+                            }else{
+                                val errorMessage = Gson().fromJson(
+                                    res.errorBody()!!.charStream(),
+                                    ErrorModel::class.java
+                                )
+                                Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                            }
+                        }
+
+                        override fun onFailure(p0: Call<VariantResponse>, t: Throwable) {
+                            Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                        }
+
+                    })
+                }else{
+                    val call = variantRepository.getVariants(token, songId, type)
+                    call.enqueue(object: Callback<VariantListResponse>{
+                        override fun onResponse(
+                            call: Call<VariantListResponse>,
+                            res: Response<VariantListResponse>
+                        ) {
+                            if(res.isSuccessful){
+                                val variants: List<VariantModel> = res.body()!!.data
+                                val randomVariant = variants.random()
+                                _variant.value = randomVariant
+                                initializeData()
+                            }else{
+                                val errorMessage = Gson().fromJson(
+                                    res.errorBody()!!.charStream(),
+                                    ErrorModel::class.java
+                                )
+                                Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                            }
+                        }
+
+                        override fun onFailure(p0: Call<VariantListResponse>, t: Throwable) {
+                            Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                        }
+
+                    })
+                }
+
+            }catch (error: IOException){
+                Log.d("get-error", "GET ERROR: ${error.localizedMessage}")
+            }
+        }
+    }
+
+    fun setAttempt(token: String, attemptId: Int, navController: NavController){
+        viewModelScope.launch {
+            try {
+                attemptDataStatus = AttemptDataStatusUIState.Loading
+
+                val call = attemptRepository.getAttempt(token, attemptId)
+                call.enqueue(object: Callback<AttemptResponse>{
+                    override fun onResponse(call: Call<AttemptResponse>, res: Response<AttemptResponse>) {
                         if(res.isSuccessful){
-                            val variants: List<VariantModel> = res.body()!!.data
-                            val randomVariant = variants.random()
-                            _variant.value = randomVariant
+                            res.body()!!.data.let { attempt ->
+                                val processedAttempt = AttemptModel(
+                                    id = attempt.id,
+                                    userId = attempt.userId,
+                                    variantId = attempt.variantId,
+                                    correctAnswer = attempt.correctAnswer,
+                                    attemptedAnswer = attempt.attemptedAnswer,
+                                    score = attempt.score,
+                                    attemptedAt = attempt.attemptedAt, // Assuming attemptedAt is in the correct Date format
+                                    isComplete = attempt.isComplete,
+                                    song = attempt.song,
+                                    variant = attempt.variant
+                                )
+                                _attempt.value = processedAttempt
+                                _song.value = attempt.song!!
+                                _variant.value = attempt.variant!!
+                            }
+                            initializeAudio(token = token, navController = navController)
                             initializeData()
+
+                            attemptDataStatus = AttemptDataStatusUIState.Success(_attempt.value)
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
                                 ErrorModel::class.java
                             )
-                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+
+                            attemptDataStatus = AttemptDataStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 
-                    override fun onFailure(p0: Call<VariantListResponse>, t: Throwable) {
-                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                    override fun onFailure(p0: Call<AttemptResponse>, t: Throwable) {
+                        attemptDataStatus = AttemptDataStatusUIState.Failed(t.localizedMessage!!)
                     }
-
                 })
             }catch (error: IOException){
-                Log.d("get-error", "GET ERROR: ${error.localizedMessage}")
+                attemptDataStatus = AttemptDataStatusUIState.Failed(error.localizedMessage!!)
             }
         }
     }
@@ -180,7 +301,11 @@ class ListeningViewModel(
 
         this.answers = _variant.value.answer.split(", ")
 
-        this.userAnswers = List(answers.size) { "" }
+        if (this.isContinue){
+            this.userAnswers = _attempt.value.attemptedAnswer.split(", ")
+        }else{
+            this.userAnswers = List(answers.size) { "" }
+        }
 
         var counter = 0
         val positions: MutableList<Int> = mutableListOf()
@@ -260,6 +385,7 @@ class ListeningViewModel(
             Log.d("attempt-creation", "TOKEN: ${token}")
             var score: String
             val isComplete: String
+            userAnswers = userAnswers.map { if (it.isEmpty()) " " else it }
             val attemptedAnswer: String = userAnswers.joinToString(", ")
             var correctAnswer: String = answers.joinToString(", ")
             if(isCompleted){
@@ -327,6 +453,8 @@ class ListeningViewModel(
         userAnswers = emptyList()
         blankPositions = emptyList()
         answers = emptyList()
+        showSaveDialog = false
+        isContinue = false
     }
 
     companion object {
