@@ -23,3 +23,7 @@ data class AttemptSongDetail(
     val title: String = "",
     val artist: String = "",
 )
+
+data class SearchSongRequest(
+    val keyword: String = ""
+)

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yohana.echolearn.models.GeneralResponseModel
+import com.yohana.echolearn.models.UserListResponse
 import com.yohana.echolearn.services.UserAPIService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,9 +16,9 @@ interface UserRepository{
     val currentUsername: Flow<String>
 
     fun logout(token: String): Call<GeneralResponseModel>
-
     suspend fun saveUserToken(token: String)
     suspend fun saveUsername(username: String)
+    fun getUsersByTotalScore(token: String): Call<UserListResponse>
 }
 
 class NetworkUserRepository(
@@ -51,5 +52,9 @@ class NetworkUserRepository(
 
     override fun logout(token: String): Call<GeneralResponseModel> {
         return userAPIService.logout(token)
+    }
+
+    override fun getUsersByTotalScore(token: String): Call<UserListResponse> {
+        return userAPIService.getUsersByTotalScore(token)
     }
 }

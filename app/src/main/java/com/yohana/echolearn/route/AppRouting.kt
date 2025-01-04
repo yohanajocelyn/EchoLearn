@@ -13,6 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,6 +30,7 @@ import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
+import com.yohana.echolearn.views.LeaderBoardView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
@@ -230,5 +232,9 @@ fun AppRouting(
                 viewModel = attemptViewModel
             )
         }
+
+//        composable(route = PagesEnum.Leaderboards.name) {
+//            LeaderBoardView(navController = navController, token = token.value)
+//        }
     }
 }

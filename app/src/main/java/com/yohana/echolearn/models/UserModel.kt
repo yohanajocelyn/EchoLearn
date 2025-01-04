@@ -8,3 +8,7 @@ data class UserModel(
 data class UserResponse(
     val data: UserModel
 )
+
+data class UserListResponse(
+    val data: List<UserModel>
+)
