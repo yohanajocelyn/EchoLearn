@@ -94,7 +94,7 @@ fun ListMusic(
                                 index = index + 1,
                                 onCardClick = {
                                     if (type == "Listening") {
-                                        navController?.navigate(route = PagesEnum.Listening.name + "/$song.id")
+                                        navController?.navigate(route = PagesEnum.Listening.name + "/${song.id}")
                                     } else {
                                         navController?.navigate(PagesEnum.Speaking.name + "/${song.id}")
                                     }
