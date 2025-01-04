@@ -19,9 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
+import com.yohana.echolearn.models.LeaderboardResponse
 
 @Composable
-fun Top3Bar(width: Int, height: Int, color: Color) {
+fun Top3Bar(width: Int, height: Int, color: Color, user: LeaderboardResponse, pos: Int) {
     Column {
         Image(
             painter = painterResource(id = R.drawable.learning_img),
@@ -43,15 +44,15 @@ fun Top3Bar(width: Int, height: Int, color: Color) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Name", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("${user.username}", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "Score",
+                    "${user.totalScore} PTS",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            Text("Pos", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("$pos", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
 
         }

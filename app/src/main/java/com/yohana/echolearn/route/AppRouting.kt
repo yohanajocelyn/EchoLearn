@@ -13,7 +13,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +23,7 @@ import com.yohana.echolearn.viewmodels.AttemptViewModel
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
@@ -76,7 +76,8 @@ fun AppRouting(
     listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory),
     attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory),
     listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory),
-    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory)
+    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
+    leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -233,8 +234,12 @@ fun AppRouting(
             )
         }
 
-//        composable(route = PagesEnum.Leaderboards.name) {
-//            LeaderBoardView(navController = navController, token = token.value)
-//        }
+        composable(route = PagesEnum.Leaderboards.name) {
+            LeaderBoardView(
+                navController = navController,
+                viewModel = leaderBoardViewModel,
+                token = token.value
+            )
+        }
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
@@ -59,6 +60,12 @@ fun Navbar(
             )
             navButton(
                 imageId = R.drawable.bookbookmark,
+                text = "Attempts",
+                onClick = { navController!!.navigate(PagesEnum.Attempts.name) },
+                color = viewModel.getColor("Notes")
+            )
+            navButton(
+                imageId = R.drawable.bookbookmark,
                 text = "Notes",
                 onClick = { navController!!.navigate(PagesEnum.Attempts.name) },
                 color = viewModel.getColor("Notes")
@@ -92,7 +99,8 @@ fun navButton(imageId: Int, text: String, onClick: () -> Unit = {}, color: Color
             contentDescription = "Logo")
         Text(
             text = text,
-            color = color
+            color = color,
+            fontSize = 12.sp
         )
     }
 }

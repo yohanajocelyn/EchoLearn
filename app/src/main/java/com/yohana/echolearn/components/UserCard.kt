@@ -23,9 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
+import com.yohana.echolearn.models.LeaderboardResponse
 
 @Composable
-fun UserCard(){
+fun UserCard(user: LeaderboardResponse, index:Int){
     Card(modifier = Modifier
         .height(70.dp)
         .fillMaxWidth()) {
@@ -37,7 +38,7 @@ fun UserCard(){
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("1", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("$index", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
                     painter = painterResource(id = R.drawable.learning_img),
@@ -49,9 +50,9 @@ fun UserCard(){
 
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text("Name", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("${user.username}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
-            Text("10 PTS", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text("${user.totalScore} PTS", fontSize = 17.sp, fontWeight = FontWeight.Bold)
 
         }
 
