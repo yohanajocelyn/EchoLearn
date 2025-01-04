@@ -1,5 +1,6 @@
 package com.yohana.echolearn.repositories
 
+import com.yohana.echolearn.models.SearchSongRequest
 import com.yohana.echolearn.models.SongListResponse
 import com.yohana.echolearn.models.SongResponse
 import com.yohana.echolearn.services.SongAPIService
@@ -9,6 +10,7 @@ interface SongRepository{
     fun getSongs(): Call<SongListResponse>
     fun getSongsByGenre(genre: String): Call<SongListResponse>
     fun getSongById(songId: Int): Call<SongResponse>
+    fun searchSongs(token: String, query: String): Call<SongListResponse>
 }
 
 class NetworkSongRepository(
@@ -24,5 +26,9 @@ class NetworkSongRepository(
 
     override fun getSongById(songId: Int): Call<SongResponse> {
         return songAPIService.getSongById(songId)
+    }
+
+    override fun searchSongs(token: String, query: String): Call<SongListResponse> {
+        return songAPIService.searchSongs(token, query)
     }
 }

@@ -2,6 +2,7 @@ package com.yohana.echolearn.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,11 +27,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.viewmodels.ListMusicViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
+fun SearchBar(
+    listMusicViewModel: ListMusicViewModel,
+    navController: NavController,
+    token: String,
+
+) {
+    var query by remember { mutableStateOf("") }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,13 +57,16 @@ fun SearchBar(modifier: Modifier = Modifier) {
             contentDescription = "search icon",
             modifier = Modifier
                 .size(30.dp)
-                .padding(start = 8.dp)
+                .padding(start = 8.dp).clickable {
+                    // Gunakan query dari TextField untuk pencarian
+                    listMusicViewModel.searchSongs(token, query)
+                }
         )
         Spacer(modifier = Modifier.width(8.dp))
         // Input TextField
         TextField(
-            value = "",
-            onValueChange = {},
+            value = query,
+            onValueChange = { query = it },
             placeholder = { Text("Search Artists, Songs") }, // Placeholder diubah
             modifier = Modifier
                 .fillMaxWidth()

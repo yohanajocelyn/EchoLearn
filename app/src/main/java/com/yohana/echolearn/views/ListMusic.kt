@@ -41,7 +41,9 @@ fun ListMusic(
     type: String,
     token: String,
 ) {
+    val searchSongs by viewModel.searchSongs.collectAsState()
     val songs by viewModel.songs.collectAsState()
+
     LaunchedEffect(Unit) { viewModel.setSongs() }
     Scaffold(
         topBar = {
@@ -66,7 +68,11 @@ fun ListMusic(
                         .padding(horizontal = 16.dp)
                 ) {
                     item {
-                        SearchBar()
+                        SearchBar(
+                            listMusicViewModel = viewModel,
+                            navController = navController,
+                            token = token
+                        )
                         Spacer(modifier = Modifier.height(15.dp))
                     }
                     item {

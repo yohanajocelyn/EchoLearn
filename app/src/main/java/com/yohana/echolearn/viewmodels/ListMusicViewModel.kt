@@ -26,6 +26,10 @@ class ListMusicViewModel(private val songRepository: SongRepository) : ViewModel
     private val _songs = MutableStateFlow<List<SongModel>>(emptyList())
     val songs: StateFlow<List<SongModel>> = _songs
 
+    private val _searchSong = MutableStateFlow<List<SongModel>>(emptyList())
+
+    val searchSongs: StateFlow<List<SongModel>> = _searchSong
+
     fun setSongs() {
         viewModelScope.launch {
             try {
@@ -57,7 +61,36 @@ class ListMusicViewModel(private val songRepository: SongRepository) : ViewModel
         }
     }
 
+fun searchSongs(token: String, searchQuery: String) {
+        viewModelScope.launch {
+            try {
+                val call = songRepository.searchSongs(token, searchQuery)
+                call.enqueue(object : Callback<SongListResponse> {
+                    override fun onResponse(
+                        call: Call<SongListResponse>,
+                        res: Response<SongListResponse>
+                    ) {
+                        if (res.isSuccessful) {
+                            _searchSong.value = res.body()!!.data
+                        } else {
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                        }
+                    }
 
+                    override fun onFailure(p0: Call<SongListResponse>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                    }
+                })
+
+            } catch (error: IOException) {
+                Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }
+        }
+    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

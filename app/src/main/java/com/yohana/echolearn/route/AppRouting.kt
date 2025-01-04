@@ -23,12 +23,14 @@ import com.yohana.echolearn.viewmodels.AttemptViewModel
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
+import com.yohana.echolearn.views.LeaderBoardView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
@@ -74,7 +76,8 @@ fun AppRouting(
     listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory),
     attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory),
     listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory),
-    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory)
+    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
+    leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -228,6 +231,14 @@ fun AppRouting(
                 navController = navController,
                 token = token.value,
                 viewModel = attemptViewModel
+            )
+        }
+
+        composable(route = PagesEnum.Leaderboards.name) {
+            LeaderBoardView(
+                navController = navController,
+                viewModel = leaderBoardViewModel,
+                token = token.value
             )
         }
     }
