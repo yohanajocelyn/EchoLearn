@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
 import com.yohana.echolearn.models.LeaderboardResponse
 
@@ -41,7 +42,7 @@ fun UserCard(user: LeaderboardResponse, index:Int){
                 Text("$index", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(
-                    painter = painterResource(id = R.drawable.learning_img),
+                    painter = rememberImagePainter(user.profilePicture),
                     contentDescription = "search icon",
                     modifier = Modifier
                         .aspectRatio(1f)

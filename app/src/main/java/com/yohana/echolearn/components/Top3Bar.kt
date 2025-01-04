@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
 import com.yohana.echolearn.models.LeaderboardResponse
 
@@ -25,7 +26,7 @@ import com.yohana.echolearn.models.LeaderboardResponse
 fun Top3Bar(width: Int, height: Int, color: Color, user: LeaderboardResponse, pos: Int) {
     Column {
         Image(
-            painter = painterResource(id = R.drawable.learning_img),
+            painter = rememberImagePainter(user.profilePicture),
             contentDescription = "search icon",
             modifier = Modifier
                 .size(100.dp),
