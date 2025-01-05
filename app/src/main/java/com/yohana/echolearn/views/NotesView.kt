@@ -3,6 +3,7 @@ package com.yohana.echolearn.views
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -128,7 +129,13 @@ fun NotesView(
                                         painter = painterResource(id = R.drawable.ic_trash),
                                         contentDescription = "profile picture",
                                         modifier = Modifier
-                                            .size(32.dp),
+                                            .size(32.dp).clickable {
+                                                viewModel.deleteNote(
+                                                    token = token,
+                                                    id = note.id,
+                                                    username = username
+                                                )
+                                            },
 
                                         contentScale = ContentScale.Crop
                                     )
