@@ -77,19 +77,17 @@ fun SpeakingView(
     LaunchedEffect(isAnswerProcessed,recognizedText) {
         if (recognizedText.isNotEmpty()) {
             viewModel.checkAnswerSpeaking(token, variant.id, recognizedText)
+            viewModel.resetViewModel()
             showDialog = true
         }
     }
 
-    LaunchedEffect(isAnswerProcessed) {
-        if (isAnswerProcessed) {
-            showDialog = true
-            viewModel.resetAnswerProcessed() // Atur ulang status jika perlu
-        }
-    }
+
 
     if(showDialog) {
-        SimpleAlertDialog(navController, answerResponse.score)
+        SimpleAlertDialog(navController, answerResponse.score, viewModel,  onDismiss = {
+            showDialog = false
+        })
     }
 
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar

@@ -19,6 +19,7 @@ import com.yohana.echolearn.R
 import com.yohana.echolearn.uistates.AuthenticationStatusUIState
 import com.yohana.echolearn.uistates.AuthenticationUIState
 import com.yohana.echolearn.models.ErrorModel
+import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.UserResponse
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.UserRepository
@@ -204,7 +205,8 @@ class AuthenticationViewModel(
                             )
 
                             Log.d("error-data", "ERROR DATA: ${errorMessage}")
-                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errorMessage)
+                            dataStatus =
+                                AuthenticationStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 
@@ -228,6 +230,48 @@ class AuthenticationViewModel(
         }
     }
 
+    fun updateUser(token: String, id: Int, navController: NavController) {
+        viewModelScope.launch {
+            dataStatus = AuthenticationStatusUIState.Loading
+
+            try {
+                val call = userRepository.updateUser(
+                    token = token,
+                    id = id,
+                    username = usernameInput,
+                    email = emailInput,
+                    profilePicture = profilePictureInput,
+                    password = passwordInput
+                )
+
+                call.enqueue(object : Callback<GeneralResponseModel> {
+                    override fun onResponse(
+                        call: Call<GeneralResponseModel>,
+                        res: Response<GeneralResponseModel>
+                    ) {
+                        if (res.isSuccessful) {
+                            navController.navigate(PagesEnum.Home.name){
+                            }
+                            saveUsernameToken(usernameInput, token)
+                        } else {
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<GeneralResponseModel>, t: Throwable) {
+                       dataStatus = AuthenticationStatusUIState.Failed(t.localizedMessage)
+                    }
+
+                })
+            } catch (error: IOException) {
+            }
+        }
+    }
+
     fun loginUser(navController: NavController) {
         viewModelScope.launch {
             dataStatus = AuthenticationStatusUIState.Loading
@@ -236,7 +280,7 @@ class AuthenticationViewModel(
                 val call = authenticationRepository.login(emailInput, passwordInput)
                 call.enqueue(object : Callback<UserResponse> {
                     override fun onResponse(call: Call<UserResponse>, res: Response<UserResponse>) {
-                        if (res.isSuccessful){
+                        if (res.isSuccessful) {
                             saveUsernameToken(
                                 token = res.body()!!.data.token!!,
                                 username = res.body()!!.data.username!!
@@ -259,7 +303,8 @@ class AuthenticationViewModel(
                             )
 
                             Log.d("error-data", "ERROR DATA: ${errorMessage}")
-                            dataStatus = AuthenticationStatusUIState.Failed(errorMessage.errorMessage)
+                            dataStatus =
+                                AuthenticationStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
 
