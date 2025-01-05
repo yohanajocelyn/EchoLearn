@@ -64,7 +64,8 @@ enum class PagesEnum {
     Listening,
     Speaking,
     Leaderboards,
-    Attempts
+    Attempts,
+    UpdateNote
 }
 
 @SuppressLint("NewApi")
