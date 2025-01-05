@@ -3,6 +3,7 @@ package com.yohana.echolearn.models
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
@@ -30,6 +31,7 @@ data class AttemptResponse(
 data class AttemptListResponse(
     val data: List<AttemptModel>
 )
+
 @SuppressLint("NewApi")
 data class AttemptSpeakingResponse (
     val userId: Int = 0,
@@ -40,6 +42,7 @@ data class AttemptSpeakingResponse (
     val attemptedAt: Date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()),
     val isComplete: Boolean = true,
 )
+
 @SuppressLint("NewApi")
 data class AttemptDetail(
     val id: Int = 0,

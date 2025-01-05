@@ -52,7 +52,8 @@ class SpeakingViewModel(
 
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
-    private val _answerResponse = MutableStateFlow<AttemptSpeakingResponse>(AttemptSpeakingResponse())
+
+    private var _answerResponse = MutableStateFlow<AttemptSpeakingResponse>(AttemptSpeakingResponse())
     val answerResponse: StateFlow<AttemptSpeakingResponse> get() = _answerResponse
 
     private val _isAnswerProcessed = MutableStateFlow(false)
@@ -134,6 +135,7 @@ class SpeakingViewModel(
                         res: Response<AttemptSpeakingResponse>
                     ) {
                         if (res.isSuccessful) {
+                            _answerResponse.value = res.body()!!
                             Log.d("answer-response", "ANSWER RESPONSE: ${res.body()}")
                         } else {
                             val errorMessage = Gson().fromJson(
@@ -155,10 +157,10 @@ class SpeakingViewModel(
         }
     }
     //get variants
-    fun getVariants(token: String, songId: Int, type: String, navController: NavController) {
+    fun getVariants(token:String,songId: Int, type: String, navController: NavController) {
         viewModelScope.launch {
             try {
-                val call = variantRepository.getVariants(token, songId, type)
+                val call = variantRepository.getVariants(token,songId, type)
                 call.enqueue(object : Callback<VariantListResponse> {
                     override fun onResponse(
                         call: Call<VariantListResponse>,
@@ -168,9 +170,6 @@ class SpeakingViewModel(
                             _variants.value = res.body()!!.data
                             if(_variants.value.isNotEmpty()) {
                                 randomizedVariants()
-                            }else {
-                                resetViewModel()
-                                navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Speaking.name)
                             }
                         } else {
                             val errorMessage = Gson().fromJson(

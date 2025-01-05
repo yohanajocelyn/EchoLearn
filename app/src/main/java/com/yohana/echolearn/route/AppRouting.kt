@@ -23,19 +23,25 @@ import com.yohana.echolearn.viewmodels.AttemptViewModel
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.GenreViewModel
 import com.yohana.echolearn.viewmodels.HomeViewModel
+import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
+import com.yohana.echolearn.viewmodels.ProfileViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
+import com.yohana.echolearn.viewmodels.UpdateProfileViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
+import com.yohana.echolearn.views.LeaderBoardView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
+import com.yohana.echolearn.views.ProfileView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SpeakingView
 import com.yohana.echolearn.views.SplashScreenView
 import com.yohana.echolearn.views.StarterView
+import com.yohana.echolearn.views.UpdateProfileView
 
 fun isFirstTimeLaunch(context: Context): Boolean {
     val sharedPref = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
@@ -60,7 +66,8 @@ enum class PagesEnum {
     Listening,
     Speaking,
     Leaderboards,
-    Attempts
+    Attempts,
+    UpdatedProfile
 }
 
 @SuppressLint("NewApi")
@@ -74,7 +81,10 @@ fun AppRouting(
     listeningViewModel: ListeningViewModel = viewModel(factory = ListeningViewModel.Factory),
     attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory),
     listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory),
-    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory)
+    speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
+    leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory),
+    profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory),
+    updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -229,6 +239,37 @@ fun AppRouting(
                 token = token.value,
                 viewModel = attemptViewModel
             )
+        }
+
+        composable(route = PagesEnum.Leaderboards.name) {
+            LeaderBoardView(
+                navController = navController,
+                viewModel = leaderBoardViewModel,
+                token = token.value
+            )
+        }
+
+        composable(route = PagesEnum.Profile.name) {
+            ProfileView(
+                navController = navController,
+                viewModel = profileViewModel,
+                token = token.value,
+                username = username.value
+            )
+        }
+        composable(route = PagesEnum.UpdatedProfile.name + "/{id}", arguments = listOf(
+            navArgument(name = "id") {
+                type = NavType.IntType
+            }
+        )) {backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id")
+            UpdateProfileView(
+                navController = navController,
+                viewModel = authenticationViewModel,
+                id = id!!,
+                token = token.value
+            )
+
         }
 
         composable(route = PagesEnum.Listening.name + "continue-attempt/{attemptId}",

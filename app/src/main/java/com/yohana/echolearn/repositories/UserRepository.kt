@@ -5,6 +5,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.yohana.echolearn.models.GeneralResponseModel
+import com.yohana.echolearn.models.GetUserResponse
+import com.yohana.echolearn.models.LeaderboardListResponse
+import com.yohana.echolearn.models.UpdateUserRequest
+import com.yohana.echolearn.models.UserListResponse
 import com.yohana.echolearn.services.UserAPIService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,9 +19,11 @@ interface UserRepository{
     val currentUsername: Flow<String>
 
     fun logout(token: String): Call<GeneralResponseModel>
-
     suspend fun saveUserToken(token: String)
     suspend fun saveUsername(username: String)
+    fun getUsersByTotalScore(token: String): Call<LeaderboardListResponse>
+    fun getUserByUsername(token:String,username: String): Call<GetUserResponse>
+    fun updateUser(token: String, id:Int, username: String, email: String, profilePicture: String, password:String): Call<GeneralResponseModel>
 }
 
 class NetworkUserRepository(
@@ -52,4 +58,22 @@ class NetworkUserRepository(
     override fun logout(token: String): Call<GeneralResponseModel> {
         return userAPIService.logout(token)
     }
+
+    override fun getUsersByTotalScore(token: String): Call<LeaderboardListResponse> {
+        return userAPIService.getUsersByTotalScore(token)
+    }
+
+    override fun getUserByUsername(token: String,username: String): Call<GetUserResponse> {
+        return userAPIService.getUserById(token,username)
+    }
+
+    override    fun updateUser(token: String, id:Int, username: String, email: String, profilePicture: String, password: String):Call<GeneralResponseModel> {
+        return  userAPIService.updateUser(token, id, UpdateUserRequest(
+            username = username,
+            email = email,
+            profilePicture = profilePicture,
+            password = password
+        ))
+    }
+
 }

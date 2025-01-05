@@ -33,13 +33,14 @@ interface AppContainer {
 
 class DefaultAppContainer(
     private val userDataStore: DataStore<Preferences>
-): AppContainer {
+) : AppContainer {
     //daffa's ip address
 //    private val APIBaseURL = "http://192.168.162.250:3000/"
 
     //yohana's ip address
-    private val APIBaseURL = "http://192.168.18.100:3000/"
-
+//    private val APIBaseURL = "http://192.168.18.100:3000/"
+    //universal IP
+    private val APIBaseURL = "http://192.168.162.250:3000/"
 
     private val authenticationRetrofitService: AuthenticationAPIService by lazy {
         val retrofit = initRetrofit()
@@ -87,7 +88,7 @@ class DefaultAppContainer(
         NetworkAttemptRepository(attemptRetrofitService)
     }
 
-    private fun initRetrofit(): Retrofit{
+    private fun initRetrofit(): Retrofit {
         val logging = HttpLoggingInterceptor()
         logging.level = (HttpLoggingInterceptor.Level.BODY)
 
