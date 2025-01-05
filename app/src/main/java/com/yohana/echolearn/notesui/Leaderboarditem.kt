@@ -1,4 +1,4 @@
-package com.yohana.echolearn.models
+package com.yohana.echolearn.notesui
 
 data class LeaderboardItem(
     val rank: Int,
