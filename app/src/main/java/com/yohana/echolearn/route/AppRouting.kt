@@ -26,16 +26,20 @@ import com.yohana.echolearn.viewmodels.HomeViewModel
 import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
+import com.yohana.echolearn.viewmodels.NoteViewModel
 import com.yohana.echolearn.viewmodels.ProfileViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
+import com.yohana.echolearn.viewmodels.UpdateNoteViewModel
 import com.yohana.echolearn.viewmodels.UpdateProfileViewModel
 import com.yohana.echolearn.views.AttemptView
+import com.yohana.echolearn.views.CreateNote
 import com.yohana.echolearn.views.GenreView
 import com.yohana.echolearn.views.HomeView
 import com.yohana.echolearn.views.LeaderBoardView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
+import com.yohana.echolearn.views.NotesView
 import com.yohana.echolearn.views.ProfileView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SpeakingView
@@ -62,12 +66,14 @@ enum class PagesEnum {
     SongMenu,
     SongDetail,
     Notes,
+    UpdateNote,
     Profile,
     Listening,
     Speaking,
     Leaderboards,
     Attempts,
-    UpdatedProfile
+    UpdatedProfile,
+    CreateNote
 }
 
 @SuppressLint("NewApi")
@@ -84,7 +90,9 @@ fun AppRouting(
     speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
     leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory),
     profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory),
-    updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory)
+    updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory),
+    noteViewModel: NoteViewModel = viewModel(factory = NoteViewModel.Factory),
+    updateNoteViewModel: UpdateNoteViewModel = viewModel(factory = UpdateNoteViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -261,7 +269,7 @@ fun AppRouting(
             navArgument(name = "id") {
                 type = NavType.IntType
             }
-        )) {backStackEntry ->
+        )) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             UpdateProfileView(
                 navController = navController,
@@ -269,7 +277,20 @@ fun AppRouting(
                 id = id!!,
                 token = token.value
             )
+        }
 
+        composable(route = PagesEnum.Notes.name) {
+            NotesView(
+                navController = navController, token = token.value, viewModel = noteViewModel, username = username.value
+            )
+        }
+
+        composable(route= PagesEnum.CreateNote.name) {
+            CreateNote(
+                navController = navController,
+                viewModel = updateNoteViewModel,
+                token = token.value, username = username.value
+            )
         }
     }
 }
