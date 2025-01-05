@@ -1,7 +1,9 @@
 package com.yohana.echolearn.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -16,6 +18,7 @@ import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.GetUserResponse
 import com.yohana.echolearn.models.LeaderboardListResponse
 import com.yohana.echolearn.models.LeaderboardResponse
+import com.yohana.echolearn.models.ToGetUserResponse
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.uistates.StringDataStatusUIState
@@ -31,23 +34,33 @@ class ProfileViewModel(private val userRepository: UserRepository): ViewModel() 
     private val _users = MutableStateFlow<List<LeaderboardResponse>>(emptyList())
     val users: StateFlow<List<LeaderboardResponse>> = _users
 
-
     private val _user = MutableStateFlow<GetUserResponse>(GetUserResponse())
     val user: StateFlow<GetUserResponse> = _user
 
-
+    var isLoading: Boolean by mutableStateOf(true)
+        private set
 
     fun getUserByUsername(token: String, username: String) {
         viewModelScope.launch {
             try {
                 val call = userRepository.getUserByUsername(token, username)
-                call.enqueue(object : Callback<GetUserResponse> {
+                call.enqueue(object : Callback<ToGetUserResponse> {
                     override fun onResponse(
-                        call: Call<GetUserResponse>,
-                        res: Response<GetUserResponse>
+                        call: Call<ToGetUserResponse>,
+                        res: Response<ToGetUserResponse>
                     ) {
                         if (res.isSuccessful) {
-                            _user.value = res.body()!!
+                            val mappedUser = res.body()!!.data.let {
+                                GetUserResponse(
+                                    id = it.id,
+                                    username = it.username,
+                                    email = it.email,
+                                    profilePicture = it.profilePicture,
+                                    token = it.token,
+                                    totalScore = it.totalScore
+                                )
+                            }
+                            _user.value = mappedUser
                         } else {
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -57,13 +70,15 @@ class ProfileViewModel(private val userRepository: UserRepository): ViewModel() 
                         }
                     }
 
-                    override fun onFailure(p0: Call<GetUserResponse>, t: Throwable) {
+                    override fun onFailure(p0: Call<ToGetUserResponse>, t: Throwable) {
                         Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
                     }
                 })
 
             } catch (error: IOException) {
                 Log.d("register-error", "REGISTER ERROR: ${error.localizedMessage}")
+            }finally {
+                isLoading = false
             }
         }
     }

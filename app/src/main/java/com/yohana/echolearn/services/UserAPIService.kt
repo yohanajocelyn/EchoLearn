@@ -3,6 +3,7 @@ package com.yohana.echolearn.services
 import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.GetUserResponse
 import com.yohana.echolearn.models.LeaderboardListResponse
+import com.yohana.echolearn.models.ToGetUserResponse
 import com.yohana.echolearn.models.UpdateUserRequest
 import retrofit2.Call
 import retrofit2.http.Body
@@ -23,7 +24,7 @@ interface UserAPIService {
     fun getUserById(
         @Header("X-API-TOKEN") token: String,
         @Path("username") username: String
-    ): Call<GetUserResponse>
+    ): Call<ToGetUserResponse>
 
     @PUT("api/user/update/{userId}")
     fun updateUser(

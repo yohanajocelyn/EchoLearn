@@ -59,15 +59,15 @@ fun Navbar(
                 color = viewModel.getColor("Home")
             )
             navButton(
-                imageId = R.drawable.bookbookmark,
+                imageId = R.drawable.history,
                 text = "Attempts",
                 onClick = { navController!!.navigate(PagesEnum.Attempts.name) },
-                color = viewModel.getColor("Notes")
+                color = viewModel.getColor("Attempts")
             )
             navButton(
                 imageId = R.drawable.bookbookmark,
                 text = "Notes",
-                onClick = { navController!!.navigate(PagesEnum.Attempts.name) },
+                onClick = { navController!!.navigate(PagesEnum.Notes.name) },
                 color = viewModel.getColor("Notes")
             )
             navButton(

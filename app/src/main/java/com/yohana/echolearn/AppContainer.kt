@@ -40,7 +40,7 @@ class DefaultAppContainer(
     //yohana's ip address
 //    private val APIBaseURL = "http://192.168.18.100:3000/"
     //universal IP
-    private val APIBaseURL = "http://192.168.162.250:3000/"
+    private val APIBaseURL = "http://10.0.2.2:3000/"
 
     private val authenticationRetrofitService: AuthenticationAPIService by lazy {
         val retrofit = initRetrofit()
