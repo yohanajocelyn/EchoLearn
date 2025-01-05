@@ -5,6 +5,18 @@ data class UserModel(
     val username: String,
 )
 
+data class GetUserResponse(
+    val id: Int = 0,
+    val username: String = "",
+    val email: String = "",
+    val profilePicture: String = "",
+    val token: String = "",
+    val totalScore: Int = 0,
+)
+
+data class ToGetUserResponse(
+    val data: GetUserResponse
+)
 
 data class LeaderboardResponse(
     val id: Int,

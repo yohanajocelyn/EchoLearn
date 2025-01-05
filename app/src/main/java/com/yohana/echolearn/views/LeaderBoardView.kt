@@ -36,8 +36,7 @@ fun LeaderBoardView(
     viewModel: LeaderBoardViewModel = viewModel(),
     token: String
 ) {
- val users by viewModel.users.collectAsState()
-
+    val users by viewModel.users.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.getUsersByTotalScore(token)
     }
@@ -77,10 +76,10 @@ fun LeaderBoardView(
 
                         }
                         Spacer(modifier = Modifier.height(20.dp))
-                            for (i in 3 until users.size) {
-                                UserCard(user = users[i], index = i + 1)
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
+                        for (i in 3 until users.size) {
+                            UserCard(user = users[i], index = i + 1)
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
                     }
 //                    items(8) {
 //                        UserCard()
