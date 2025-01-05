@@ -121,10 +121,10 @@ class ListeningViewModel(
         }
     }
 
-    fun setVariants(songId: Int, type: String){
+    fun setVariants(token:String,songId: Int, type: String){
         viewModelScope.launch {
             try{
-                val call = variantRepository.getVariants(songId, type)
+                val call = variantRepository.getVariants(token,songId, type)
                 call.enqueue(object: Callback<VariantListResponse>{
                     override fun onResponse(
                         call: Call<VariantListResponse>,

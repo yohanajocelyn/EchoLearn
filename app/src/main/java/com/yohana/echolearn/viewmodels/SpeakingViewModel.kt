@@ -155,10 +155,10 @@ class SpeakingViewModel(
         }
     }
     //get variants
-    fun getVariants(songId: Int, type: String, navController: NavController) {
+    fun getVariants(token:String,songId: Int, type: String, navController: NavController) {
         viewModelScope.launch {
             try {
-                val call = variantRepository.getVariants(songId, type)
+                val call = variantRepository.getVariants(token,songId, type)
                 call.enqueue(object : Callback<VariantListResponse> {
                     override fun onResponse(
                         call: Call<VariantListResponse>,
@@ -168,9 +168,6 @@ class SpeakingViewModel(
                             _variants.value = res.body()!!.data
                             if(_variants.value.isNotEmpty()) {
                                 randomizedVariants()
-                            }else {
-                                resetViewModel()
-                                navController?.navigate(PagesEnum.SongMenu.name + "/" + PagesEnum.Speaking.name)
                             }
                         } else {
                             val errorMessage = Gson().fromJson(

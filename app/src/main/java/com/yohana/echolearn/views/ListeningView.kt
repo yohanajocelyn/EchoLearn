@@ -87,7 +87,7 @@ fun ListeningView(
 
     LaunchedEffect(songId){
         viewModel.setSong(songId, token, navController)
-        viewModel.setVariants(songId, type)
+        viewModel.setVariants(token,songId, type)
     }
 
     val song by viewModel.song.collectAsState()

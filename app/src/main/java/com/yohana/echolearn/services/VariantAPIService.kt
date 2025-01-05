@@ -22,6 +22,7 @@ interface VariantAPIService {
 
     @GET("api/variants/{songId}/{type}")
     fun getVariants(
+        @Header("X-API-TOKEN") token: String,
         @Path("songId") songId: Int,
         @Path("type") type: String
     ): Call<VariantListResponse>
