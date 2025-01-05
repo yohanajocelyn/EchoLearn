@@ -23,7 +23,7 @@ interface UserRepository{
     suspend fun saveUsername(username: String)
     fun getUsersByTotalScore(token: String): Call<LeaderboardListResponse>
     fun getUserByUsername(token:String,username: String): Call<GetUserResponse>
-    fun updateUser(token: String, id:Int, username: String, email: String, profilePicture: String, password:String): Call<String>
+    fun updateUser(token: String, id:Int, username: String, email: String, profilePicture: String, password:String): Call<GeneralResponseModel>
 }
 
 class NetworkUserRepository(
@@ -67,7 +67,7 @@ class NetworkUserRepository(
         return userAPIService.getUserById(token,username)
     }
 
-    override    fun updateUser(token: String, id:Int, username: String, email: String, profilePicture: String, password: String):Call<String> {
+    override    fun updateUser(token: String, id:Int, username: String, email: String, profilePicture: String, password: String):Call<GeneralResponseModel> {
         return  userAPIService.updateUser(token, id, UpdateUserRequest(
             username = username,
             email = email,

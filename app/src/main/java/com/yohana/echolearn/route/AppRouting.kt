@@ -266,7 +266,8 @@ fun AppRouting(
             UpdateProfileView(
                 navController = navController,
                 viewModel = authenticationViewModel,
-                id = id!!
+                id = id!!,
+                token = token.value
             )
 
         }

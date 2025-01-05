@@ -15,9 +15,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.AuthenticationOutlinedTextField
+import com.yohana.echolearn.components.PasswordOutlinedTextField
 import com.yohana.echolearn.components.StylishImageDropdown
 import com.yohana.echolearn.components.TopBarComponent
 import com.yohana.echolearn.viewmodels.AuthenticationViewModel
@@ -46,8 +52,11 @@ fun UpdateProfileView(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModel: AuthenticationViewModel,
-    id: Int
+    id: Int,
+    token:String
 ) {
+    val registerUIState by viewModel.authenticationUIState.collectAsState()
+
     Scaffold(
         topBar = {
             TopBarComponent(
@@ -120,11 +129,11 @@ fun UpdateProfileView(
                         AuthenticationOutlinedTextField(
                             inputValue = viewModel.emailInput,
                             onInputValueChange = { viewModel.setEmail(it) },
-                            labelText = "Name",
-                            placeholderText = "Name",
+                            labelText = "email",
+                            placeholderText = "email",
                             leadingIconSrc = painterResource(id = R.drawable.ic_email),
                             keyboardType = KeyboardOptions(
-                                keyboardType = KeyboardType.Text,
+                                keyboardType = KeyboardType.Email,
                                 imeAction = ImeAction.Next
                             ),
                             onKeyboardNext = KeyboardActions.Default
@@ -135,6 +144,38 @@ fun UpdateProfileView(
                             defaultProfilePictures = viewModel.defaultProfilePictures
                         )
                         Spacer(modifier = Modifier.height(10.dp))
+                        PasswordOutlinedTextField(
+                            passwordInput = viewModel.passwordInput,
+                            onPasswordInputValueChange = { viewModel.setPassword(it) },
+                            labelText = "Password",
+                            placeholderText = "Enter your password",
+                            onTrailingIconClick = { viewModel.setPasswordVisibility() },
+                            passwordVisibility = registerUIState.passwordVisibility,
+                            keyboardImeAction = ImeAction.Done,
+                            onKeyboardNext = KeyboardActions.Default,
+                            passwordVisibilityIcon = painterResource(id = registerUIState.passwordVisibilityIcon)
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Button(
+                            onClick = {
+                                viewModel.updateUser(token, id, navController)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .padding(horizontal = 16.dp)
+                                .background(Color(0xFF007BFF), shape = MaterialTheme.shapes.medium), // Modern rounded button
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF007BFF)),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Text(
+                                text = "Register",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
 
                     }
                 }
@@ -154,6 +195,7 @@ fun PreviewUpdate() {
         viewModel = viewModel(factory = UpdateProfileViewModel.Factory),
 
         id = 1,
+        token = ""
     )
 
 }

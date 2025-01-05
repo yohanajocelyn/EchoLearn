@@ -30,6 +30,6 @@ interface UserAPIService {
         @Header("X-API-TOKEN") token: String,
         @Path("userId") userId: Int,
         @Body updateUserRequest: UpdateUserRequest
-    ):Call<String>
+    ):Call<GeneralResponseModel>
 
 }
