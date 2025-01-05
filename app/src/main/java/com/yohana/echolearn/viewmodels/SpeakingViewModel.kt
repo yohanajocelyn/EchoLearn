@@ -52,7 +52,8 @@ class SpeakingViewModel(
 
     private val _variant = MutableStateFlow<VariantModel>(VariantModel())
     val variant: StateFlow<VariantModel> = _variant
-    private val _answerResponse = MutableStateFlow<AttemptSpeakingResponse>(AttemptSpeakingResponse())
+
+    private var _answerResponse = MutableStateFlow<AttemptSpeakingResponse>(AttemptSpeakingResponse())
     val answerResponse: StateFlow<AttemptSpeakingResponse> get() = _answerResponse
 
     private val _isAnswerProcessed = MutableStateFlow(false)
@@ -134,6 +135,7 @@ class SpeakingViewModel(
                         res: Response<AttemptSpeakingResponse>
                     ) {
                         if (res.isSuccessful) {
+                            _answerResponse.value = res.body()!!
                             Log.d("answer-response", "ANSWER RESPONSE: ${res.body()}")
                         } else {
                             val errorMessage = Gson().fromJson(

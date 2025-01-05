@@ -43,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.components.TopBarComponent
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.viewmodels.ProfileViewModel
 
 @Composable
@@ -123,7 +124,10 @@ fun ProfileView(
                                 painter = painterResource(id = R.drawable.ic_edit2),
                                 contentDescription = "profile picture",
                                 modifier = Modifier
-                                    .size(32.dp),
+                                    .size(32.dp).clickable {
+                                        navController?.navigate(route = PagesEnum.UpdatedProfile.name)
+
+                                    },
 
                                 contentScale = ContentScale.Crop
                             )
