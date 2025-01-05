@@ -26,6 +26,7 @@ import com.yohana.echolearn.viewmodels.HomeViewModel
 import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
+import com.yohana.echolearn.viewmodels.ProfileViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.views.AttemptView
 import com.yohana.echolearn.views.GenreView
@@ -34,6 +35,7 @@ import com.yohana.echolearn.views.LeaderBoardView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
+import com.yohana.echolearn.views.ProfileView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SpeakingView
 import com.yohana.echolearn.views.SplashScreenView
@@ -77,7 +79,8 @@ fun AppRouting(
     attemptViewModel: AttemptViewModel = viewModel(factory = AttemptViewModel.Factory),
     listMusicViewModel: ListMusicViewModel = viewModel(factory = ListMusicViewModel.Factory),
     speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
-    leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory)
+    leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory),
+    profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -239,6 +242,15 @@ fun AppRouting(
                 navController = navController,
                 viewModel = leaderBoardViewModel,
                 token = token.value
+            )
+        }
+
+        composable(route = PagesEnum.Profile.name) {
+            ProfileView(
+                navController = navController,
+                viewModel = profileViewModel,
+                token = token.value,
+                username = username.value
             )
         }
     }
