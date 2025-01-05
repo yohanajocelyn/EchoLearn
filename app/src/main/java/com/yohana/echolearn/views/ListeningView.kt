@@ -249,11 +249,19 @@ fun ListeningView(
                     }
                     Button(
                         onClick = {
-                            viewModel.saveProgress(
-                                token = token,
-                                navController = navController,
-                                isCompleted = true
-                            )
+                            if(isContinue){
+                                viewModel.updateProgress(
+                                    token = token,
+                                    navController = navController,
+                                    isCompleted = true
+                                )
+                            }else{
+                                viewModel.saveProgress(
+                                    token = token,
+                                    navController = navController,
+                                    isCompleted = true
+                                )
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()

@@ -287,11 +287,19 @@ class ListeningViewModel(
             }
             prepareAsync()
             setOnCompletionListener {
-                saveProgress(
-                    token = token,
-                    navController = navController,
-                    isCompleted = true
-                )
+                if(isContinue){
+                    updateProgress(
+                        token = token,
+                        navController = navController,
+                        isCompleted = true
+                    )
+                }else{
+                    saveProgress(
+                        token = token,
+                        navController = navController,
+                        isCompleted = true
+                    )
+                }
             }
         }
     }
@@ -303,6 +311,7 @@ class ListeningViewModel(
 
         if (this.isContinue){
             this.userAnswers = _attempt.value.attemptedAnswer.split(", ")
+            this.userAnswers = this.userAnswers.map { if (it == " ") "" else it }
         }else{
             this.userAnswers = List(answers.size) { "" }
         }
@@ -440,6 +449,62 @@ class ListeningViewModel(
 
                 })
             }catch(error: IOException){
+                createStatus = StringDataStatusUIState.Failed(error.localizedMessage)
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateProgress(token: String, navController: NavController, isCompleted: Boolean){
+        viewModelScope.launch {
+            try {
+                createStatus = StringDataStatusUIState.Loading
+
+                val score: String = calculateScore().toString()
+                val isComplete: String = "true"
+                userAnswers = userAnswers.map { if (it.isEmpty()) " " else it }
+                val attemptedAnswer: String = userAnswers.joinToString(", ")
+                val attemptedAt: String = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+
+                val call = attemptRepository.updateAttempt(
+                    token = token,
+                    attemptId = _attempt.value.id,
+                    score = score,
+                    attemptedAnswer = attemptedAnswer,
+                    isComplete = isComplete,
+                    attemptedAt = attemptedAt
+                )
+                call.enqueue(object: Callback<GeneralResponseModel>{
+                    override fun onResponse(
+                        call: Call<GeneralResponseModel>,
+                        res: Response<GeneralResponseModel>
+                    ) {
+                        if(res.isSuccessful) {
+                            createStatus = StringDataStatusUIState.Success(res.body()!!.data)
+
+                            navController.navigate(PagesEnum.Home.name){
+                                popUpTo(PagesEnum.Listening.name + "continue-attempt/{attemptId}") {
+                                    inclusive = true
+                                }
+                            }
+                        }else{
+                            val errorMessage = Gson().fromJson(
+                                res.errorBody()!!.charStream(),
+                                ErrorModel::class.java
+                            )
+                            Log.d("error-data", "ERROR DATA: ${errorMessage}")
+                            createStatus = StringDataStatusUIState.Failed(errorMessage.errorMessage)
+                        }
+                    }
+
+                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
+                        Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
+                        createStatus = StringDataStatusUIState.Failed(t.localizedMessage)
+                    }
+
+                })
+            }catch(error: IOException){
+                Log.d("error-data", "ERROR DATA: ${error.localizedMessage}")
                 createStatus = StringDataStatusUIState.Failed(error.localizedMessage)
             }
         }
