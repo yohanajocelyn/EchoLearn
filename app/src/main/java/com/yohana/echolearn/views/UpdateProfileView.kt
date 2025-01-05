@@ -36,15 +36,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.AuthenticationOutlinedTextField
+import com.yohana.echolearn.components.StylishImageDropdown
 import com.yohana.echolearn.components.TopBarComponent
+import com.yohana.echolearn.viewmodels.AuthenticationViewModel
 import com.yohana.echolearn.viewmodels.UpdateProfileViewModel
 
 @Composable
 fun UpdateProfileView(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: UpdateProfileViewModel,
-    username: String
+    viewModel: AuthenticationViewModel,
+    id: Int
 ) {
     Scaffold(
         topBar = {
@@ -114,7 +116,7 @@ fun UpdateProfileView(
                             ),
                             onKeyboardNext = KeyboardActions.Default
                         )
-
+                        Spacer(modifier = Modifier.height(10.dp))
                         AuthenticationOutlinedTextField(
                             inputValue = viewModel.emailInput,
                             onInputValueChange = { viewModel.setEmail(it) },
@@ -127,6 +129,13 @@ fun UpdateProfileView(
                             ),
                             onKeyboardNext = KeyboardActions.Default
                         )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        StylishImageDropdown(
+                            authenticationViewModel = viewModel,
+                            defaultProfilePictures = viewModel.defaultProfilePictures
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+
                     }
                 }
 
@@ -143,7 +152,8 @@ fun PreviewUpdate() {
     UpdateProfileView(
         navController = rememberNavController(),
         viewModel = viewModel(factory = UpdateProfileViewModel.Factory),
-        username = ""
+
+        id = 1,
     )
 
 }

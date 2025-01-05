@@ -227,7 +227,9 @@ class AuthenticationViewModel(
             userRepository.saveUsername(username)
         }
     }
+    fun updateUser(token:String, id:Int) {
 
+    }
     fun loginUser(navController: NavController) {
         viewModelScope.launch {
             dataStatus = AuthenticationStatusUIState.Loading

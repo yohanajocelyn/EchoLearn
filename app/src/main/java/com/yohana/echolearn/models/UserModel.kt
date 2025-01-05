@@ -36,3 +36,10 @@ data class UserResponse(
 data class UserListResponse(
     val data: List<UserModel>
 )
+
+data class UpdateUserRequest(
+    val username: String,
+    val email: String,
+    val profilePicture: String,
+    val password: String
+)

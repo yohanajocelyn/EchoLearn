@@ -125,7 +125,7 @@ fun ProfileView(
                                 contentDescription = "profile picture",
                                 modifier = Modifier
                                     .size(32.dp).clickable {
-                                        navController?.navigate(route = PagesEnum.UpdatedProfile.name)
+                                        navController?.navigate(route = PagesEnum.UpdatedProfile.name + "/${user.id}")
 
                                     },
 
@@ -141,7 +141,7 @@ fun ProfileView(
                                 .padding(13.dp),
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
-                            Text("Email", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Text("{${user.id}}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                             Text(
                                 "|",
                                 fontSize = 22.sp,

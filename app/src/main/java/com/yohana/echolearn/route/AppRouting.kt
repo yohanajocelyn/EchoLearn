@@ -257,8 +257,18 @@ fun AppRouting(
                 username = username.value
             )
         }
-        composable (route = PagesEnum.UpdatedProfile.name) {
-           UpdateProfileView(navController = navController, viewModel = updateProfileViewModel, username = username.value)
+        composable(route = PagesEnum.UpdatedProfile.name + "/{id}", arguments = listOf(
+            navArgument(name = "id") {
+                type = NavType.IntType
+            }
+        )) {backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id")
+            UpdateProfileView(
+                navController = navController,
+                viewModel = authenticationViewModel,
+                id = id!!
+            )
+
         }
     }
 }
