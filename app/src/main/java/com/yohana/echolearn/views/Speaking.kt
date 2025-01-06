@@ -2,6 +2,8 @@ package com.yohana.echolearn.views
 
 
 import android.app.Activity
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,6 +46,7 @@ import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.components.SimpleAlertDialog
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SpeakingView(
     modifier: Modifier = Modifier,
@@ -62,10 +65,15 @@ fun SpeakingView(
     var showDialog by remember { mutableStateOf(false) }
     val answerResponse by viewModel.answerResponse.collectAsState()
     val isAnswerProcessed by viewModel.isAnswerProcessed.collectAsState()
+    val isPlaying by viewModel.isPlaying.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getVariants(token, id, "Speaking", navController)
-        viewModel.getSong(id)
+        viewModel.getSong(
+            id,
+            token = token,
+            navController = navController
+        )
     }
 
     LaunchedEffect(variants) {
@@ -176,17 +184,21 @@ fun SpeakingView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Button(onClick = {}) {
+                            Button(onClick = { viewModel.updateIsPlaying() }) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Image(
-                                        painter = painterResource(id = R.drawable.play),
-                                        contentDescription = "image description",
+                                        painter = painterResource(
+                                            id = if (isPlaying) R.drawable.play else R.drawable.play
+                                        ),
+                                        contentDescription = "Play/Pause Button",
                                         contentScale = ContentScale.None
                                     )
                                     Spacer(modifier = Modifier.width(13.dp))
-                                    Text("Play", fontSize = 20.sp)
+                                    Text(if (isPlaying) "Pause" else "Play", fontSize = 20.sp)
                                 }
                             }
+
+
                             Spacer(modifier = Modifier.height(10.dp))
                             Text(
                                 text = "Your Answer: ",
