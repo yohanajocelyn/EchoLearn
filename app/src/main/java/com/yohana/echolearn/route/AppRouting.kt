@@ -112,10 +112,18 @@ fun AppRouting(
                     // Mark the first launch as completed
                     setFirstTimeLaunch(context)
 
-                    navController.navigate(PagesEnum.Starter.name) {
-                        popUpTo(PagesEnum.Splash.name) {
-                            inclusive = true
-                        } // Remove splash from backstack
+                    if(token.value == "Unknown"){
+                        navController.navigate(PagesEnum.Starter.name) {
+                            popUpTo(PagesEnum.Splash.name) {
+                                inclusive = true
+                            } // Remove splash from backstack
+                        }
+                    }else{
+                        navController.navigate(PagesEnum.Home.name) {
+                            popUpTo(PagesEnum.Splash.name) {
+                                inclusive = true
+                            }
+                        }
                     }
                 }
             )
