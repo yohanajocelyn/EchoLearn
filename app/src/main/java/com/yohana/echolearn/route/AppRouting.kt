@@ -26,6 +26,7 @@ import com.yohana.echolearn.viewmodels.HomeViewModel
 import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
+import com.yohana.echolearn.viewmodels.LyricsViewModel
 import com.yohana.echolearn.viewmodels.ProfileViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.viewmodels.UpdateProfileViewModel
@@ -36,6 +37,7 @@ import com.yohana.echolearn.views.LeaderBoardView
 import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
+import com.yohana.echolearn.views.LyricsView
 import com.yohana.echolearn.views.ProfileView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SpeakingView
@@ -67,7 +69,8 @@ enum class PagesEnum {
     Speaking,
     Leaderboards,
     Attempts,
-    UpdatedProfile
+    UpdatedProfile,
+    Lyrics
 }
 
 @SuppressLint("NewApi")
@@ -84,7 +87,8 @@ fun AppRouting(
     speakingViewModel: SpeakingViewModel = viewModel(factory = SpeakingViewModel.Factory),
     leaderBoardViewModel: LeaderBoardViewModel = viewModel(factory = LeaderBoardViewModel.Factory),
     profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory),
-    updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory)
+    updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory),
+    lyricsViewModel: LyricsViewModel = viewModel(factory = LyricsViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -288,6 +292,22 @@ fun AppRouting(
                 token = token.value,
                 attemptId = attemptId!!,
                 isContinue = true
+            )
+        }
+
+        composable(route = PagesEnum.Lyrics.name+"/{id}",
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
+            )
+        ){ backStackEntry ->
+            val songId = backStackEntry.arguments?.getInt("id")
+
+            LyricsView(
+                songId = songId!!,
+                navController = navController,
+                viewModel = lyricsViewModel
             )
         }
     }

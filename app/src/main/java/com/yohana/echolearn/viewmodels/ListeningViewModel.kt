@@ -134,6 +134,23 @@ class ListeningViewModel(
         }
     }
 
+    @SuppressLint("NewApi")
+    fun finishExercise(token: String, navController: NavController){
+        if(isContinue){
+            updateProgress(
+                token = token,
+                navController = navController,
+                isCompleted = true
+            )
+        }else{
+            saveProgress(
+                token = token,
+                navController = navController,
+                isCompleted = true
+            )
+        }
+    }
+
     fun setSong(songId: Int, token: String, navController: NavController){
         viewModelScope.launch {
             try {
@@ -427,7 +444,14 @@ class ListeningViewModel(
                             createStatus = StringDataStatusUIState.Success(res.body()!!.data)
 
                             if(isCompleted){
-                                navController.navigate(PagesEnum.Home.name)
+                                navController.navigate(PagesEnum.Lyrics.name+"/${_song.value.id}"){
+                                    if (isContinue){
+                                        popUpTo(PagesEnum.Listening.name + "continue-attempt/{attemptId}") {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                                resetViewModel()
                             }else{
                                 navController.popBackStack()
                             }
@@ -482,11 +506,12 @@ class ListeningViewModel(
                         if(res.isSuccessful) {
                             createStatus = StringDataStatusUIState.Success(res.body()!!.data)
 
-                            navController.navigate(PagesEnum.Home.name){
+                            navController.navigate(PagesEnum.Lyrics.name+"/${_song.value.id}"){
                                 popUpTo(PagesEnum.Listening.name + "continue-attempt/{attemptId}") {
                                     inclusive = true
                                 }
                             }
+                            resetViewModel()
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
