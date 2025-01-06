@@ -7,6 +7,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.window.Popup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -170,6 +171,8 @@ class SpeakingViewModel(
                             _variants.value = res.body()!!.data
                             if(_variants.value.isNotEmpty()) {
                                 randomizedVariants()
+                            }else {
+                                navController.popBackStack()
                             }
                         } else {
                             val errorMessage = Gson().fromJson(
