@@ -33,7 +33,6 @@ interface AppContainer {
     val variantRepository: VariantRepository
     val attemptRepository: AttemptRepository
     val noteRepository: NoteRepository
-
 }
 
 class DefaultAppContainer(
