@@ -77,7 +77,6 @@ enum class PagesEnum {
     Attempts,
     UpdatedProfile,
     CreateNote,
-
     Lyrics
 }
 
