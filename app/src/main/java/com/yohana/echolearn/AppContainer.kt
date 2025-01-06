@@ -7,14 +7,17 @@ import com.yohana.echolearn.repositories.AttemptRepository
 import com.yohana.echolearn.repositories.AuthenticationRepository
 import com.yohana.echolearn.repositories.NetworkAttemptRepository
 import com.yohana.echolearn.repositories.NetworkAuthenticationRepository
+import com.yohana.echolearn.repositories.NetworkNoteRepository
 import com.yohana.echolearn.repositories.NetworkSongRepository
 import com.yohana.echolearn.repositories.NetworkUserRepository
 import com.yohana.echolearn.repositories.NetworkVariantRepository
+import com.yohana.echolearn.repositories.NoteRepository
 import com.yohana.echolearn.repositories.SongRepository
 import com.yohana.echolearn.repositories.UserRepository
 import com.yohana.echolearn.repositories.VariantRepository
 import com.yohana.echolearn.services.AttemptAPIService
 import com.yohana.echolearn.services.AuthenticationAPIService
+import com.yohana.echolearn.services.NoteAPIService
 import com.yohana.echolearn.services.SongAPIService
 import com.yohana.echolearn.services.UserAPIService
 import com.yohana.echolearn.services.VariantAPIService
@@ -29,6 +32,8 @@ interface AppContainer {
     val songRepository: SongRepository
     val variantRepository: VariantRepository
     val attemptRepository: AttemptRepository
+    val noteRepository: NoteRepository
+
 }
 
 class DefaultAppContainer(
@@ -72,6 +77,11 @@ class DefaultAppContainer(
         retrofit.create(AttemptAPIService::class.java)
     }
 
+    private val noteRetrofitService: NoteAPIService by lazy {
+        val retrofit = initRetrofit()
+        retrofit.create(NoteAPIService::class.java)
+    }
+
     override val authenticationRepository: AuthenticationRepository by lazy {
         NetworkAuthenticationRepository(authenticationRetrofitService)
     }
@@ -86,6 +96,9 @@ class DefaultAppContainer(
     }
     override val attemptRepository: AttemptRepository by lazy {
         NetworkAttemptRepository(attemptRetrofitService)
+    }
+    override val noteRepository: NoteRepository by lazy {
+        NetworkNoteRepository(noteRetrofitService)
     }
 
     private fun initRetrofit(): Retrofit {
