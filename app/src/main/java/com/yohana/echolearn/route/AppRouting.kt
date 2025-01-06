@@ -76,8 +76,7 @@ enum class PagesEnum {
     Leaderboards,
     Attempts,
     UpdatedProfile,
-    CreateNote
-
+    CreateNote,
     Lyrics
 }
 
@@ -97,7 +96,7 @@ fun AppRouting(
     profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModel.Factory),
     updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory),
     noteViewModel: NoteViewModel = viewModel(factory = NoteViewModel.Factory),
-    updateNoteViewModel: UpdateNoteViewModel = viewModel(factory = UpdateNoteViewModel.Factory)
+    updateNoteViewModel: UpdateNoteViewModel = viewModel(factory = UpdateNoteViewModel.Factory),
     lyricsViewModel: LyricsViewModel = viewModel(factory = LyricsViewModel.Factory)
 ) {
     val navController = rememberNavController()
