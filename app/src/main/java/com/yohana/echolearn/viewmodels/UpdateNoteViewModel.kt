@@ -134,11 +134,12 @@ class UpdateNoteViewModel(
                     override fun onResponse(call: Call<String>, res: Response<String>) {
                         if (res.isSuccessful){
                             stringStatus = StringDataStatusUIState.Success(res.body()!!)
-                            navController.navigate(PagesEnum.Notes.name){
-                                popUpTo(PagesEnum.CreateNote.name) {
-                                    inclusive = true
+                            navController.navigate(PagesEnum.Notes.name) {
+                                popUpTo(PagesEnum.Notes.name) {
+                                    inclusive = true // Ini memastikan halaman CreateNote dihapus dari stack
                                 }
                             }
+
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),

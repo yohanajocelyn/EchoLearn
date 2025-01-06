@@ -121,7 +121,9 @@ fun NotesView(
                                         painter = painterResource(id = R.drawable.ic_edit3),
                                         contentDescription = "profile picture",
                                         modifier = Modifier
-                                            .size(32.dp),
+                                            .size(32.dp).clickable {
+                                                navController.navigate(PagesEnum.UpdateNote.name +"/{${note.id}}")
+                                            },
 
                                         contentScale = ContentScale.Crop
                                     )
@@ -135,6 +137,7 @@ fun NotesView(
                                                     id = note.id,
                                                     username = username
                                                 )
+                                                viewModel.getNotes(token, username)
                                             },
 
                                         contentScale = ContentScale.Crop
@@ -143,7 +146,7 @@ fun NotesView(
 
                             }
                         }
-
+Spacer(modifier = Modifier.height(10.dp))
                     }
 
                 }

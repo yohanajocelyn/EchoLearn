@@ -45,6 +45,7 @@ import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SpeakingView
 import com.yohana.echolearn.views.SplashScreenView
 import com.yohana.echolearn.views.StarterView
+import com.yohana.echolearn.views.UpdateNote
 import com.yohana.echolearn.views.UpdateProfileView
 
 fun isFirstTimeLaunch(context: Context): Boolean {
@@ -281,16 +282,32 @@ fun AppRouting(
 
         composable(route = PagesEnum.Notes.name) {
             NotesView(
-                navController = navController, token = token.value, viewModel = noteViewModel, username = username.value
+                navController = navController,
+                token = token.value,
+                viewModel = noteViewModel,
+                username = username.value
             )
         }
 
-        composable(route= PagesEnum.CreateNote.name) {
+        composable(route = PagesEnum.CreateNote.name) {
             CreateNote(
                 navController = navController,
                 viewModel = updateNoteViewModel,
                 token = token.value, username = username.value
             )
         }
+
+        composable(route = PagesEnum.UpdateNote.name + "/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id")
+            UpdateNote(
+                navController = navController,
+                viewModel = updateNoteViewModel,
+                token = token.value,
+                id = id!!,
+                username = username.value,
+            )
+        }
+
+
     }
 }
