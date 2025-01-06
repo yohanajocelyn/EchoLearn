@@ -66,7 +66,8 @@ fun GenreView(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f),
+                            .weight(1f)
+                            .padding(bottom = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(15.dp) // Jarak antar item
                     ) {
                         // Genre Section

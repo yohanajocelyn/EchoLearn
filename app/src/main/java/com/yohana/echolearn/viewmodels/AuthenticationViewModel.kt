@@ -187,7 +187,8 @@ class AuthenticationViewModel(
                         if (res.isSuccessful) {
                             Log.d("response-data", "RESPONSE DATA: ${res.body()}")
                             dataStatus = AuthenticationStatusUIState.Success(res.body()!!.data)
-
+                            val user = res.body()!!.data
+                            saveUsernameToken(username = user.username!!, token = user.token!!)
                             resetViewModel()
 
                             navController.navigate(PagesEnum.Home.name) {

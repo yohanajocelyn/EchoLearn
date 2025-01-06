@@ -82,12 +82,19 @@ fun ListeningView(
     songId: Int,
     type: String,
     token: String,
-    attemptId: Int = 0
+    attemptId: Int = 0,
+    isContinue: Boolean = false
 ){
 
-    LaunchedEffect(songId){
-        viewModel.setSong(songId, token, navController)
-        viewModel.setVariants(token,songId, type)
+    LaunchedEffect(Unit){
+        viewModel.initializeViewModel(
+            songId = songId,
+            token = token,
+            navController = navController,
+            type = type,
+            attemptId = attemptId,
+            isContinue = isContinue
+        )
     }
 
     val song by viewModel.song.collectAsState()
@@ -97,157 +104,171 @@ fun ListeningView(
         viewModel.setShowDialog()
     }
 
-    LazyColumn(
-        modifier = Modifier
-            .padding(horizontal = 24.dp)
-    ) {
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 64.dp, bottom = 16.dp)
-            ) {
-                Image(
-                    painter = rememberImagePainter(song.image),
-                    contentDescription = "Album Cover",
-                    contentScale = ContentScale.Crop,  // This ensures the image fills the space nicely
+    if (viewModel.isLoading){
+        CircularProgressIndicator()
+    }else {
+        LazyColumn(
+            modifier = Modifier
+                .background(color = Color.White)
+                .padding(horizontal = 24.dp)
+        ) {
+            item {
+                Row(
                     modifier = Modifier
-                        .size(150.dp)
-                        .shadow(
-                            elevation = 4.dp,
-                            shape = RoundedCornerShape(8.dp),
-                            spotColor = Color.Black.copy(alpha = 0.75f),
-                            ambientColor = Color.Black.copy(alpha = 0.25f)
-                        )
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .fillMaxWidth()
+                        .padding(top = 64.dp, bottom = 16.dp)
                 ) {
-                    Text(
-                        text = song.title,
-                        color = Color(0xFF005FB7),
-                        fontFamily = poppins,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
+                    Image(
+                        painter = rememberImagePainter(song.image),
+                        contentDescription = "Album Cover",
+                        contentScale = ContentScale.Crop,  // This ensures the image fills the space nicely
+                        modifier = Modifier
+                            .size(150.dp)
+                            .shadow(
+                                elevation = 4.dp,
+                                shape = RoundedCornerShape(8.dp),
+                                spotColor = Color.Black.copy(alpha = 0.75f),
+                                ambientColor = Color.Black.copy(alpha = 0.25f)
+                            )
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surface)
                     )
-                    Text(
-                        text = song.genre,
-                        color = Color(0xFF005FB7),
-                        fontFamily = poppins,
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = song.artist,
-                        color = Color(0xFF005FB7),
-                        fontFamily = poppins,
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Spacer(Modifier.weight(1f))
-                    PlayPauseButton(
-                        isPlaying = viewModel.isPlaying,
-                        onToggle = {
-                            viewModel.updateIsPlaying()
-                        }
-                    )
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = song.title,
+                            color = Color(0xFF005FB7),
+                            fontFamily = poppins,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            text = song.genre,
+                            color = Color(0xFF005FB7),
+                            fontFamily = poppins,
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            text = song.artist,
+                            color = Color(0xFF005FB7),
+                            fontFamily = poppins,
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Spacer(Modifier.weight(1f))
+                        PlayPauseButton(
+                            isPlaying = viewModel.isPlaying,
+                            onToggle = {
+                                viewModel.updateIsPlaying()
+                            }
+                        )
+                    }
                 }
             }
-        }
-        item {
-            Column(
-                modifier = Modifier
-                    .padding(top = 16.dp)
-            ) {
-                lines.forEach { line ->
-                    FlowRow(
-                        modifier = Modifier.padding(),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        line.words.forEach { word ->
-                            when (word) {
-                                is ListeningViewModel.TextElement.Blank -> {
-                                    BasicTextField(
-                                        value = viewModel.userAnswers[word.index],
-                                        onValueChange = { viewModel.updateUserAnswer(word.index, it) },
-                                        singleLine = true,
-                                        textStyle = TextStyle(
-                                            fontSize = 16.sp,
-                                            textAlign = TextAlign.Center
-                                        ),
-                                        modifier = Modifier
-                                            .width(120.dp)
-                                            .padding(horizontal = 4.dp, vertical = 2.dp)
-                                            .border(
-                                                width = 1.dp,
-                                                color = MaterialTheme.colorScheme.outline,
-                                                shape = RoundedCornerShape(4.dp)
-                                            )
-                                            .then(Modifier.padding(vertical = 1.dp))
-                                    ) { innerTextField ->
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            if (viewModel.userAnswers[word.index].isEmpty()) {
-                                                Text(
-                                                    "Type",
-                                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                                                    fontSize = 16.sp
+            item {
+                Column(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                ) {
+                    lines.forEach { line ->
+                        FlowRow(
+                            modifier = Modifier.padding(),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            line.words.forEach { word ->
+                                when (word) {
+                                    is ListeningViewModel.TextElement.Blank -> {
+                                        BasicTextField(
+                                            value = viewModel.userAnswers[word.index],
+                                            onValueChange = {
+                                                viewModel.updateUserAnswer(
+                                                    word.index,
+                                                    it
                                                 )
+                                            },
+                                            singleLine = true,
+                                            textStyle = TextStyle(
+                                                fontSize = 16.sp,
+                                                textAlign = TextAlign.Center
+                                            ),
+                                            modifier = Modifier
+                                                .width(120.dp)
+                                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                                                .border(
+                                                    width = 1.dp,
+                                                    color = MaterialTheme.colorScheme.outline,
+                                                    shape = RoundedCornerShape(4.dp)
+                                                )
+                                                .then(Modifier.padding(vertical = 1.dp))
+                                        ) { innerTextField ->
+                                            Box(
+                                                contentAlignment = Alignment.Center,
+                                                modifier = Modifier.fillMaxWidth()
+                                            ) {
+                                                if (viewModel.userAnswers[word.index].isEmpty()) {
+                                                    Text(
+                                                        "Type",
+                                                        color = MaterialTheme.colorScheme.outline.copy(
+                                                            alpha = 0.5f
+                                                        ),
+                                                        fontSize = 16.sp,
+                                                    )
+                                                }
+                                                innerTextField()
                                             }
-                                            innerTextField()
                                         }
                                     }
-                                }
 
-                                is ListeningViewModel.TextElement.Regular -> {
-                                    Text(
-                                        text = word.text,
-                                        modifier = Modifier.padding(start = 2.dp, end = 2.dp, bottom = 10.dp),
-                                        fontSize = 16.sp
-                                    )
+                                    is ListeningViewModel.TextElement.Regular -> {
+                                        Text(
+                                            text = word.text,
+                                            modifier = Modifier.padding(
+                                                start = 2.dp,
+                                                end = 2.dp,
+                                                bottom = 10.dp
+                                            ),
+                                            fontSize = 16.sp,
+                                            color = Color.Black
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                Button(
-                    onClick = {
-                        viewModel.saveProgress(
-                            token = token,
-                            navController = navController,
-                            isCompleted = true
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
-                    ,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF3DB2FF),
-                    )
-                ) {
-                    Text(
-                        text = "Submit Answer",
-                        fontFamily = poppins,
+                    Button(
+                        onClick = {
+                            viewModel.finishExercise(
+                                token = token,
+                                navController = navController
+                            )
+                        },
                         modifier = Modifier
-                            .padding(vertical = 8.dp)
-                        ,
-                        fontSize = 18.sp
-                    )
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 32.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF3DB2FF),
+                        )
+                    ) {
+                        Text(
+                            text = "Submit Answer",
+                            fontFamily = poppins,
+                            modifier = Modifier
+                                .padding(vertical = 8.dp),
+                            fontSize = 18.sp
+                        )
+                    }
                 }
             }
         }

@@ -27,6 +27,7 @@ import com.yohana.echolearn.viewmodels.LeaderBoardViewModel
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 import com.yohana.echolearn.viewmodels.ListeningViewModel
 import com.yohana.echolearn.viewmodels.NoteViewModel
+import com.yohana.echolearn.viewmodels.LyricsViewModel
 import com.yohana.echolearn.viewmodels.ProfileViewModel
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 import com.yohana.echolearn.viewmodels.UpdateNoteViewModel
@@ -40,6 +41,7 @@ import com.yohana.echolearn.views.ListMusic
 import com.yohana.echolearn.views.ListeningView
 import com.yohana.echolearn.views.LoginView
 import com.yohana.echolearn.views.NotesView
+import com.yohana.echolearn.views.LyricsView
 import com.yohana.echolearn.views.ProfileView
 import com.yohana.echolearn.views.RegisterView
 import com.yohana.echolearn.views.SpeakingView
@@ -75,6 +77,8 @@ enum class PagesEnum {
     Attempts,
     UpdatedProfile,
     CreateNote
+
+    Lyrics
 }
 
 @SuppressLint("NewApi")
@@ -94,6 +98,7 @@ fun AppRouting(
     updateProfileViewModel: UpdateProfileViewModel = viewModel(factory = UpdateProfileViewModel.Factory),
     noteViewModel: NoteViewModel = viewModel(factory = NoteViewModel.Factory),
     updateNoteViewModel: UpdateNoteViewModel = viewModel(factory = UpdateNoteViewModel.Factory)
+    lyricsViewModel: LyricsViewModel = viewModel(factory = LyricsViewModel.Factory)
 ) {
     val navController = rememberNavController()
     var isFirstLaunch by rememberSaveable { mutableStateOf(true) }
@@ -117,10 +122,18 @@ fun AppRouting(
                     // Mark the first launch as completed
                     setFirstTimeLaunch(context)
 
-                    navController.navigate(PagesEnum.Starter.name) {
-                        popUpTo(PagesEnum.Splash.name) {
-                            inclusive = true
-                        } // Remove splash from backstack
+                    if(token.value == "Unknown"){
+                        navController.navigate(PagesEnum.Starter.name) {
+                            popUpTo(PagesEnum.Splash.name) {
+                                inclusive = true
+                            } // Remove splash from backstack
+                        }
+                    }else{
+                        navController.navigate(PagesEnum.Home.name) {
+                            popUpTo(PagesEnum.Splash.name) {
+                                inclusive = true
+                            }
+                        }
                     }
                 }
             )
@@ -309,5 +322,39 @@ fun AppRouting(
         }
 
 
+        composable(route = PagesEnum.Listening.name + "continue-attempt/{attemptId}",
+            arguments = listOf(
+                navArgument(name = "attemptId") {
+                    type = NavType.IntType
+                }
+            )
+        ){ backStackEntry ->
+            val attemptId = backStackEntry.arguments?.getInt("attemptId")
+            ListeningView(
+                navController = navController,
+                viewModel = listeningViewModel,
+                songId = 0,
+                type = PagesEnum.Listening.name,
+                token = token.value,
+                attemptId = attemptId!!,
+                isContinue = true
+            )
+        }
+
+        composable(route = PagesEnum.Lyrics.name+"/{id}",
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
+            )
+        ){ backStackEntry ->
+            val songId = backStackEntry.arguments?.getInt("id")
+
+            LyricsView(
+                songId = songId!!,
+                navController = navController,
+                viewModel = lyricsViewModel
+            )
+        }
     }
 }

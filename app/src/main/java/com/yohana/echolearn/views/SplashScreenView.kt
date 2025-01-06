@@ -50,11 +50,8 @@ fun SplashScreenView(
         onTimeout()
 
         systemUiController.setStatusBarColor(
-            color = Color.Transparent, // Your color
+            color = Color.White, // Your color
             darkIcons = true // true for dark icons, false for light
-        )
-        systemUiController.setNavigationBarColor(
-            color = Color.Transparent // Your color
         )
     }
 

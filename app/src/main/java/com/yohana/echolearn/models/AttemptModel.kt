@@ -20,6 +20,8 @@ data class AttemptModel (
     val score: Int = 0,
     val attemptedAt: Date = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()),
     val isComplete: Boolean = true,
+    val song: SongModel? = SongModel(),
+    val variant: VariantModel? = VariantModel()
 )
 
 data class AttemptResponse(

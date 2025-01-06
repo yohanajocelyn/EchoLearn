@@ -100,7 +100,7 @@ fun ListMusic(
                                 index = index + 1,
                                 onCardClick = {
                                     if (type == "Listening") {
-                                        navController?.navigate(route = PagesEnum.Listening.name + "/$song.id")
+                                        navController?.navigate(route = PagesEnum.Listening.name + "/${song.id}")
                                     } else {
                                         navController?.navigate(PagesEnum.Speaking.name + "/${song.id}")
                                     }
@@ -122,7 +122,8 @@ fun ListMusic(
                                 text = "Genre",
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 16.dp)
+                                modifier = Modifier.padding(bottom = 16.dp),
+                                color = Color.Black,
                             )
 
                             // Genre Grid

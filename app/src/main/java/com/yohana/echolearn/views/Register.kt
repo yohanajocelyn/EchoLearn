@@ -147,10 +147,10 @@ fun RegisterView(
                 labelText = "Confirm Password",
                 placeholderText = "Re-enter your password",
                 onTrailingIconClick = { viewModel.setConfirmPasswordVisibility() },
-                passwordVisibility = registerUIState.passwordVisibility,
+                passwordVisibility = registerUIState.confirmPasswordVisibility,
                 keyboardImeAction = ImeAction.Done,
                 onKeyboardNext = KeyboardActions.Default,
-                passwordVisibilityIcon = painterResource(id = registerUIState.passwordVisibilityIcon)
+                passwordVisibilityIcon = painterResource(id = registerUIState.confirmPasswordVisibilityIcon)
             )
 
             Spacer(modifier = Modifier.height(20.dp))

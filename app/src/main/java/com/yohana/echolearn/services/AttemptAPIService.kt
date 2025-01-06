@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface AttemptAPIService {
@@ -33,4 +34,11 @@ interface AttemptAPIService {
     fun getAttemptDetail(
         @Header("X-API-TOKEN") token: String,
     ): Call<AttemptDetailResponse>
+
+    @PUT("api/attempt/{attemptId}")
+    fun updateAttempt(
+        @Header("X-API-TOKEN") token: String,
+        @Path("attemptId") attemptId: Int,
+        @Body updateMap: HashMap<String, String>
+    ): Call<GeneralResponseModel>
 }

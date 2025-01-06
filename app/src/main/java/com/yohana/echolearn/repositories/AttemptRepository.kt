@@ -20,6 +20,7 @@ interface AttemptRepository{
     fun getAttempt(token: String, attemptId: Int): Call<AttemptResponse>
     fun getAttempts(token: String): Call<AttemptListResponse>
     fun getAttemptDetail(token: String): Call<AttemptDetailResponse>
+    fun updateAttempt(token: String, attemptId: Int, score: String, attemptedAnswer: String, isComplete: String, attemptedAt: String): Call<GeneralResponseModel>
 }
 
 class NetworkAttemptRepository(
@@ -56,5 +57,23 @@ class NetworkAttemptRepository(
 
     override fun getAttemptDetail(token: String): Call<AttemptDetailResponse> {
         return attemptAPIService.getAttemptDetail(token = token)
+    }
+
+    override fun updateAttempt(
+        token: String,
+        attemptId: Int,
+        score: String,
+        attemptedAnswer: String,
+        isComplete: String,
+        attemptedAt: String
+    ): Call<GeneralResponseModel> {
+        val updateMap = HashMap<String, String>()
+
+        updateMap["score"] = score
+        updateMap["attemptedAnswer"] = attemptedAnswer
+        updateMap["isComplete"] = isComplete
+        updateMap["attemptedAt"] = attemptedAt
+
+        return attemptAPIService.updateAttempt(token = token, attemptId = attemptId, updateMap = updateMap)
     }
 }

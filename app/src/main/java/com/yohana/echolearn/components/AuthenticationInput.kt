@@ -10,12 +10,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.yohana.echolearn.R
 import com.yohana.echolearn.ui.theme.poppins
 
@@ -43,7 +46,8 @@ fun AuthenticationOutlinedTextField(
         placeholder = {
             Text(
                 text = placeholderText,
-                fontFamily = poppins
+                fontFamily = poppins,
+                color = Color.Black,
             )
         },
         modifier = modifier.fillMaxWidth(),
@@ -55,7 +59,10 @@ fun AuthenticationOutlinedTextField(
             )
         },
         keyboardOptions = keyboardType,
-        keyboardActions = onKeyboardNext
+        keyboardActions = onKeyboardNext,
+        textStyle = TextStyle(
+            color = Color.Black
+        )
     )
 }
 
@@ -95,7 +102,8 @@ fun PasswordOutlinedTextField(
         placeholder = {
             Text(
                 text = placeholderText,
-                fontFamily = poppins
+                fontFamily = poppins,
+                color = Color.Black,
             )
         },
         visualTransformation = passwordVisibility,
@@ -111,6 +119,9 @@ fun PasswordOutlinedTextField(
             keyboardType = KeyboardType.Password,
             imeAction = keyboardImeAction
         ),
-        keyboardActions = onKeyboardNext
+        keyboardActions = onKeyboardNext,
+        textStyle = TextStyle(
+            color = Color.Black
+        )
     )
 }

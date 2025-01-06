@@ -4,7 +4,8 @@ data class VariantModel(
     val answer: String = "",
     val emptyLyric: String = "",
     val id: Int = 0,
-    val type: String = ""
+    val type: String = "",
+    val songId: Int = 0
 )
 
 data class VariantResponse(
@@ -20,7 +21,6 @@ data class AttemptVariantDetail(
 )
 
 data class SpeakingRequest(
-
     val answer: String,
     val id : Int,
 )
