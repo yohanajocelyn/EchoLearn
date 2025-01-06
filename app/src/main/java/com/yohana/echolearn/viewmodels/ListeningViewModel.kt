@@ -507,7 +507,7 @@ class ListeningViewModel(
                             createStatus = StringDataStatusUIState.Success(res.body()!!.data)
 
                             navController.navigate(PagesEnum.Lyrics.name+"/${_song.value.id}"){
-                                popUpTo(PagesEnum.Listening.name + "continue-attempt/{attemptId}") {
+                                popUpTo(PagesEnum.Listening.name + "continue-attempt/${_attempt.value.id}") {
                                     inclusive = true
                                 }
                             }
