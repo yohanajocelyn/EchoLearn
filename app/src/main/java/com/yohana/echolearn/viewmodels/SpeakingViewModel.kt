@@ -171,7 +171,7 @@ class SpeakingViewModel(
                             _variants.value = res.body()!!.data
                             if(_variants.value.isNotEmpty()) {
                                 randomizedVariants()
-                            }else {
+                            }else{
                                 navController.popBackStack()
                             }
                         } else {

@@ -4,6 +4,7 @@ package com.yohana.echolearn.views
 import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,7 +64,7 @@ fun SpeakingView(
     val isAnswerProcessed by viewModel.isAnswerProcessed.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getVariants(token,id, "Speaking", navController)
+        viewModel.getVariants(token, id, "Speaking", navController)
         viewModel.getSong(id)
     }
 
@@ -74,7 +75,7 @@ fun SpeakingView(
         }
     }
 
-    LaunchedEffect(isAnswerProcessed,recognizedText) {
+    LaunchedEffect(isAnswerProcessed, recognizedText) {
         if (recognizedText.isNotEmpty()) {
             viewModel.checkAnswerSpeaking(token, variant.id, recognizedText)
             viewModel.resetViewModel()
@@ -84,8 +85,8 @@ fun SpeakingView(
 
 
 
-    if(showDialog) {
-        SimpleAlertDialog(navController, answerResponse.score, viewModel,  onDismiss = {
+    if (showDialog) {
+        SimpleAlertDialog(navController, answerResponse.score, viewModel, onDismiss = {
             showDialog = false
         })
     }
@@ -109,6 +110,7 @@ fun SpeakingView(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.back_button),
+                        modifier = Modifier.clickable { navController.popBackStack() },
                         contentDescription = "",
                     )
                     Spacer(modifier = Modifier.width(10.dp))
