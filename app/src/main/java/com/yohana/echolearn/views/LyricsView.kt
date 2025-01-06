@@ -63,7 +63,11 @@ fun LyricsView(
         topBar = {
             TopBarComponent(
                 pageTitle = "${song.title} Lyrics",
-                onBackClick = { navController!!.navigate(PagesEnum.Home.name) }
+                onBackClick = { navController!!.navigate(PagesEnum.Home.name){
+                    popUpTo(PagesEnum.Lyrics.name+"/$songId"){
+                        inclusive = true
+                    }
+                } }
             )
         },
         content = {
