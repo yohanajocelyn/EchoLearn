@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +38,7 @@ fun SearchBar(
     listMusicViewModel: ListMusicViewModel,
     navController: NavController,
     token: String,
-
+    type: String
 ) {
     var query by remember { mutableStateOf("") }
     Row(
@@ -58,8 +59,8 @@ fun SearchBar(
             modifier = Modifier
                 .size(30.dp)
                 .padding(start = 8.dp).clickable {
-                    // Gunakan query dari TextField untuk pencarian
                     listMusicViewModel.searchSongs(token, query)
+                    navController.navigate(PagesEnum.Search.name + "/$type")
                 }
         )
         Spacer(modifier = Modifier.width(8.dp))

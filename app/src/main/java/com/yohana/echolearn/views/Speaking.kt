@@ -106,7 +106,6 @@ fun SpeakingView(
                 .fillMaxSize()
                 .background(color = Color(0xFFF6F6F6))
         ) {
-            Text("${variant.id}")
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
                 Row(
                     modifier = Modifier

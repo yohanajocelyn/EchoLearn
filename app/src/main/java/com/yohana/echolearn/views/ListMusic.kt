@@ -71,7 +71,8 @@ fun ListMusic(
                         SearchBar(
                             listMusicViewModel = viewModel,
                             navController = navController,
-                            token = token
+                            token = token,
+                            type = type
                         )
                         Spacer(modifier = Modifier.height(15.dp))
                     }
