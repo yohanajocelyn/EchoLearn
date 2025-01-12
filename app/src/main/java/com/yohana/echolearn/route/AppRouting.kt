@@ -311,7 +311,10 @@ fun AppRouting(
             )
         }
 
-        composable(route = PagesEnum.UpdateNote.name + "/{id}") { backStackEntry ->
+        composable(route = PagesEnum.UpdateNote.name + "/{id}", arguments = listOf(
+            navArgument(name = "id") {
+                type = NavType.IntType
+            } )) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             UpdateNote(
                 navController = navController,

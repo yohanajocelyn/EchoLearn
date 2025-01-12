@@ -66,6 +66,7 @@ class SpeakingViewModel(
 
     private val _isAnswerProcessed = MutableStateFlow(false)
     val isAnswerProcessed: StateFlow<Boolean> = _isAnswerProcessed
+
     var audio: MediaPlayer by mutableStateOf(MediaPlayer())
         private set
 
@@ -175,14 +176,14 @@ class SpeakingViewModel(
     fun initializeAudio(token: String, navController: NavController) {
         this.audio = MediaPlayer().apply {
             setAudioStreamType(AudioManager.STREAM_MUSIC)
-            setDataSource(_song.value.fileName) // Gunakan URL yang valid
+            setDataSource(_song.value.fileName)
             setOnErrorListener { mp, what, extra ->
                 Log.e("MediaPlayerError", "Error occurred: $what, Extra: $extra")
-                true
+                false
             }
             setOnPreparedListener {
-                start()
-                _isPlaying.value = true
+
+                _isPlaying.value = false
             }
             prepareAsync()
         }
@@ -294,4 +295,6 @@ class SpeakingViewModel(
         _isAnswerProcessed.value = false
         _song.value = SongModel()
     }
+
 }
+

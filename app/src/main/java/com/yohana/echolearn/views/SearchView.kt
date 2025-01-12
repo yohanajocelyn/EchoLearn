@@ -48,17 +48,21 @@ fun SearchView(
                     .padding(paddingValues)
                     .background(color = Color.White)
             ) {
-                SearchBar(
-                    listMusicViewModel = viewModel,
-                    navController = navController,
-                    token = token,
-                    type = type
-                )
-                Spacer(modifier = Modifier.height(15.dp))
+
                 LazyColumn(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 20.dp)) {
+                    item{
+                        SearchBar(
+                            listMusicViewModel = viewModel,
+                            navController = navController,
+                            token = token,
+                            type = type
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+
                     if (searchSongs.isNotEmpty()) {
                         itemsIndexed(searchSongs) { index, song ->
                             Column(

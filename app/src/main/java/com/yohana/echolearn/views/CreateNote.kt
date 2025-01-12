@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.AuthenticationOutlinedTextField
 import com.yohana.echolearn.components.Navbar

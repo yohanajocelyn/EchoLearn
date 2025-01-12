@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.models.ErrorModel
@@ -94,12 +95,7 @@ class UpdateNoteViewModel(
                 call.enqueue(object: Callback<String>{
                     override fun onResponse(call: Call<String>, res: Response<String>) {
                         if (res.isSuccessful){
-                            stringStatus = StringDataStatusUIState.Success(res.body()!!)
-                            navController.navigate(PagesEnum.Notes.name){
-                                popUpTo(PagesEnum.UpdateNote.name) {
-                                    inclusive = true
-                                }
-                            }
+                            navController.navigate(PagesEnum.Notes.name) {}
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -133,11 +129,8 @@ class UpdateNoteViewModel(
                 call.enqueue(object: Callback<String>{
                     override fun onResponse(call: Call<String>, res: Response<String>) {
                         if (res.isSuccessful){
-                            stringStatus = StringDataStatusUIState.Success(res.body()!!)
                             navController.navigate(PagesEnum.Notes.name) {
-                                popUpTo(PagesEnum.Notes.name) {
-                                    inclusive = true // Ini memastikan halaman CreateNote dihapus dari stack
-                                }
+
                             }
 
                         }else{
@@ -147,6 +140,11 @@ class UpdateNoteViewModel(
                             )
                             Log.d("error-data", "ERROR DATA: ${errorMessage}")
                             stringStatus = StringDataStatusUIState.Failed(errorMessage.errorMessage)
+                        }
+                        navController.navigate(PagesEnum.Notes.name) {
+                            popUpTo(PagesEnum.CreateNote.name) {
+                                inclusive = true
+                            }
                         }
                     }
                     override fun onFailure(p0: Call<String>, t: Throwable) {
