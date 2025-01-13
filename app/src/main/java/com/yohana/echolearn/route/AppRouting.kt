@@ -44,6 +44,7 @@ import com.yohana.echolearn.views.NotesView
 import com.yohana.echolearn.views.LyricsView
 import com.yohana.echolearn.views.ProfileView
 import com.yohana.echolearn.views.RegisterView
+import com.yohana.echolearn.views.SearchView
 import com.yohana.echolearn.views.SpeakingView
 import com.yohana.echolearn.views.SplashScreenView
 import com.yohana.echolearn.views.StarterView
@@ -77,7 +78,8 @@ enum class PagesEnum {
     Attempts,
     UpdatedProfile,
     CreateNote,
-    Lyrics
+    Lyrics,
+    Search
 }
 
 @SuppressLint("NewApi")
@@ -309,7 +311,10 @@ fun AppRouting(
             )
         }
 
-        composable(route = PagesEnum.UpdateNote.name + "/{id}") { backStackEntry ->
+        composable(route = PagesEnum.UpdateNote.name + "/{id}", arguments = listOf(
+            navArgument(name = "id") {
+                type = NavType.IntType
+            } )) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id")
             UpdateNote(
                 navController = navController,
@@ -355,5 +360,16 @@ fun AppRouting(
                 viewModel = lyricsViewModel
             )
         }
+
+        composable(route = PagesEnum.Search.name + "/{type}") {
+            val type = it.arguments?.getString("type")
+            SearchView(
+                navController = navController,
+                token = token.value,
+                type = type!!,
+                viewModel = listMusicViewModel,
+            )
+        }
+
     }
 }

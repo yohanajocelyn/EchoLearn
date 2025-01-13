@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.components.TopBarComponent
@@ -74,7 +75,7 @@ fun NotesView(
                 ) {
                     item {
                         Button(onClick = {
-                            navController.navigate(PagesEnum.CreateNote.name)
+                            navController?.navigate(PagesEnum.CreateNote.name)
                         }) {
                             Text("Create Note", fontSize = 18.sp)
                         }
@@ -110,11 +111,12 @@ fun NotesView(
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Text(
-                                        "${note.meaning}", fontSize = 16.sp,
+                                        "${note.id}", fontSize = 16.sp,
                                         fontWeight = FontWeight(400),
                                         color = Color(0xFF000000),
 
                                         )
+
                                 }
                                 Row {
                                     Image(
@@ -122,7 +124,8 @@ fun NotesView(
                                         contentDescription = "profile picture",
                                         modifier = Modifier
                                             .size(32.dp).clickable {
-                                                navController.navigate(PagesEnum.UpdateNote.name +"/{${note.id}}")
+                                                navController?.navigate(route = PagesEnum.UpdateNote.name + "/${note.id}")
+
                                             },
 
                                         contentScale = ContentScale.Crop

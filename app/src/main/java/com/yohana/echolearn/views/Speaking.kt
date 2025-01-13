@@ -2,6 +2,8 @@ package com.yohana.echolearn.views
 
 
 import android.app.Activity
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,12 +40,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.Navbar
 import com.yohana.echolearn.components.SimpleAlertDialog
 import com.yohana.echolearn.viewmodels.SpeakingViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SpeakingView(
     modifier: Modifier = Modifier,
@@ -51,7 +56,7 @@ fun SpeakingView(
     id: Int,
     token: String,
     activity: Activity,
-    navController: NavHostController
+    navController: NavController
 
 ) {
     val variants by viewModel.variants.collectAsState()
@@ -62,10 +67,15 @@ fun SpeakingView(
     var showDialog by remember { mutableStateOf(false) }
     val answerResponse by viewModel.answerResponse.collectAsState()
     val isAnswerProcessed by viewModel.isAnswerProcessed.collectAsState()
+    val isPlaying by viewModel.isPlaying.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getVariants(token, id, "Speaking", navController)
-        viewModel.getSong(id)
+        viewModel.getSong(
+            id,
+            token = token,
+            navController = navController
+        )
     }
 
     LaunchedEffect(variants) {
@@ -75,7 +85,7 @@ fun SpeakingView(
         }
     }
 
-    LaunchedEffect(isAnswerProcessed, recognizedText) {
+    LaunchedEffect(recognizedText) {
         if (recognizedText.isNotEmpty()) {
             viewModel.checkAnswerSpeaking(token, variant.id, recognizedText)
             viewModel.resetViewModel()
@@ -86,9 +96,19 @@ fun SpeakingView(
 
 
     if (showDialog) {
-        SimpleAlertDialog(navController, answerResponse.score, viewModel, onDismiss = {
-            showDialog = false
-        })
+
+        SimpleAlertDialog(
+            navHostController = navController,
+            score = answerResponse.score,
+            viewModel = viewModel,
+            token = token,
+            id = id,
+            type = "Speaking",
+            onDismiss = {
+                showDialog = false
+            },
+
+            )
     }
 
     Box(modifier = Modifier.fillMaxSize()) { // Gunakan Box untuk mengatur tata letak seluruh layar
@@ -98,7 +118,6 @@ fun SpeakingView(
                 .fillMaxSize()
                 .background(color = Color(0xFFF6F6F6))
         ) {
-            Text("${variant.id}")
             Column(modifier = Modifier.weight(1f)) { // Gunakan weight untuk mengambil sisa ruang
                 Row(
                     modifier = Modifier
@@ -132,7 +151,7 @@ fun SpeakingView(
                         // Konten LazyColumn Anda
                         Row(modifier = modifier.fillMaxWidth()) {
                             Image(
-                                painter = painterResource(id = R.drawable.aset1),
+                                painter = rememberImagePainter(song.image),
                                 contentDescription = "",
                                 modifier = modifier
                                     .width(130.dp)
@@ -176,17 +195,21 @@ fun SpeakingView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Button(onClick = {}) {
+                            Button(onClick = { viewModel.updateIsPlaying() }) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Image(
-                                        painter = painterResource(id = R.drawable.play),
-                                        contentDescription = "image description",
+                                        painter = painterResource(
+                                            id = if (isPlaying) R.drawable.play else R.drawable.play
+                                        ),
+                                        contentDescription = "Play/Pause Button",
                                         contentScale = ContentScale.None
                                     )
                                     Spacer(modifier = Modifier.width(13.dp))
-                                    Text("Play", fontSize = 20.sp)
+                                    Text(if (isPlaying) "Pause" else "Play", fontSize = 20.sp)
                                 }
                             }
+
+
                             Spacer(modifier = Modifier.height(10.dp))
                             Text(
                                 text = "Your Answer: ",

@@ -253,7 +253,6 @@ class AuthenticationViewModel(
                         if (res.isSuccessful) {
                             navController.navigate(PagesEnum.Home.name){
                             }
-                            saveUsernameToken(usernameInput, token)
                         } else {
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),

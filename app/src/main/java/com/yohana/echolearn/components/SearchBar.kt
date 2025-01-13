@@ -1,8 +1,10 @@
 package com.yohana.echolearn.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.yohana.echolearn.R
+import com.yohana.echolearn.route.PagesEnum
 import com.yohana.echolearn.viewmodels.ListMusicViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +40,7 @@ fun SearchBar(
     listMusicViewModel: ListMusicViewModel,
     navController: NavController,
     token: String,
-
+    type: String
 ) {
     var query by remember { mutableStateOf("") }
     Row(
@@ -48,28 +51,17 @@ fun SearchBar(
                 color = Color.Black,
                 shape = RoundedCornerShape(8.dp)
             ),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Ikon pencarian
-        Spacer(modifier = Modifier.width(5.dp))
-        Image(
-            painter = painterResource(id = R.drawable.search), // Ganti dengan resource gambar Anda
-            contentDescription = "search icon",
-            modifier = Modifier
-                .size(30.dp)
-                .padding(start = 8.dp).clickable {
-                    // Gunakan query dari TextField untuk pencarian
-                    listMusicViewModel.searchSongs(token, query)
-                }
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        // Input TextField
+
+
         TextField(
             value = query,
             onValueChange = { query = it },
             placeholder = { Text("Search Artists, Songs") }, // Placeholder diubah
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(0.8f)
+
                 .height(50.dp), // Tinggi TextField
             textStyle = TextStyle(fontSize = 16.sp), // Ukuran teks
             colors = TextFieldDefaults.textFieldColors(
@@ -78,5 +70,17 @@ fun SearchBar(
                 unfocusedIndicatorColor = Color.Transparent
             )
         )
+        Image(
+            painter = painterResource(id = R.drawable.search), // Ganti dengan resource gambar Anda
+            contentDescription = "search icon",
+            modifier = Modifier
+                .size(35.dp).padding(end = 10.dp)
+                .clickable {
+                    listMusicViewModel.searchSongs(token, query)
+                    navController.navigate(PagesEnum.Search.name + "/$type")
+                }
+        )
+
+
     }
 }

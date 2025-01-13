@@ -203,7 +203,9 @@ fun ProfileView(
                                         text = "Switch to Another Account",
                                         fontSize = 17.sp,
                                         fontWeight = FontWeight(500),
-                                        color = Color(0xFF3E5FAF),
+                                        color = Color(0xFF3E5FAF), modifier = Modifier.clickable {
+                                            navController.navigate(route = PagesEnum.Login.name)
+                                        }
                                     )
                                     Spacer(modifier = Modifier.height(20.dp))
 

@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.yohana.echolearn.R
 import com.yohana.echolearn.components.AuthenticationOutlinedTextField
 import com.yohana.echolearn.components.Navbar
@@ -40,7 +41,7 @@ fun UpdateNote(
     Scaffold(
         topBar = {
             TopBarComponent(
-                pageTitle = "Update Notes",
+                pageTitle = "Update Notes $id",
                 onBackClick = { navController.popBackStack() }
             )
         }, content = { paddingValues ->
@@ -82,7 +83,12 @@ fun UpdateNote(
                             onKeyboardNext = KeyboardActions.Default
                         )
                         Spacer(modifier = Modifier.height(10.dp))
-                        Button(onClick = { viewModel.createNote(token, navController, username) }) {
+                        Button(onClick = { viewModel.updateNote(
+                            token = token,
+                            id = id,
+                            navController = navController,
+                            username = username
+                        ) }) {
                             Text("Update")
                         }
                     }
