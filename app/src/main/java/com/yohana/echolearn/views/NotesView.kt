@@ -111,7 +111,7 @@ fun NotesView(
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Text(
-                                        "${note.id}", fontSize = 16.sp,
+                                        "${note.meaning}", fontSize = 16.sp,
                                         fontWeight = FontWeight(400),
                                         color = Color(0xFF000000),
 

@@ -1,5 +1,6 @@
 package com.yohana.echolearn.services
 
+import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.NoteListResponse
 import com.yohana.echolearn.models.NoteResponse
 import retrofit2.Call
@@ -30,7 +31,7 @@ interface NoteAPIService {
         @Header("X-API-TOKEN") token: String,
         @Path("username") username: String,
         @Body createMap: HashMap<String, String>
-    ): Call<String>
+    ): Call<GeneralResponseModel>
 
     @PUT("api/note/{noteId}/{username}")
     fun updateNote(
@@ -38,7 +39,7 @@ interface NoteAPIService {
         @Path("noteId") noteId: Int,
         @Path("username") username: String,
         @Body updateMap: HashMap<String, String>
-    ): Call<String>
+    ): Call<GeneralResponseModel>
 
     @DELETE("api/note/{noteId}/{username}")
     fun deleteNote(

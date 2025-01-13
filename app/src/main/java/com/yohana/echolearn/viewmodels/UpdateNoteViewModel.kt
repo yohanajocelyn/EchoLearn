@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.yohana.echolearn.EchoLearnApplication
 import com.yohana.echolearn.models.ErrorModel
+import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.NoteModel
 import com.yohana.echolearn.models.NoteResponse
 import com.yohana.echolearn.repositories.NoteRepository
@@ -92,10 +93,12 @@ class UpdateNoteViewModel(
                     word = wordInput,
                     meaning = meaningInput
                 )
-                call.enqueue(object: Callback<String>{
-                    override fun onResponse(call: Call<String>, res: Response<String>) {
+                call.enqueue(object: Callback<GeneralResponseModel>{
+                    override fun onResponse(call: Call<GeneralResponseModel>, res: Response<GeneralResponseModel>) {
                         if (res.isSuccessful){
-                            navController.navigate(PagesEnum.Notes.name) {}
+                            navController.navigate(PagesEnum.Notes.name) {
+
+                            }
                         }else{
                             val errorMessage = Gson().fromJson(
                                 res.errorBody()!!.charStream(),
@@ -105,7 +108,7 @@ class UpdateNoteViewModel(
                             stringStatus = StringDataStatusUIState.Failed(errorMessage.errorMessage)
                         }
                     }
-                    override fun onFailure(p0: Call<String>, t: Throwable) {
+                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
                         Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
                         stringStatus = StringDataStatusUIState.Failed(t.localizedMessage)
                     }
@@ -126,8 +129,8 @@ class UpdateNoteViewModel(
                     word = wordInput,
                     meaning = meaningInput
                 )
-                call.enqueue(object: Callback<String>{
-                    override fun onResponse(call: Call<String>, res: Response<String>) {
+                call.enqueue(object: Callback<GeneralResponseModel>{
+                    override fun onResponse(call: Call<GeneralResponseModel>, res: Response<GeneralResponseModel>) {
                         if (res.isSuccessful){
                             navController.navigate(PagesEnum.Notes.name) {
 
@@ -147,7 +150,7 @@ class UpdateNoteViewModel(
                             }
                         }
                     }
-                    override fun onFailure(p0: Call<String>, t: Throwable) {
+                    override fun onFailure(p0: Call<GeneralResponseModel>, t: Throwable) {
                         Log.d("error-data", "ERROR DATA: ${t.localizedMessage}")
                         stringStatus = StringDataStatusUIState.Failed(t.localizedMessage)
                     }

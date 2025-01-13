@@ -1,5 +1,6 @@
 package com.yohana.echolearn.repositories
 
+import com.yohana.echolearn.models.GeneralResponseModel
 import com.yohana.echolearn.models.NoteListResponse
 import com.yohana.echolearn.models.NoteResponse
 import com.yohana.echolearn.services.NoteAPIService
@@ -8,14 +9,14 @@ import retrofit2.Call
 interface NoteRepository {
     fun getNotes(token: String, username: String): Call<NoteListResponse>
     fun getNote(token: String, noteId: Int, username: String): Call<NoteResponse>
-    fun createNote(token: String, username: String, word: String, meaning: String): Call<String>
+    fun createNote(token: String, username: String, word: String, meaning: String): Call<GeneralResponseModel>
     fun updateNote(
         token: String,
         noteId: Int,
         username: String,
         word: String,
         meaning: String
-    ): Call<String>
+    ): Call<GeneralResponseModel>
 
     fun deleteNote(
         token: String, noteId: Int, username: String,
@@ -38,7 +39,7 @@ class NetworkNoteRepository(
         username: String,
         word: String,
         meaning: String
-    ): Call<String> {
+    ): Call<GeneralResponseModel> {
         val createMap = HashMap<String, String>()
         createMap["word"] = word
         createMap["meaning"] = meaning
@@ -51,7 +52,7 @@ class NetworkNoteRepository(
         username: String,
         word: String,
         meaning: String
-    ): Call<String> {
+    ): Call<GeneralResponseModel> {
         val updateMap = HashMap<String, String>()
         updateMap["word"] = word
         updateMap["meaning"] = meaning
