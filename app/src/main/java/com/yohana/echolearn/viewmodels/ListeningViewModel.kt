@@ -449,10 +449,14 @@ class ListeningViewModel(
                                         popUpTo(PagesEnum.Listening.name + "continue-attempt/{attemptId}") {
                                             inclusive = true
                                         }
+                                    }else{
+                                        popUpTo(PagesEnum.Listening.name+"/${_song.value.id}") {
+                                            inclusive = true
+                                        }
                                     }
                                 }
                                 resetViewModel()
-                            }else{
+                            }else if(!isCompleted){
                                 navController.popBackStack()
                             }
 
